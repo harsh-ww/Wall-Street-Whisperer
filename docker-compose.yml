@@ -1,0 +1,47 @@
+services:
+  server:
+    build:
+      context: ./backend
+      target: dev
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend/app:/app
+    depends_on:
+      db:
+        condition: service_healthy
+    secrets:
+      - alpha_vantage_key
+    environment:
+      ALPHA_VANTAGE: /run/secrets/alpha_vantage_key
+      CURRENT_ENV: DEV
+    profiles:
+      - all
+ 
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: example
+      POSTGRES_USER: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  
+  frontend:
+    build:
+      context: ./frontend
+      target: dev
+    ports:
+      - "8080:5173"
+    volumes:
+      - ./frontend/src:/app/src
+    profiles:
+      - all
+
+# might change this later to just use a .env file
+secrets:
+  alpha_vantage_key:
+    file: ./alphavantage.secret.txt
