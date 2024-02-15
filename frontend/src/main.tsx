@@ -5,17 +5,29 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import Root from './routes/Root.tsx'
+import Landing from './routes/Landing.tsx'
+import HomePage from './routes/HomePage.tsx'
+import Company from './routes/Company.tsx'
 import ErrorPage from './ErrorPage.tsx';
 
 
 // Routes
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <Root />,
+    path: "/landing",
+    element: <Landing />,
     errorElement: <ErrorPage />
   },
+  {
+    path: "/home",
+    element: <HomePage />,
+    errorElement: <ErrorPage />
+  },
+  {
+    path: "/company",
+    element: <Company />,
+    errorElement: <ErrorPage />
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
