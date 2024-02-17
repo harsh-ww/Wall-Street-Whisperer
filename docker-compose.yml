@@ -15,6 +15,11 @@ services:
     environment:
       ALPHA_VANTAGE: /run/secrets/alpha_vantage_key
       CURRENT_ENV: DEV
+      POSTGRES_USR: postgres
+      POSTGRES_PWD: postgres
+      POSTGRES_HOST: db
+      POSTGRES_DB: app
+      # these need to be passed in properly using secrets - will do later
     profiles:
       - all
  
@@ -22,24 +27,33 @@ services:
     image: postgres
     restart: always
     environment:
-      POSTGRES_PASSWORD: example
+      POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
+      POSTGRES_DB: app
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
+    volumes:
+      - ./backend/scripts/postgres:/docker-entrypoint-initdb.d/
   
   frontend:
     build:
       context: ./frontend
       target: dev
     ports:
-      - "8080:5173"
+      - "5173:5173"
     volumes:
       - ./frontend/src:/app/src
     profiles:
       - all
+  
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"
 
 # might change this later to just use a .env file
 secrets:
