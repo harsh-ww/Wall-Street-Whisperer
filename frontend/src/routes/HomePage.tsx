@@ -1,13 +1,20 @@
-import '../App.css'
+import "../App.css";
+import Background from "../components/Background";
+import Logo from "../components/Logo";
+import SideBar from "../components/SideBar";
+import { Box } from "@chakra-ui/react";
 
 function HomePage() {
-    return (
-        <>
-        <div className = "wrapper">
-            <h1>Home Page</h1>
-        </div>
-        </>
-    )
+  return (
+    <>
+      <Box>
+        <Background>
+          <Logo />
+          <SideBar />
+        </Background>
+      </Box>
+    </>
+  );
 }
 
-export default HomePage
+export default HomePage;
