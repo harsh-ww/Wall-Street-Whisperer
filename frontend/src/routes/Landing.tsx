@@ -1,19 +1,17 @@
-import { useState } from 'react'
-import '../App.css'
-
+import "../App.css";
+import Background from "../components/Background";
+import Logo from "../components/Logo";
+import { Box } from "@chakra-ui/react";
 function Landing() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-      <h1>Landing Page</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-      </div>
+      <Box>
+        <Background>
+          <Logo />
+        </Background>
+      </Box>
     </>
-  )
+  );
 }
 
-export default Landing
+export default Landing;

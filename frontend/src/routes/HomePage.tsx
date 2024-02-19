@@ -2,6 +2,7 @@ import "../App.css";
 import Background from "../components/Background";
 import Logo from "../components/Logo";
 import SideBar from "../components/SideBar";
+import SearchBar from "../components/SearchBar";
 import { Box } from "@chakra-ui/react";
 
 function HomePage() {
@@ -10,8 +11,9 @@ function HomePage() {
       <Box>
         <Background>
           <Logo />
-          <SideBar />
         </Background>
+        <SideBar />
+        <SearchBar />
       </Box>
     </>
   );

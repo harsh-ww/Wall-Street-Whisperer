@@ -1,6 +1,8 @@
 import { Card, Text, Button, Divider } from "@chakra-ui/react";
 import { useState } from "react";
 
+//side bar, not located in Landing page, contains company motif links and alert links
+
 function MyCard() {
   const [isMoved, setIsMoved] = useState(false);
 
@@ -10,14 +12,15 @@ function MyCard() {
 
   return (
     <Card
-      width="22vw"
+      width="15em"
       height="70vh"
       p="4"
       borderRadius="md"
       bg="white"
       boxShadow="md"
       position="absolute"
-      left={isMoved ? "22vw" : "-19vw"}
+      zIndex="100"
+      left={isMoved ? "2em" : "-10em"}
       transition="left 0.3s ease"
     >
       <Button

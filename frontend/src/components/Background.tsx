@@ -1,6 +1,9 @@
 import { ReactNode } from "react";
 import { Box } from "@chakra-ui/react";
 
+//consistent background implementing gradient effect
+//considering background png for more visual design
+
 interface Props {
   children: ReactNode;
 }
