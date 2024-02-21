@@ -19,10 +19,3 @@ def fetch_news(company: Company, pastHours: int, count:int=50) -> list[Article]:
         articles = getCompanyNewsPerigon(company.name, pastHours, count)
     
     return articles
-
-
-if __name__ == '__main__':
-    tesco = Company('Tesco', StockExchange.LSE, 'TSCO')
-    articles = fetch_news(tesco, 48)
-    for a in articles:
-        print(vars(a))
