@@ -34,7 +34,7 @@ def getCompanyNewsPerigon(companyName: str, timePeriodHours: int, count:int, top
     articles = []
 
     for articleJson in data['articles']:
-        print(articleJson)
+
         article = Article(
             title=articleJson['title'],
             sourceURL=articleJson['url'],
