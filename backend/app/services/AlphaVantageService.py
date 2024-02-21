@@ -5,15 +5,11 @@ from datetime import datetime, timedelta
 import requests
 import logging
 import os
-import werkzeug.exceptions as exceptions
+from .exceptions import APIError
 from ..models.Article import Article
 
 API_URL = "https://www.alphavantage.co"
 API_KEY = os.environ['AV_KEY']
-
-class APIError(exceptions.InternalServerError):
-    def __init__(self, description='There was a problem fetching data from an external service'):
-        self.description = description
 
 class CompanyDetails:
     def __init__(self, name) -> None:
@@ -54,7 +50,6 @@ def getCompanyNews(symbol: str, timePeriodHours: int, count:int) -> list[Article
         raise APIError('Problem fetching news articles from AlphaVantage')
     
     data = response.json()
-    print(data)
 
     articles = []
 
