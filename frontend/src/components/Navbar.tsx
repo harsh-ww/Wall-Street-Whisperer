@@ -43,7 +43,7 @@ export default function App() {
         bg={bg}
         w="full"
         px={{ base: 2, sm: 4 }}
-        py={4}
+        py={1}
         shadow="md"
       >
         <Flex alignItems="center" justifyContent="space-between" mx="auto">
@@ -116,14 +116,14 @@ export default function App() {
                   variant="ghost"
                   // colorScheme="brand"
                   leftIcon={<MdExplore />}
-                  size="sm"
+                  size="md"
                 >
                   Explore
                   {/* this is the landing page */}
                 </Button>
               </NavLink>
               <NavLink to="/home">
-                <Button variant="ghost" leftIcon={<AiFillHome />} size="sm">
+                <Button variant="ghost" leftIcon={<AiFillHome />} size="md">
                   Home
                 </Button>
               </NavLink>
@@ -131,7 +131,7 @@ export default function App() {
                 <Button
                   variant="ghost"
                   leftIcon={<MdOutlineBusinessCenter />}
-                  size="sm"
+                  size="md"
                 >
                   Companies
                 </Button>
@@ -162,7 +162,7 @@ export default function App() {
               <VisuallyHidden>Notifications</VisuallyHidden>
             </chakra.a>
             <NavLink to="/">
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="md">
                 My Profile
               </Button>
             </NavLink>
