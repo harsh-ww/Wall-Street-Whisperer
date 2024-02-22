@@ -8,6 +8,7 @@ function ListCompanies() {
     "ShellCorp",
     "LemonadeStand",
     "EvenBiggerCompany",
+    "ehgeg",
   ]; //dummy data
 
   return (
