@@ -15,7 +15,8 @@ CREATE TABLE company (
     CompanyID INT PRIMARY KEY,
     CompanyName VARCHAR(255) NOT NULL,
     TickerCode VARCHAR(10) NOT NULL,
-    CurrentScore FLOAT
+    CurrentScore FLOAT,
+    Tracked BOOLEAN NOT NULL
 );
 
 
