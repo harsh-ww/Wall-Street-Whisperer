@@ -15,7 +15,7 @@ CREATE TABLE company (
     CompanyID INT PRIMARY KEY,
     CompanyName VARCHAR(255) NOT NULL,
     TickerCode VARCHAR(10) NOT NULL,
-    Exchange VARCHAR(10) NOT NULL,
+    Exchange VARCHAR(10) NOT NULL CHECK (Exchange IN ('NASDAQ', 'LSE', 'NYSE')), -- Need to add more exchanges here, not exhausted
     CurrentScore FLOAT
 );
 
