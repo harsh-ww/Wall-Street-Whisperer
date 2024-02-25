@@ -67,7 +67,7 @@ def getFromDB(squery):
 
 def getFromNASDAQ(squery, DBcompanies):
     # Read the NASDAQ CSV file into a DataFrame
-    nasdaq_df = pd.read_csv('nasdaq_listed.csv')
+    nasdaq_df = pd.read_csv('../nasdaq_listed.csv')
 
     # Filter the DataFrame based on the search query
     filtered_df = nasdaq_df[nasdaq_df['Name'].str.contains(squery, case=False)]
