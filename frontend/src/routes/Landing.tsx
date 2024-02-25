@@ -18,6 +18,7 @@ import {
   Text,
   Flex,
 } from "@chakra-ui/react";
+
 function Landing() {
   return (
     <>

@@ -2,6 +2,7 @@ import "../App.css";
 import Background from "../components/Background";
 import Logo from "../components/Logo";
 import SideBar from "../components/SideBar";
+import ArticleMotif from "../components/ArticleMotif";
 
 import {
   Box,
@@ -31,6 +32,13 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 import { HiExternalLink } from "react-icons/hi";
 
 function Company() {
+  let articles = [
+    "Headliner",
+    "ArticleTitle",
+    "NotAdmissible",
+    "MoneyLaundering",
+    "DidaGoodThing",
+  ]; //dummy data
   return (
     <>
       <Box>
@@ -132,12 +140,10 @@ function Company() {
                 p={["15px", "15px", "30px"]}
               >
                 <Text textAlign="left">Articles will go here</Text>
-                <SimpleGrid columns={2} spacing={10}>
-                  <Box bg="blue.400" height="100px"></Box>
-                  <Box bg="blue.400" height="100px"></Box>
-                  <Box bg="blue.400" height="100px"></Box>
-                  <Box bg="blue.400" height="100px"></Box>
-                  <Box bg="blue.400" height="100px"></Box>
+                <SimpleGrid columns={2} spacing={2}>
+                  {articles.map((article) => (
+                    <ArticleMotif articleName={article} />
+                  ))}
                 </SimpleGrid>
               </GridItem>
             </Grid>

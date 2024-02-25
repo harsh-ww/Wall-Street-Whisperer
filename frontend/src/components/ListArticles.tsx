@@ -5,9 +5,9 @@ function ListArticles() {
   let articles = [
     "Headliner",
     "ArticleTitle",
-    "ShellCorp",
-    "LemonadeStand",
-    "EvenBiggerCompany",
+    "NotAdmissible",
+    "MoneyLaundering",
+    "DidaGoodThing",
   ]; //dummy data
 
   return (
