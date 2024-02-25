@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify
 from connect import get_db_connection
-
-app = Flask(__name__)
+from app import app
 
 @app.route('/get_articles', methods=['GET'])
 def get_articles():
