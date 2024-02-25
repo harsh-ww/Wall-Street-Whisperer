@@ -1,5 +1,9 @@
+from typing import List
+
+strList = List[str]
+
 class Article():
-    def __init__(self, title: str, sourceURL: str, datePublished: str, sourceName: str, authors: list[str], image: str, text:str='', keywords:list=[]):
+    def __init__(self, title: str, sourceURL: str, datePublished: str, sourceName: str, authors: strList, image: str, text:str='', keywords:list=[]):
         self.title = title
         self.sourceURL = sourceURL
         self.datePublished = datePublished

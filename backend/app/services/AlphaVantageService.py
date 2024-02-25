@@ -6,7 +6,8 @@ import requests
 import logging
 import os
 from .exceptions import APIError
-from ..models.Article import Article
+from models.Article import Article
+from typing import List
 
 API_URL = "https://www.alphavantage.co"
 API_KEY = os.environ['AV_KEY']
@@ -16,7 +17,6 @@ class CompanyDetails:
         self.name = name
 
 
-
 def getCompanyDetails(symbol: str) -> CompanyDetails:
     endpoint = f'{API_URL}/query'
     payload = {'function': 'OVERVIEW', 'symbol': symbol, 'apikey': API_KEY}
@@ -24,14 +24,14 @@ def getCompanyDetails(symbol: str) -> CompanyDetails:
     response = requests.get(endpoint, params=payload)
 
     if response.status_code != 200: 
-        logging.error(f'Failed AV news fetching. Error {response.json()}')
+        logging.error(f'Failed AV company details fetching. Error {response.json()}')
         raise APIError()
     
     data = response.json()
 
-    return CompanyDetails(data['Name'])
+    return data
 
-def getCompanyNews(symbol: str, timePeriodHours: int, count:int) -> list[Article]:
+def getCompanyNews(symbol: str, timePeriodHours: int, count:int) -> List[Article]:
     timeFrom = datetime.now() - timedelta(hours=timePeriodHours)
 
     endpoint = f'{API_URL}/query'

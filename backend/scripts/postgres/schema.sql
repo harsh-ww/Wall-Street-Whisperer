@@ -12,8 +12,9 @@ CREATE TABLE users (
 
 DROP TABLE IF EXISTS company CASCADE; 
 CREATE TABLE company (
-    CompanyID INT PRIMARY KEY,
+    CompanyID SERIAL PRIMARY KEY,
     CompanyName VARCHAR(255) NOT NULL,
+    CommonName VARCHAR(255) NOT NULL,
     TickerCode VARCHAR(10) NOT NULL,
     CurrentScore FLOAT
 );
