@@ -45,15 +45,19 @@ function Company() {
             boxShadow="0px 20px 25px -5px rgba(0, 0, 0, 0.1), 0px 10px 10px -5px rgba(0, 0, 0, 0.04)"
             textAlign="center"
           >
-            <Box bg="gray.50" p={["10px", "10px", "10px"]}>
+            <Box bg="whiteAlpha.900" p={["10px", "10px", "10px"]}>
               {" "}
               <Flex direction={["column", "column", "row"]}>
-                <Box bg="gray.50" p={["10px", "10px", "15px"]}>
+                <Box bg="whiteAlpha.900" p={["10px", "10px", "15px"]}>
                   <Heading as="h3" fontSize={["2xl", "3xl", "5xl"]} mt="1">
                     CompanyName
                   </Heading>
                 </Box>
-                <Box p={["10px", "10px", "15px"]} fontSize="lg" bg="gray.50">
+                <Box
+                  p={["10px", "10px", "15px"]}
+                  fontSize="lg"
+                  bg="whiteAlpha.900"
+                >
                   <Badge
                     colorScheme="green"
                     borderRadius="full"
@@ -64,7 +68,7 @@ function Company() {
                   </Badge>
                 </Box>
                 <Box
-                  bg="gray.50"
+                  bg="whiteAlpha.900"
                   p={["10px", "10px", "15px"]}
                   display="flex"
                   alignItems="center"
@@ -106,11 +110,11 @@ function Company() {
               </Flex>
             </Box>
 
-            <Grid templateColumns="repeat(2, 1fr)" gap={1}>
+            <Grid templateColumns="repeat(2, 1fr)" gap={0}>
               <GridItem
                 w="100%"
                 height="100%"
-                bg="gray.50"
+                bg="whiteAlpha.900"
                 p={["15px", "15px", "30px"]}
               >
                 {" "}
@@ -124,7 +128,7 @@ function Company() {
               <GridItem
                 w="100%"
                 height="100%"
-                bg="gray.50"
+                bg="whiteAlpha.900"
                 p={["15px", "15px", "30px"]}
               >
                 <Text textAlign="left">Articles will go here</Text>
