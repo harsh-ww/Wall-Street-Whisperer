@@ -1,21 +1,12 @@
 //Profile for logging in/signing up/looking at stats
 //present in 3 main pages
-import React from "react";
-import { connect } from "react-redux";
 import {
   Menu,
   MenuButton,
   MenuList,
   MenuItem,
-  Image,
-  MenuItemOption,
-  MenuGroup,
-  MenuOptionGroup,
   MenuDivider,
   Button,
-  useDisclosure,
-  IconButton,
-  CloseButton,
   Avatar,
 } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";

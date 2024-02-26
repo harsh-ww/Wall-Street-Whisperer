@@ -1,6 +1,4 @@
 import "../App.css";
-import Background from "../components/Background";
-import Logo from "../components/Logo";
 import SideBar from "../components/SideBar";
 import ArticleMotif from "../components/ArticleMotif";
 
@@ -9,25 +7,15 @@ import {
   Button,
   Flex,
   Heading,
-  HStack,
-  Icon,
-  createIcon,
-  Stack,
-  StackProps,
   Text,
-  Spacer,
   Grid,
   GridItem,
   Badge,
   ButtonGroup,
-  Wrap,
-  WrapItem,
   SimpleGrid,
 } from "@chakra-ui/react";
 import BaseLayout from "../layouts/BaseLayout";
-import NavBar from "../components/Navbar";
 import LineChart from "../components/LineChart";
-import { FaCheckCircle } from "react-icons/fa";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { HiExternalLink } from "react-icons/hi";
 
