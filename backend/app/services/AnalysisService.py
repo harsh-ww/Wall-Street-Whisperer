@@ -3,7 +3,7 @@ from ..models.Company import Company
 from NewsSentiment import TargetSentimentClassifier
 import re
 from ..connect import get_db_connection
-import urllib.parse as urlparse
+import tldextract
 import requests
 import os
 import logging
@@ -12,6 +12,7 @@ from typing import List
 
 SIMILARWEB_API_KEY = os.environ['SIMILARWEB_KEY']
 
+# Class to store data about articles post-analysis
 class AnalysedArticle(Article):
     sentimentLabel = None
     sentimentProb = None
@@ -28,8 +29,10 @@ class AnalysedArticle(Article):
         self.sitePopularity = popularity
  
 
+# Main batch processing class
 class BatchArticleAnalysis():
 
+    # constructor to set articles to be analysed
     def __init__(self, articles: list[tuple[Company, Article]]) -> None:
         self.articles = articles
 
@@ -57,7 +60,7 @@ class BatchArticleAnalysis():
         response = requests.get(endpoint, params=query)
 
         if response.status_code == 404:
-            logging.warn(f"No similarweb rank for {domain}")
+            logging.warning(f"No similarweb rank for {domain}")
             return None
         else:
             if response.status_code != 200:
@@ -85,7 +88,7 @@ class BatchArticleAnalysis():
         Analyses the popularity of a news source - either uses cached or refetches from SimilarWeb
         """
         # extract domain from source URL
-        domain = urlparse.urlparse(sourceURL).netloc
+        domain = tldextract.extract(sourceURL).registered_domain
 
         query = "SELECT Popularity, PopularityLastFetched from websource WHERE SourceURL LIKE %%%s%%"
         conn = get_db_connection()
@@ -115,7 +118,6 @@ class BatchArticleAnalysis():
                     return cur.fetchone()[0]
 
 
-    # this algorithm is very naive
     def calculateArticleScore(self, article:AnalysedArticle):
         """
         Scoring algorithm for articles
@@ -135,32 +137,52 @@ class BatchArticleAnalysis():
                 return score
             popularityNormalised = 1 - (article.sitePopularity - 1)/(500000)
             # multiply based on popularity of the website
-            score *= 1.5 * popularityNormalised
+            score *= 1.1 * popularityNormalised
         
         return score
 
-
+    # Main article processing function
     def processArticlesParallel(self) -> List[AnalysedArticle]:
         """
         Performs processing on the articles provided
         """
+        
         sentimentAnalysisTargets = []
+        cleanedTargets = []
         for articleTuple in self.articles:
-            sentimentAnalysisTargets.append(self.splitArticleTarget(articleTuple[0].name, articleTuple[1].text))
+            company = articleTuple[0]
+            article = articleTuple[1]
 
+            # split article text to allow for sentiment analysis
+            target = self.splitArticleTarget(company.name, article.text)
+
+            # Model can't handle text where the target (i.e. company name) doesn't appear in the first 512 chars
+            # This is reasonable. If an article about a company doesn't mention it in the first roughly 5 sentences
+            # the article probably isn't about the company
+            if len(target[0])>512:
+                continue
+
+            # add to targets
+            sentimentAnalysisTargets.append(target)
+            cleanedTargets.append((company, article))
+
+        # classify text using NewsSentiment
         tsc = TargetSentimentClassifier()
         sentiments = tsc.infer(targets=sentimentAnalysisTargets, batch_size=4)
 
+
         analysedArticles:list[AnalysedArticle] = []
-
+        # post processing of sentiments to add to list
         for i, result in enumerate(sentiments):
-            analysedArticles.append(AnalysedArticle(self.articles[i][0], self.articles[i][1], result[0]['class_label'], result[0]['class_prob']))
+            analysedArticles.append(AnalysedArticle(cleanedTargets[i][0], cleanedTargets[i][1], result[0]['class_label'], result[0]['class_prob']))
 
+        # Analyse source popularity of articles
         for aa in analysedArticles:
             popularity = self.analyseSourcePopularity(aa.sourceURL, aa.sourceName)
             if popularity is not None:
                 aa.setPopularity(popularity)
         
+        # Score articles based on all factors we have
         for aa in analysedArticles:
             aa.score = self.calculateArticleScore(aa)
             

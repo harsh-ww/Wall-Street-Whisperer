@@ -99,3 +99,5 @@ tzdata==2024.1
 urllib3==2.0.7
 wasabi==1.1.2
 weasel==0.3.4
+requests-file==2.0.0
+tldextract==5.1.1
