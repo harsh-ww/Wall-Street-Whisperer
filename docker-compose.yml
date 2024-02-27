@@ -13,12 +13,17 @@ services:
     secrets:
       - alpha_vantage_key
     environment:
-      ALPHA_VANTAGE: /run/secrets/alpha_vantage_key
       CURRENT_ENV: DEV
+      # Alpha vantage API
+      ALPHA_VANTAGE: /run/secrets/alpha_vantage_key
+      AV_KEY: RH7EG7YN7BPG9V7Z
+      # PostgreSQL
       POSTGRES_USR: postgres
       POSTGRES_PWD: postgres
       POSTGRES_HOST: db
       POSTGRES_DB: app
+      # Email sending
+      EMAIL_PASSWORD: hhmn jynr ekfl oxxk
       # these need to be passed in properly using secrets - will do later
     profiles:
       - all
