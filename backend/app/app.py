@@ -1,6 +1,6 @@
 from flask import Flask
-from connect import get_db_connection
 from flask_mail import Mail
+from connect import get_db_connection
 import os
 app = Flask(__name__)
 
@@ -30,13 +30,17 @@ def hello():
 
 @app.route('/example')
 def example_database_call():
-    sql_query = "SELECT * FROM company"
-    conn = get_db_connection()
-    with conn.cursor() as cur:
-        cur.execute(sql_query)
+    try:
+        sql_query = "SELECT * FROM company"
+        conn = get_db_connection()
+        with conn.cursor() as cur:
+            cur.execute(sql_query)
 
-        rows = cur.fetchone()
-        print(rows)
+            rows = cur.fetchone()
+            print(rows)
+    finally:
+        conn.close()
+        
     return 'Success'
 
 
