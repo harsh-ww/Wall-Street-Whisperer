@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from services.AlphaVantageService import getCompanyDetails
 from connect import get_db_connection
+import json
 
 
 api_routes_blueprint = Blueprint('api_routes', __name__)
@@ -71,6 +72,25 @@ def getFromDB(squery):
 #                 'exchange': 'NASDAQ', # Default to NASDAQ since we're searching in the NASDAQ CSV
 #                 'tracked' : False
 #                 })
-        
 #     return companies
 # ## \\ PROJ-11
+
+@api_routes_blueprint.route('/articles/<id>', methods=['GET'])
+def get_articles(id):
+        from_date = request.args.get('from_date')
+        
+        query = """
+            SELECT a.* 
+            FROM article a
+            JOIN company_articles ca ON a.ArticleID = ca.ArticleID
+            WHERE ca.CompanyID = %s AND a.PublishedDate >= %s
+        """
+
+        conn = get_db_connection()
+        with conn.cursor() as cur:
+            cur.execute(query, (id, from_date))
+            articles = cur.fetchall()
+
+        conn.close()
+
+        return json.dumps(articles)
