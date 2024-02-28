@@ -4,7 +4,7 @@
 
 ### Docker
 
-The easiest way to run the project is using Docker. 
+The easiest way to run the project is using Docker.
 
 The following command will start up a postgres server, along with the frontend and backend. Changes made to these projects will be reflected in real time.
 ```
