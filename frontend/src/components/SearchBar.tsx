@@ -26,9 +26,15 @@ function SearchBar() {
   const [companyList, setCompanyList] = useState<Company[]>([]);
 
   useEffect(() => {
+    console.log(query);
+    console.log(companyList);
     if (query !== "") {
       async function fetchCompanies() {
         const response = await fetch(`/company?query=${query}`);
+        if (!response.ok) {
+          console.error(`HTTP error! status: ${response.status}`);
+          return;
+        }
         const data = await response.json();
         setCompanyList(data);
       }
@@ -61,6 +67,7 @@ function SearchBar() {
               ))}
             </Select>
           )}
+
           <InputRightElement>
             <Fade in={!isOpen}>
               <SearchIcon color="black" />
