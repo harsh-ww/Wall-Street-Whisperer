@@ -10,14 +10,7 @@ interface Props {
 
 function Background({ children }: Props) {
   return (
-    <Box
-      height="20vh"
-      width="100vw"
-      bg="purple.700"
-      p="4"
-      color="white"
-      bgGradient="linear(to-b, purple.100, white)"
-    >
+    <Box height="20vh" width="100vw" p="4">
       {children} {/*where the logo gets put */}
     </Box>
   );

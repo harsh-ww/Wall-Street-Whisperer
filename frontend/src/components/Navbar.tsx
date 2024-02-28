@@ -1,6 +1,5 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import SearchBar from "./SearchBar";
 import Profile from "./Profile";
 import {
   chakra,
@@ -14,10 +13,6 @@ import {
   VStack,
   IconButton,
   CloseButton,
-  InputGroup,
-  InputLeftElement,
-  Input,
-  Avatar,
 } from "@chakra-ui/react";
 // import { Logo } from "@choc-ui/logo";
 import Logo from "./Logo";
@@ -25,12 +20,10 @@ import {
   AiOutlineMenu,
   AiFillHome,
   AiOutlineInbox,
-  AiOutlineSearch,
   AiFillBell,
 } from "react-icons/ai";
 import { BsFillCameraVideoFill, BsFillInboxFill } from "react-icons/bs";
-import { LuLogOut } from "react-icons/lu";
-import { FaUserCircle } from "react-icons/fa";
+
 import { MdOutlineBusinessCenter, MdExplore } from "react-icons/md";
 
 export default function App() {
