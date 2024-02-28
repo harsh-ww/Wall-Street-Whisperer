@@ -7,11 +7,24 @@ import json
 api_routes_blueprint = Blueprint('api_routes', __name__)
 
 # API endpoint to return company details
-@api_routes_blueprint.route('/company/<symbol>', methods = ['GET'])
-def company_details(symbol):
-
+# company is made unique by its ticker and exchange
+# Endpoint modified to `/companies/<:exchange:>/<:ticker:>
+@api_routes_blueprint.route('/company/<exchange>/<symbol>', methods = ['GET'])
+def company_details(exchange, symbol):
     details = getCompanyDetails(symbol)
+    exchange = details.get('Exchange')
 
+    conn = get_db_connection()
+    with conn.cursor() as cur:
+        # Query database to check if company is tracked
+        cur.execute("SELECT * FROM company WHERE Exchange = %s AND TickerCode = %s", (exchange, symbol))
+        result = cur.fetchone()
+        # If company is tracked, add attributes to the data (eg score)
+        if result is not None:
+            details['CurrentScore'] = result['CurrentScore']
+
+    conn.close()
+        
     return details
 
 ## [PROJ-11] Setup endpoint to allow searching for company names
