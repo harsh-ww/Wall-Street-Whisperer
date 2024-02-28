@@ -13,26 +13,17 @@ api_routes_blueprint = Blueprint('api_routes', __name__)
 def company_details(exchange, symbol):
     details = getCompanyDetails(symbol)
     exchange = details.get('Exchange')
-    
-    try:
-        # Connect to the database
-        conn = get_db_connection()
-        cur = conn.cursor()
 
+    conn = get_db_connection()
+    with conn.cursor() as cur:
         # Query database to check if company is tracked
         cur.execute("SELECT * FROM company WHERE Exchange = %s AND TickerCode = %s", (exchange, symbol))
         result = cur.fetchone()
-
         # If company is tracked, add attributes to the data (eg score)
         if result is not None:
             details['CurrentScore'] = result['CurrentScore']
-    
-    except Exception as e:
-            error = str(e)
-            return jsonify({"error" : "Error sending emails: " + error}), 500
-    finally:
-        cur.close()
-        conn.close()
+
+    conn.close()
         
     return details
 
