@@ -1,4 +1,3 @@
-import pandas as pd
 from flask import Blueprint, request, jsonify
 from services.AlphaVantageService import getCompanyDetails
 from connect import get_db_connection
