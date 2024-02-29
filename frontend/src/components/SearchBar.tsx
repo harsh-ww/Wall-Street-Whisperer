@@ -1,18 +1,51 @@
 import { Flex, Input, InputGroup, InputRightElement } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
-import { Fade, Button, Text } from "@chakra-ui/react";
-import { useState } from "react";
+import {
+  Fade,
+  ScaleFade,
+  Slide,
+  SlideFade,
+  Collapse,
+  useDisclosure,
+  Select,
+  Text,
+  Button
+} from "@chakra-ui/react";
+import { useState, useEffect } from "react";
 
 //search bar functionality, length dependent on container it is in
 //dropdown menu needs to be added
+interface Company {
+  name: string;
+  ticker: string;
+  exchange: string;
+  tracked: boolean;
+}
 
 function SearchBar() {
-  const [isFocused, setIsFocused] = useState(false);
-  const handleToggle = () => {
-    setIsFocused(!isFocused);
-  };
+  const { isOpen, onToggle } = useDisclosure();
+  const [query, setQuery] = useState("");
+  const [companyList, setCompanyList] = useState<Company[]>([]);
 
-  const [companyDropDown, setCompanyDropDown] = useState(null);
+  useEffect(() => {
+    console.log(query);
+    console.log(companyList);
+    if (query !== "") {
+      async function fetchCompanies() {
+        const response = await fetch(`/company?query=${query}`);
+        if (!response.ok) {
+          console.error(`HTTP error! status: ${response.status}`);
+          return;
+        }
+        const data = await response.json();
+        setCompanyList(data);
+      }
+      fetchCompanies();
+    } else {
+      setCompanyList([]);
+    }
+  }, [query]);
+
   return (
     <>
       <Flex
@@ -32,7 +65,18 @@ function SearchBar() {
             placeholder="Search for Company..."
             variant="filled"
             focusBorderColor="purple.500"
+            onChange={(e) => setQuery(e.target.value)}
           />
+          {companyList.length > 0 && (
+            <Select placeholder="Select company">
+              {companyList.map((company, index) => (
+                <option key={index} value={company.ticker}>
+                  {company.name} ({company.ticker} - {company.exchange})
+                </option>
+              ))}
+            </Select>
+          )}
+
           <InputRightElement>
             <Fade in={!isFocused}>
               <SearchIcon color="black" />
