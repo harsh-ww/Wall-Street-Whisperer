@@ -38,10 +38,8 @@ def companySearch(keyword: str) -> str:
             newCompany = {
                 "symbol": match["1. symbol"],
                 "name": match["2. name"],
-                "matchScore": match["9. matchScore"]
+                "exchange": match["4. region"]
             }
-            if match["4. region"] == "United Kingdom":
-                newCompany["symbol"] += ".LON"
             companyData.append(newCompany)
     return companyData
 

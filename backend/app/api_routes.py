@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from services.AlphaVantageService import getCompanyDetails
+from services.AlphaVantageService import getCompanyDetails, companySearch
 from connect import get_db_connection
 import json
 
@@ -35,7 +35,15 @@ def search_companies():
     companies = []
     DBcompanies = getFromDB(search_query)
     #NASDAQcompanies = getFromNASDAQ(search_query, DBcompanies)
-    companies = DBcompanies
+    otherCompanies = companySearch(search_query)
+    dbtickers = [x['ticker'] for x in DBcompanies]
+    companiesToReturn = []
+    for c in otherCompanies:
+        if c['ticker'] not in dbtickers:
+            c['tracked'] = False
+            companiesToReturn.append(c)
+
+    companies = DBcompanies + companiesToReturn
 
     return jsonify(companies)
 
@@ -66,27 +74,6 @@ def getFromDB(squery):
         conn.close()
         
     return companies
-
-# def getFromNASDAQ(squery, DBcompanies):
-#     # Read the NASDAQ CSV file into a DataFrame
-#     nasdaq_df = pd.read_csv('../nasdaq_listed.csv')
-
-#     # Filter the DataFrame based on the search query
-#     filtered_df = nasdaq_df[nasdaq_df['Name'].str.contains(squery, case=False)]
-
-#     # Convert the filtered DataFrame to a list of dictionaries
-#     companies = []
-#     for index, row in filtered_df.iterrows():
-#         # don't include comapnies already added by database
-#         if row['Symbol'] not in [db_company['ticker'] for db_company in DBcompanies]:
-#             companies.append({
-#                 'name': row['Name'],
-#                 'ticker': row['Symbol'],
-#                 'exchange': 'NASDAQ', # Default to NASDAQ since we're searching in the NASDAQ CSV
-#                 'tracked' : False
-#                 })
-#     return companies
-# ## \\ PROJ-11
 
 @api_routes_blueprint.route('/articles/<id>', methods=['GET'])
 def get_articles(id):
