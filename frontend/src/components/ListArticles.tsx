@@ -19,7 +19,7 @@ function ListArticles() {
           </Heading>
         </CardHeader>
         <SimpleGrid
-          spacing={5}
+          spacing={1}
           templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
           justifyContent="space-around"
           padding="1em"

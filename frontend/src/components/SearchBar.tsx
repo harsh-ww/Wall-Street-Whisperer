@@ -8,6 +8,8 @@ import {
   Collapse,
   useDisclosure,
   Select,
+  Text,
+  Button
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 
@@ -46,13 +48,20 @@ function SearchBar() {
 
   return (
     <>
-      <Flex color="white" w="100vw" justifyContent="center">
+      <Flex
+        color="white"
+        w="100vw"
+        justifyContent="center"
+        direction="column"
+        marginLeft="14vw"
+      >
         <InputGroup w="70%">
           <Input
             size="md"
             boxShadow="md"
             color="black"
-            onClick={onToggle}
+            onFocus={handleToggle}
+            onBlur={handleToggle}
             placeholder="Search for Company..."
             variant="filled"
             focusBorderColor="purple.500"
@@ -69,11 +78,16 @@ function SearchBar() {
           )}
 
           <InputRightElement>
-            <Fade in={!isOpen}>
+            <Fade in={!isFocused}>
               <SearchIcon color="black" />
             </Fade>
           </InputRightElement>
         </InputGroup>
+        {isFocused && (
+          <Text width="70%" bg="white" textColor="black" padding="5px">
+            Hello there
+          </Text>
+        )}
       </Flex>
     </>
   );

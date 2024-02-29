@@ -16,7 +16,7 @@ function ArticleMotif({ articleName }: Props) {
       justifyContent="space-around"
       alignItems="left"
       boxShadow="md"
-      p="6"
+      p="5"
       borderRadius="1000px"
       border="2px"
       borderColor="purple.900"

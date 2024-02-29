@@ -1,4 +1,11 @@
-import { Card, CardHeader, SimpleGrid, Heading, Text } from "@chakra-ui/react";
+import {
+  Card,
+  CardHeader,
+  SimpleGrid,
+  Heading,
+  Text,
+  Box,
+} from "@chakra-ui/react";
 import CompanyMotif from "./CompanyMotif";
 
 function ListCompanies() {
@@ -30,7 +37,9 @@ function ListCompanies() {
             (
               company //using CompanyMotif as a base, we can use backend data to populate the trending companies data
             ) => (
-              <CompanyMotif companyName={company} />
+              <Box>
+                <CompanyMotif companyName={company} textSize="sm" />
+              </Box>
             )
           )}
         </SimpleGrid>
