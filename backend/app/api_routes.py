@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from services.AlphaVantageService import getCompanyDetails, companySearch
+from services.AlphaVantageService import getCompanyDetails, companySearch, getCompanyDetailsNonUS, getCurrentStockPrice, getTimeSeries
 from connect import get_db_connection
 import json
 
@@ -7,23 +7,40 @@ import json
 api_routes_blueprint = Blueprint('api_routes', __name__)
 
 # API endpoint to return company details
-# company is made unique by its ticker and exchange
-# Endpoint modified to `/companies/<:exchange:>/<:ticker:>
-@api_routes_blueprint.route('/company/<exchange>/<symbol>', methods = ['GET'])
-def company_details(exchange, symbol):
-    details = getCompanyDetails(symbol)
-    exchange = details.get('Exchange')
+# Companies are made unique by a ticker and exchange. New company searching has unique tickers
+@api_routes_blueprint.route('/company/<symbol>', methods = ['GET'])
+def company_details(symbol: str):
+    stockInfo = getCurrentStockPrice(symbol)
+    if not stockInfo:
+        return jsonify({'error': 'Ticker does not exist'}), 404
 
+    details = {}
+    details['stock'] = stockInfo
+    tracked = False
+
+    # Add in additional data if the company is tracked
     conn = get_db_connection()
     with conn.cursor() as cur:
         # Query database to check if company is tracked
-        cur.execute("SELECT * FROM company WHERE Exchange = %s AND TickerCode = %s", (exchange, symbol))
+        cur.execute("SELECT CompanyName, CurrentScore FROM company WHERE TickerCode = %s", [symbol])
         result = cur.fetchone()
         # If company is tracked, add attributes to the data (eg score)
         if result is not None:
-            details['CurrentScore'] = result['CurrentScore']
-
+            details['tracked'] = True
+            details['score'] = result[1]
+            details['name'] = result[0]
+            tracked = True
+    
     conn.close()
+
+    # Fetch company overview from AlphaVantage
+    if "." in symbol:
+        if not tracked:
+            details = {**details, **getCompanyDetailsNonUS(symbol)}
+    else:
+        # Fetch company details from AlphaVantage
+        details = {**details, **getCompanyDetails(symbol)}
+
         
     return details
 
@@ -37,9 +54,11 @@ def search_companies():
     #NASDAQcompanies = getFromNASDAQ(search_query, DBcompanies)
     otherCompanies = companySearch(search_query)
     dbtickers = [x['ticker'] for x in DBcompanies]
+    print(dbtickers)
+    print(otherCompanies)
     companiesToReturn = []
     for c in otherCompanies:
-        if c['ticker'] not in dbtickers:
+        if c['symbol'] not in dbtickers:
             c['tracked'] = False
             companiesToReturn.append(c)
 
@@ -53,14 +72,14 @@ def getFromDB(squery):
         sql_query = """
             SELECT CompanyName, TickerCode, Exchange
             FROM company
-            WHERE CompanyName ILIKE %%%s%% OR TickerCode ILIKE %%%s%%
+            WHERE CompanyName ILIKE %s OR TickerCode ILIKE %s
         """
-        
+        searchTerm = '%'+ squery + '%'
         # Connect to DB and execute query
         # Create json data for valid companies from DB
         conn = get_db_connection()
         with conn.cursor() as cur:
-            cur.execute(sql_query, (squery, squery))
+            cur.execute(sql_query, (searchTerm, searchTerm))
             rows = cur.fetchall()
             companies = []
             for row in rows:
@@ -93,4 +112,14 @@ def get_articles(id):
 
         conn.close()
 
-        return json.dumps(articles)
+        return jsonify(articles)
+
+@api_routes_blueprint.route('/company/<ticker>/timeseries', methods=['GET'])
+def get_timeSeries(ticker):
+    granularity = request.args.get('granularity') or 'DAILY'
+    data = getTimeSeries(ticker, granularity)
+
+    if not data:
+        return jsonify({'message': 'Ticker code does not exist'}), 404
+    
+    return data
