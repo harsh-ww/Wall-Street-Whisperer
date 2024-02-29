@@ -2,7 +2,7 @@ services:
   server:
     build:
       context: ./backend
-      target: dev
+      target: test
     ports:
       - "5000:5000"
     volumes:
