@@ -40,7 +40,7 @@ def getFromDB(squery):
         sql_query = """
             SELECT CompanyName, TickerCode, Exchange
             FROM company
-            WHERE CompanyName ILIKE %%%s%% OR TickerCode ILIKE %%%s%%
+            WHERE CompanyName ILIKE '%' ||s || '%' OR TickerCode ILIKE '%' || @s || '%'
         """
         
         # Connect to DB and execute query
