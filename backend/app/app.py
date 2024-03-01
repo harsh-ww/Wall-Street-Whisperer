@@ -1,8 +1,10 @@
 from flask import Flask
 from flask_mail import Mail
+from flask_cors import CORS
 from connect import get_db_connection
 import os
 app = Flask(__name__)
+CORS(app)
 
 # Configuration of flask mail
 app.config['MAIL_SERVER']='smtp.gmail.com'
