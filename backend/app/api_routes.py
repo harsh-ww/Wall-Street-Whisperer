@@ -1,7 +1,6 @@
 from flask import Blueprint, request, jsonify
-from services.AlphaVantageService import getCompanyDetails
+from services.AlphaVantageService import getCompanyDetails, companySearch
 from connect import get_db_connection
-
 
 api_routes_blueprint = Blueprint('api_routes', __name__)
 
@@ -18,12 +17,12 @@ def company_details(symbol):
 def search_companies():
     
     search_query = request.args.get('query', '')
-    companies = []
-    DBcompanies = getFromDB(search_query)
-    NASDAQcompanies = getFromNASDAQ(search_query, DBcompanies)
-    companies = DBcompanies + NASDAQcompanies
-
+    companies = companySearch(search_query)
     return jsonify(companies)
+    #DBcompanies = getFromDB(search_query)
+    #NASDAQcompanies = getFromNASDAQ(search_query, DBcompanies)
+    #companies = DBcompanies + NASDAQcompanies
+    #return jsonify(companies)
 
 def getFromDB(squery):
     try:
