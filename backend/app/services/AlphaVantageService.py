@@ -10,7 +10,7 @@ from models.Article import Article
 from typing import List
 
 API_URL = "https://www.alphavantage.co"
-API_KEY = os.environ['AV_KEY']
+API_KEY = "RH7EG7YN7BPG9V7Z"
 
 class CompanyDetails:
     def __init__(self, name) -> None:

@@ -26,6 +26,7 @@ function SearchBar() {
       }
       const data = await response.json();
       setSearchResults(data); //useState hook takes API json response and puts into searchResults
+      console.log(searchResults);
     } catch (error) {
       console.error("Error fetching company data:", error);
     } finally {
@@ -118,34 +119,38 @@ function SearchBar() {
             </Fade>
           </InputRightElement>
         </InputGroup>
-        {isLoading && ( //logic is incomplete, change && to ?? (), with default loading elements within brackets
-          <Flex
-            as="button"
-            borderLeft="2px"
-            borderRight="2px"
-            borderColor="gray.300"
-            width="70%"
-            bg="white"
-            padding="5px"
-            justifyContent="flex-start"
-            direction="row"
-          >
+        {isLoading || ( //logic is incomplete, change && to ?? (), with default loading elements within brackets
+          <Flex direction="column" zIndex="99">
             {searchResults.map(
               (
                 company,
                 index //response from json will stack and fill the possible search results
               ) => (
                 <React.Fragment key={index}>
-                  <Image
-                    src="../../public/logoIpsum.svg"
-                    height="1em"
-                    alignSelf="center"
-                    margin="0.3em 0.5em 0.3em 0.5em"
-                  />
-                  <Text textColor="black" fontSize="lg" alignSelf="center">
-                    {company.name}{" "}
-                    {/*will additionally link to relevant page when implementation confirmed */}
-                  </Text>
+                  <Flex
+                    as="button"
+                    borderLeft="2px"
+                    borderRight="2px"
+                    borderBottom="1px"
+                    borderColor="gray.300"
+                    borderBottomColor="gray.100"
+                    width="70%"
+                    bg="white"
+                    padding="5px"
+                    justifyContent="flex-start"
+                    direction="row"
+                  >
+                    <Image
+                      src="../../public/logoIpsum.svg"
+                      height="1em"
+                      alignSelf="center"
+                      margin="0.3em 0.5em 0.3em 0.5em"
+                    />
+                    <Text textColor="black" fontSize="lg" alignSelf="center">
+                      {company.name}{" "}
+                      {/*will additionally link to relevant page when implementation confirmed */}
+                    </Text>
+                  </Flex>
                 </React.Fragment>
               )
             )}
