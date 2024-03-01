@@ -3,6 +3,7 @@ from services.AlphaVantageService import getCompanyDetails, companySearch, getCo
 from connect import get_db_connection
 import json
 
+
 api_routes_blueprint = Blueprint('api_routes', __name__)
 
 # API endpoint to return company details
