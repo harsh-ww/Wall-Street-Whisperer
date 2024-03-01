@@ -17,13 +17,14 @@ function SearchBar() {
     try {
       setIsLoading(true);
       const response = await fetch(
-        `http://localhost:5000/company?query=${searchQuery}` //make call to server
+        `http://localhost:5000/company?query=${searchQuery}` //make call to server using api route search_companies()
       );
       if (!response.ok) {
+        //appropriate error handling
         throw new Error("Failed to fetch company data");
       }
       const data = await response.json();
-      setSearchResults(data);
+      setSearchResults(data); //useState hook takes API json response and puts into searchResults
     } catch (error) {
       console.error("Error fetching company data:", error);
     } finally {
@@ -31,7 +32,7 @@ function SearchBar() {
     }
   };
 
-  const [isFocused, setIsFocused] = useState(false);
+  const [isFocused, setIsFocused] = useState(false); //used specifically for styling frontend
   const handleToggle = () => {
     setIsFocused(!isFocused);
   };
@@ -68,7 +69,7 @@ function SearchBar() {
             </Fade>
           </InputRightElement>
         </InputGroup>
-        {isLoading && (
+        {isLoading && ( //logic is incomplete, change && to ?? (), with default loading elements within brackets
           <Flex
             as="button"
             borderLeft="2px"
@@ -80,19 +81,25 @@ function SearchBar() {
             justifyContent="flex-start"
             direction="row"
           >
-            {searchResults.map((company, index) => (
-              <React.Fragment key={index}>
-                <Image
-                  src="../../public/logoIpsum.svg"
-                  height="1em"
-                  alignSelf="center"
-                  margin="0.3em 0.5em 0.3em 0.5em"
-                />
-                <Text textColor="black" fontSize="lg" alignSelf="center">
-                  {company.name}
-                </Text>
-              </React.Fragment>
-            ))}
+            {searchResults.map(
+              (
+                company,
+                index //response from json will stack and fill the possible search results
+              ) => (
+                <React.Fragment key={index}>
+                  <Image
+                    src="../../public/logoIpsum.svg"
+                    height="1em"
+                    alignSelf="center"
+                    margin="0.3em 0.5em 0.3em 0.5em"
+                  />
+                  <Text textColor="black" fontSize="lg" alignSelf="center">
+                    {company.name}{" "}
+                    {/*will additionally link to relevant page when implementation confirmed */}
+                  </Text>
+                </React.Fragment>
+              )
+            )}
           </Flex>
         )}
       </Flex>
