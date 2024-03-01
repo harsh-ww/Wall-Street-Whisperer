@@ -17,12 +17,22 @@ def company_details(symbol):
 def search_companies():
     
     search_query = request.args.get('query', '')
-    companies = companySearch(search_query)
-    return jsonify(companies)
-    #DBcompanies = getFromDB(search_query)
+    companies = []
+    DBcompanies = getFromDB(search_query)
     #NASDAQcompanies = getFromNASDAQ(search_query, DBcompanies)
-    #companies = DBcompanies + NASDAQcompanies
-    #return jsonify(companies)
+    otherCompanies = companySearch(search_query)
+    dbtickers = [x['ticker'] for x in DBcompanies]
+    print(dbtickers)
+    print(otherCompanies)
+    companiesToReturn = []
+    for c in otherCompanies:
+        if c['symbol'] not in dbtickers:
+            c['tracked'] = False
+            companiesToReturn.append(c)
+
+    companies = DBcompanies + companiesToReturn
+
+    return jsonify(companies)
 
 def getFromDB(squery):
     try:
