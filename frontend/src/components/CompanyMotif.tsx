@@ -5,18 +5,21 @@ import { Link, Image } from "@chakra-ui/react";
 
 interface Props {
   companyName: string;
+  textSize: string;
 }
 
-function CompanyMotif({ companyName }: Props) {
+function CompanyMotif({ companyName, textSize }: Props) {
   return (
     <Flex
-      bg="purple.100"
+      bg="purple.200"
       justifyContent="space-around"
       alignItems="center"
       padding="0.5em"
       boxShadow="md"
-      p="6"
+      p="5"
       rounded="xl"
+      border="1px"
+      borderColor="purple.300"
     >
       <Image src="../../public/logoIpsum.svg" w="25%" />{" "}
       {/*image will also be replaced from prop*/}
@@ -27,7 +30,7 @@ function CompanyMotif({ companyName }: Props) {
         whiteSpace="nowrap"
         overflow="hidden"
       >
-        <Heading size="sm">
+        <Heading size={textSize}>
           <Link href="">{companyName}</Link>
         </Heading>
       </Flex>
