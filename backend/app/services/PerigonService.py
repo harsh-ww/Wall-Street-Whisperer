@@ -1,5 +1,5 @@
 import requests
-from ..models.Article import Article
+from models.Article import Article
 import os
 from datetime import datetime, timedelta
 import logging

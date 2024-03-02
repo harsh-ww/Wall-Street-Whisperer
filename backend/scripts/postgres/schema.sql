@@ -43,7 +43,7 @@ CREATE TABLE user_follows_company (
 
 DROP TABLE IF EXISTS web_source CASCADE;
 CREATE TABLE web_source (
-    SourceID INT PRIMARY KEY,
+    SourceID SERIAL PRIMARY KEY,
     SourceName VARCHAR(255) NOT NULL,
     SourceURL VARCHAR(255) NOT NULL,
     Popularity INT,
@@ -59,11 +59,11 @@ CREATE TABLE article (
     PublishedDate DATE,
     Authors VARCHAR(255),
     ImageURL VARCHAR(255),
-    SentimentLabel VARCHAR(255) CHECK SentimentLabel IN ('negative', 'positive', 'neutral'),
+    SentimentLabel VARCHAR(255) CHECK (SentimentLabel IN ('negative', 'positive', 'neutral')),
     SentimentScore FLOAT,
     OverallScore FLOAT,
     Summary TEXT,
-    KEYWORDS TEXT,
+    Keywords TEXT,
     FOREIGN KEY (SourceID) REFERENCES web_source(SourceID)
 );
 

@@ -1,8 +1,8 @@
-from ..models.Article import Article
-from ..models.Company import Company
+from models.Article import Article
+from models.Company import Company
 from NewsSentiment import TargetSentimentClassifier
 import re
-from ..connect import get_db_connection
+from connect import get_db_connection
 import tldextract
 import requests
 import os
@@ -37,21 +37,28 @@ class BatchArticleAnalysis():
         self.articles = articles
 
 
-    def splitArticleTarget(self, companyName, articleText) -> tuple[str, str, str]:
+    def splitArticleTarget(self, companyName:str, articleText:str) -> tuple[str, str, str]:
         """
         Splits an article text into a tuple of strings with the company entity separated in order to allow targeted sentiment analysis
         """
-        # split the article 
+
+        # split the article at the company name
         articleTextSplit = re.split(companyName, articleText, 1, re.IGNORECASE) 
+
         if len(articleTextSplit)<2:
             # company name doesn't appear in text - may not be an exact match. Provide anyway
             return ("", companyName, articleText)
+        
+        # compose a 3-tuple with the text before and after the company
         return (articleTextSplit[0], companyName, articleTextSplit[1])
     
+
     def fetchPopularity(self, domain:str):
         """
         Fetches the popularity of a given domain from similarweb
         """
+
+        # Make a request to SimilarWeb
         endpoint = f"https://api.similarweb.com/v1/similar-rank/{domain}/rank"
         query = {
             'api_key': SIMILARWEB_API_KEY,
@@ -73,38 +80,62 @@ class BatchArticleAnalysis():
         """
         Caches the popularity of a given news site's domain in the database
         """
-        insertQuery = "INSERT INTO web_source (SourceName, SourceURL, Popularity, PopularityLastFetched) VALUES (%s, %s, %d, %s) ON CONFLICT DO NOTHING"
-        updateQuery = "UPDATE web_source SET Popularity=%d, PopularityLastFetched=%s WHERE SourceURL=%s"
+
+        insertQuery = "INSERT INTO web_source (SourceName, SourceURL, Popularity, PopularityLastFetched) VALUES (%s, %s, %s, %s) ON CONFLICT DO NOTHING"
+        updateQuery = "UPDATE web_source SET Popularity=%s, PopularityLastFetched=%s WHERE SourceURL=%s"
+        
         conn = get_db_connection()
+        
         with conn.cursor() as cur:
+
+            # New entries supply a name to this function
             if name is not None:
+                print("updating source popularity")
                 cur.execute(insertQuery, [name, domain, popularity, datetime.now().isoformat()])
             else:
+                # existing entries already have a name
                 cur.execute(updateQuery, [popularity, datetime.now().isoformat(), domain])
+            # save changes
+            conn.commit()
+        
+        conn.close()
 
 
     def analyseSourcePopularity(self, sourceURL:str, sourceName:str=None):
         """
         Analyses the popularity of a news source - either uses cached or refetches from SimilarWeb
         """
-        # extract domain from source URL
+
+        # extract domain from source URL - domains have similarweb scores
         domain = tldextract.extract(sourceURL).registered_domain
 
-        query = "SELECT Popularity, PopularityLastFetched from websource WHERE SourceURL LIKE %%%s%%"
+        query = "SELECT Popularity, PopularityLastFetched from web_source WHERE SourceURL LIKE %s"
+
         conn = get_db_connection()
         with conn.cursor() as cur:
-            cur.execute(query, [domain])
 
-            if cur.rowcount==0:
-                # don't have a rank for the current domain
+            # fetch rank from database
+            cur.execute(query, [("%" + domain + "%")])
+            result = cur.fetchone()
+
+            # Retrieve cached result or refetch
+            if result is None:
+                # don't have a rank for the current domain - fetch it
                 rank = self.fetchPopularity(domain)
+
+                # Error fetching rank
                 if rank is None:
                     return None
+                
                 name = domain if sourceName is None else sourceName
+
                 self.updatePopularity(domain, rank, name)
+                
                 return rank
             else:
-                lastFetched = datetime.fromisoformat(cur.fetchone()[1])
+                # cached result exists - check when it was last fetched
+                lastFetched = result[1]
+
                 # rank is over a month old - refetch and update db
                 if lastFetched < datetime.now() - timedelta(days=30):
                     rank = self.fetchPopularity(domain)
@@ -115,7 +146,7 @@ class BatchArticleAnalysis():
                     return rank
                 else:
                     # rank was fetched recently - use cached
-                    return cur.fetchone()[0]
+                    return result[0]
 
 
     def calculateArticleScore(self, article:AnalysedArticle):
@@ -147,6 +178,8 @@ class BatchArticleAnalysis():
         Performs processing on the articles provided
         """
         
+        # Clean up articles
+
         sentimentAnalysisTargets = []
         cleanedTargets = []
         for articleTuple in self.articles:
@@ -172,6 +205,7 @@ class BatchArticleAnalysis():
 
 
         analysedArticles:list[AnalysedArticle] = []
+        
         # post processing of sentiments to add to list
         for i, result in enumerate(sentiments):
             analysedArticles.append(AnalysedArticle(cleanedTargets[i][0], cleanedTargets[i][1], result[0]['class_label'], result[0]['class_prob']))
