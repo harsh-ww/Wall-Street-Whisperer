@@ -30,7 +30,7 @@ const CompanyDetails = () => {
     const fetchCompanyData = async () => {
       try {
         const response = await fetch(
-          `http://server:5000/company/${exchange}/${ticker}` //fetch from API address
+          `http://server:5000/company/${ticker}` //fetch from API address
         );
         if (!response.ok) {
           throw new Error("Failed to fetch company data");
@@ -142,6 +142,7 @@ const CompanyDetails = () => {
                 >
                   {" "}
                   <Box height="60vh" mt="-20px">
+                    {/* once logic done pass in ticker to AreaChart as prop */}
                     <AreaChart />
                   </Box>
                 </GridItem>

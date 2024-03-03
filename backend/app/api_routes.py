@@ -122,4 +122,15 @@ def get_timeSeries(ticker):
     if not data:
         return jsonify({'message': 'Ticker code does not exist'}), 404
     
-    return data
+    newData = changeFormat(data)  # Format the data
+
+    return jsonify(newData)
+
+def changeFormat(data): 
+    formatted_data = []
+    for date, values in data.items():
+        formatted_item = {'date': date}
+        formatted_item.update(values)
+        formatted_data.append(formatted_item)
+    reversed_data = formatted_data[::-1]  # Reverse the list so it is in chronological order
+    return reversed_data[-30:]  # return the 30 most recent data points
