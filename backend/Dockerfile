@@ -10,6 +10,10 @@ FROM base as dev
 COPY app .
 CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0", "--debug"]
 
+FROM base as test
+COPY app .
+CMD [ "python3", "-m" , "pytest", "tests"]
+
 FROM base as prod
 COPY app .
 CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]

@@ -153,10 +153,14 @@ def getTimeSeries(symbol:str, granularity:str):
 
 
     if response.status_code != 200: 
-        logging.error(f'Failed AV stock price fetching. Error {response.json()}')
+        logging.error(f'Failed AV time series fetching. Error {response.json()}')
         raise APIError()
     
     data = response.json()
 
+    # Invalid symbol supplied
+    if label[granularity] not in data:
+        return {}
+    
     return data[label[granularity]]
 
