@@ -17,7 +17,7 @@ import {
   SimpleGrid,
 } from "@chakra-ui/react";
 import BaseLayout from "../layouts/BaseLayout";
-import LineChart from "../components/LineChart";
+import AreaChart from "../components/AreaChart";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { HiExternalLink } from "react-icons/hi";
 
@@ -141,11 +141,8 @@ const CompanyDetails = () => {
                   p={["15px", "15px", "30px"]}
                 >
                   {" "}
-                  <Text fontSize="xl" fontWeight="bold">
-                    Stock trend analysis time-series graph
-                  </Text>
                   <Box height="60vh" mt="-20px">
-                    <LineChart />
+                    <AreaChart />
                   </Box>
                 </GridItem>
                 <GridItem
