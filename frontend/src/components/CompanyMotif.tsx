@@ -11,13 +11,15 @@ interface Props {
 function CompanyMotif({ companyName, textSize }: Props) {
   return (
     <Flex
-      bg="purple.100"
+      bg="purple.200"
       justifyContent="space-around"
       alignItems="center"
       padding="0.5em"
       boxShadow="md"
       p="5"
       rounded="xl"
+      border="1px"
+      borderColor="purple.300"
     >
       <Image src="../../public/logoIpsum.svg" w="25%" />{" "}
       {/*image will also be replaced from prop*/}

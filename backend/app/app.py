@@ -1,6 +1,10 @@
 from flask import Flask
+from flask_mail import Mail
+from flask_cors import CORS
 from connect import get_db_connection
 import os
+app = Flask(__name__)
+CORS(app)
 
 def create_app():
     app = Flask(__name__)
