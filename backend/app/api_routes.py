@@ -25,10 +25,10 @@ def company_details(symbol: str):
         cur.execute("SELECT CompanyName, CurrentScore FROM company WHERE TickerCode = %s", [symbol])
         result = cur.fetchone()
         # If company is tracked, add attributes to the data (eg score)
+        details['name'] = result[0]
         if result is not None:
             details['tracked'] = True
             details['score'] = result[1]
-            details['name'] = result[0]
             tracked = True
     
     conn.close()

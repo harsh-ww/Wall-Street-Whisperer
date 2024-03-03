@@ -21,16 +21,24 @@ import AreaChart from "../components/AreaChart";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { HiExternalLink } from "react-icons/hi";
 
+interface CompanyInfo {
+  //explicit type casting for the returned JSON
+  name: string;
+  stock: string;
+  tracked: boolean;
+  score: string;
+}
+
 const CompanyDetails = () => {
-  const { exchange, ticker } = useParams();
-  const [companyData, setCompanyData] = useState(null); //fill page with relevant data from server once retrieved, initially null
+  const { ticker } = useParams();
+  const [companyData, setCompanyData] = useState<CompanyInfo[]>([]); //fill page with relevant data from server once retrieved, initially null
 
   useEffect(() => {
     //after rendering, fetch company data
     const fetchCompanyData = async () => {
       try {
         const response = await fetch(
-          `http://server:5000/company/${ticker}` //fetch from API address
+          `http://localhost:5000/company/${ticker}` //fetch from API address
         );
         if (!response.ok) {
           throw new Error("Failed to fetch company data");
@@ -43,7 +51,7 @@ const CompanyDetails = () => {
       }
     };
     fetchCompanyData();
-  }, [exchange, ticker]); //optional dependencies, the page will refresh if these change, i.e. when different exchange and company identification page is chosen...
+  }, [ticker]); //optional dependencies, the page will refresh if these change, i.e. when different exchange and company identification page is chosen...
 
   function Company() {
     let articles = [
@@ -76,7 +84,8 @@ const CompanyDetails = () => {
                 <Flex direction={["column", "column", "row"]}>
                   <Box bg="gray.50" p={["10px", "10px", "15px"]}>
                     <Heading as="h3" fontSize={["2xl", "3xl", "5xl"]} mt="1">
-                      CompanyName:{" "}
+                      CompanyName:
+                      {/*companyData ? companyData[0].name : "Loading..."*/}
                       {/*currently do not know the stae of the json formatting*/}
                     </Heading>
                   </Box>
