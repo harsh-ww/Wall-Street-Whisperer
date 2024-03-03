@@ -21,16 +21,22 @@ import AreaChart from "../components/AreaChart";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { HiExternalLink } from "react-icons/hi";
 
+interface CompanyDetails {
+  //explicit type casting for the returned JSON
+  //add necessary headers when required
+  Name: string;
+}
+
 const CompanyDetails = () => {
   const { exchange, ticker } = useParams();
-  const [companyData, setCompanyData] = useState(null); //fill page with relevant data from server once retrieved, initially null
+  const [companyData, setCompanyData] = useState<CompanyDetails>(); //fill page with relevant data from server once retrieved, initially null
 
   useEffect(() => {
     //after rendering, fetch company data
     const fetchCompanyData = async () => {
       try {
         const response = await fetch(
-          `http://server:5000/company/${ticker}` //fetch from API address
+          `http://localhost:5000/company/${ticker}` //fetch from API address
         );
         if (!response.ok) {
           throw new Error("Failed to fetch company data");
@@ -76,7 +82,7 @@ const CompanyDetails = () => {
                 <Flex direction={["column", "column", "row"]}>
                   <Box bg="gray.50" p={["10px", "10px", "15px"]}>
                     <Heading as="h3" fontSize={["2xl", "3xl", "5xl"]} mt="1">
-                      CompanyName:{" "}
+                      {companyData ? companyData.Name : "Loading..."}
                       {/*currently do not know the stae of the json formatting*/}
                     </Heading>
                   </Box>
@@ -154,8 +160,8 @@ const CompanyDetails = () => {
                 >
                   <Text textAlign="left">Articles will go here</Text>
                   <SimpleGrid columns={2} spacing={2}>
-                    {articles.map((article) => (
-                      <ArticleMotif articleName={article} />
+                    {articles.map((article, index) => (
+                      <ArticleMotif key={index} articleName={article} />
                     ))}
                   </SimpleGrid>
                 </GridItem>
