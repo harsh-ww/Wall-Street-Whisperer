@@ -12,9 +12,16 @@ function ListArticles() {
 
   return (
     <>
-      <Card bg="purple.500" width="35vw" h="55vh">
+      <Card
+        width="35vw"
+        h="55vh"
+        bg="gray.100"
+        borderWidth="2px"
+        borderColor="gray.500"
+        boxShadow="inner"
+      >
         <CardHeader alignSelf="center">
-          <Heading size="md" color="white">
+          <Heading size="md" color="black">
             <Text>Trending Articles</Text>
           </Heading>
         </CardHeader>
