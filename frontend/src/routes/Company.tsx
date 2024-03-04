@@ -15,6 +15,7 @@ import {
   Badge,
   ButtonGroup,
   SimpleGrid,
+  Link,
 } from "@chakra-ui/react";
 import BaseLayout from "../layouts/BaseLayout";
 import AreaChart from "../components/AreaChart";
@@ -25,6 +26,11 @@ interface CompanyDetails {
   //explicit type casting for the returned JSON
   //add necessary headers when required
   Name: string;
+  name: string; //for non-US companies
+  Symbol: string;
+  symbol: string;
+  Exchange: string;
+  exchange: string;
 }
 
 const CompanyDetails = () => {
@@ -82,9 +88,16 @@ const CompanyDetails = () => {
                 <Flex direction={["column", "column", "row"]}>
                   <Box bg="gray.50" p={["10px", "10px", "15px"]}>
                     <Heading as="h3" fontSize={["2xl", "3xl", "5xl"]} mt="1">
-                      {companyData ? companyData.Name : "Loading..."}
-                      {/*currently do not know the stae of the json formatting*/}
+                      {companyData
+                        ? companyData.Name || companyData.name
+                        : "..."}
+                      {/*non-US companies json has lowercase name*/}
                     </Heading>
+                    <Text fontStyle="italic">
+                      {companyData
+                        ? companyData.Exchange || companyData.exchange
+                        : "..."}
+                    </Text>
                   </Box>
                   <Box p={["10px", "10px", "15px"]} fontSize="lg" bg="gray.50">
                     <Badge
@@ -127,13 +140,22 @@ const CompanyDetails = () => {
                       >
                         Website
                       </Button>
-                      <Button
-                        colorScheme="purple"
-                        variant="outline"
-                        rightIcon={<HiExternalLink />}
+                      <Link
+                        href={`https://www.nasdaq.com/market-activity/stocks/${
+                          companyData
+                            ? companyData.Symbol || companyData.symbol
+                            : "#"
+                        }`}
+                        isExternal
                       >
-                        Stock Exchange ref
-                      </Button>
+                        <Button
+                          colorScheme="purple"
+                          variant="outline"
+                          rightIcon={<HiExternalLink />}
+                        >
+                          Stock Exchange ref
+                        </Button>
+                      </Link>
                     </ButtonGroup>
                   </Box>
                 </Flex>
