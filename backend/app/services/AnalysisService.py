@@ -9,6 +9,7 @@ import os
 import logging
 from datetime import datetime, timedelta
 from typing import List
+import time
 
 SIMILARWEB_API_KEY = os.environ['SIMILARWEB_KEY']
 
@@ -47,6 +48,7 @@ class BatchArticleAnalysis():
 
         if len(articleTextSplit)<2:
             # company name doesn't appear in text - may not be an exact match. Provide anyway
+            return None
             return ("", companyName, articleText)
         
         # compose a 3-tuple with the text before and after the company
@@ -69,9 +71,16 @@ class BatchArticleAnalysis():
         if response.status_code == 404:
             logging.warning(f"No similarweb rank for {domain}")
             return None
+        elif response.status_code == 429:
+            logging.warning("Too many requests")
+            time.sleep(1)
         else:
             if response.status_code != 200:
-                logging.error(f'Failed Similarweb fetching. Error {response.status_code} - {response.json()}')
+                logging.error(f'Failed Similarweb fetching. Error {response.status_code} ')
+                try:
+                    logging.error(f"Error: {response.json()}")
+                except requests.exceptions.JSONDecodeError:
+                    logging.error("Unknown SimilarWeb error")
                 return None
         
         return response.json()['similar_rank']['rank']
@@ -185,14 +194,19 @@ class BatchArticleAnalysis():
         for articleTuple in self.articles:
             company = articleTuple[0]
             article = articleTuple[1]
-
+            
+            combinedText = article.title + " " + article.text
             # split article text to allow for sentiment analysis
-            target = self.splitArticleTarget(company.name, article.text)
+            target = self.splitArticleTarget(company.name, combinedText)
+            
+            # article is not about target
+            if combinedText.count(company.name)<2:
+                continue
 
             # Model can't handle text where the target (i.e. company name) doesn't appear in the first 512 chars
             # This is reasonable. If an article about a company doesn't mention it in the first roughly 5 sentences
             # the article probably isn't about the company
-            if len(target[0])>512:
+            if target is None or len(target[0])>512:
                 continue
 
             # add to targets

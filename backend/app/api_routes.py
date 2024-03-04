@@ -94,21 +94,27 @@ def getFromDB(squery):
         
     return companies
 
-@api_routes_blueprint.route('/articles/<id>', methods=['GET'])
-def get_articles(id):
-        from_date = request.args.get('from_date')
+@api_routes_blueprint.route('/articles/<ticker>', methods=['GET'])
+def get_articles(ticker:str):
+        #from_date = request.args.get('from_date')
         
         query = """
-            SELECT a.* 
-            FROM article a
-            JOIN company_articles ca ON a.ArticleID = ca.ArticleID
-            WHERE ca.CompanyID = %s AND a.PublishedDate >= %s
+            SELECT article.*, web_source.Popularity AS SourcePopularity
+            FROM article
+            JOIN company_articles ON article.ArticleID = company_articles.ArticleID
+            JOIN company ON company_articles.CompanyID = company.CompanyID
+            JOIN web_source ON article.SourceID = web_source.SourceID
+            WHERE company.TickerCode = %s;
         """
 
         conn = get_db_connection()
+        articles = []
         with conn.cursor() as cur:
-            cur.execute(query, (id, from_date))
-            articles = cur.fetchall()
+            cur.execute(query, [ticker])
+            rows = cur.fetchall()
+            for row in rows:
+                row_dict = dict(zip([column[0] for column in cur.description], row))
+                articles.append(row_dict)
 
         conn.close()
 
