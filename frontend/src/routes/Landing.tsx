@@ -1,10 +1,5 @@
 import "../App.css";
-import Background from "../components/Background";
-import Logo from "../components/Logo";
-import { Box } from "@chakra-ui/react";
-import Navbar from "../components/Navbar";
 import BaseLayout from "../layouts/BaseLayout";
-import LineChart from "../components/LineChart";
 import ListCompanies from "../components/ListCompanies";
 import ListArticles from "../components/ListArticles";
 import {
