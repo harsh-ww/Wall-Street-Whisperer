@@ -45,6 +45,6 @@ jobs:
       env:
         AV_KEY: ${{ secrets.av_key }}
       run: |
-      cd app
-      pytest tests/integration
+        cd app
+        pytest tests/integration
 
