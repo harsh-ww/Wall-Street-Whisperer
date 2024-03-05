@@ -53,12 +53,12 @@ CREATE TABLE web_source (
 DROP TABLE IF EXISTS article CASCADE;
 CREATE TABLE article (
     ArticleID SERIAL PRIMARY KEY,
-    Title VARCHAR(255) NOT NULL,
-    ArticleURL VARCHAR(255) NOT NULL,
+    Title TEXT NOT NULL,
+    ArticleURL TEXT NOT NULL,
     SourceID INT,
     PublishedDate DATE,
-    Authors VARCHAR(255),
-    ImageURL VARCHAR(255),
+    Authors TEXT,
+    ImageURL TEXT,
     SentimentLabel VARCHAR(255) CHECK (SentimentLabel IN ('negative', 'positive', 'neutral')),
     SentimentScore FLOAT,
     OverallScore FLOAT,

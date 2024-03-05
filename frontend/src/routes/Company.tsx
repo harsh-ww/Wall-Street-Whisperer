@@ -17,7 +17,7 @@ import {
   SimpleGrid,
 } from "@chakra-ui/react";
 import BaseLayout from "../layouts/BaseLayout";
-import LineChart from "../components/LineChart";
+import AreaChart from "../components/AreaChart";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { HiExternalLink } from "react-icons/hi";
 
@@ -30,7 +30,7 @@ const CompanyDetails = () => {
     const fetchCompanyData = async () => {
       try {
         const response = await fetch(
-          `http://server:5000/company/${exchange}/${ticker}` //fetch from API address
+          `http://server:5000/company/${ticker}` //fetch from API address
         );
         if (!response.ok) {
           throw new Error("Failed to fetch company data");
@@ -141,11 +141,9 @@ const CompanyDetails = () => {
                   p={["15px", "15px", "30px"]}
                 >
                   {" "}
-                  <Text fontSize="xl" fontWeight="bold">
-                    Stock trend analysis time-series graph
-                  </Text>
                   <Box height="60vh" mt="-20px">
-                    <LineChart />
+                    {/* once logic done pass in ticker to AreaChart as prop */}
+                    <AreaChart />
                   </Box>
                 </GridItem>
                 <GridItem
