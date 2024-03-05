@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./backend/app
+        working-directory: ./backend
 
     steps:
     - uses: actions/checkout@v3
@@ -39,9 +39,12 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Run unit tests
       run: |
+        cd app
         pytest tests/unit
     - name: Run integration tests
       env:
         AV_KEY: ${{ secrets.av_key }}
-      run: pytest tests/integration
+      run: |
+      cd app
+      pytest tests/integration
 
