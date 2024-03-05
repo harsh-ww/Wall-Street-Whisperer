@@ -120,7 +120,7 @@ def get_timeSeries(ticker):
     data = getTimeSeries(ticker, granularity)
 
     if not data:
-        return jsonify({'message': 'Ticker code does not exist'}), 404
+        return jsonify({'message': 'Ticker code does not exist, or invalid granularity provided.'}), 404
     
     newData = changeFormat(data)  # Format the data
 

@@ -1,5 +1,5 @@
 import requests
-from ..models.Article import Article
+from models.Article import Article
 import os
 from datetime import datetime, timedelta
 import logging
@@ -17,6 +17,7 @@ def getCompanyNewsPerigon(companyName: str, timePeriodHours: int, count:int, top
         'sortBy': 'relevance',
         'from': timeFrom.strftime('%Y-%m-%d'),
         'size': count,
+        'language': 'en',
         'apiKey': API_KEY
     }
 
