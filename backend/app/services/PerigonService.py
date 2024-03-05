@@ -10,6 +10,7 @@ API_KEY = os.environ['PERIGON_KEY']
 
 def getCompanyNewsPerigon(companyName: str, timePeriodHours: int, count:int, topSources:bool=False) -> list[Article]:
     timeFrom = datetime.now() - timedelta(hours=timePeriodHours)
+    print(datetime.now())
 
     endpoint = f'{API_URL}/all'
     payload = {
@@ -28,7 +29,7 @@ def getCompanyNewsPerigon(companyName: str, timePeriodHours: int, count:int, top
 
     if response.status_code != 200:
         logging.error(f'Failed Perigon news fetching. Error {response.status_code} - {response.json()}')
-        raise APIError('Problem fetching news articles from AlphaVantage')
+        raise APIError('Problem fetching news articles from GoPerigon')
     
     data = response.json()
 

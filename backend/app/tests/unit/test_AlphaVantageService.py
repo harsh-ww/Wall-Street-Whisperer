@@ -6,17 +6,11 @@ from services.exceptions import APIError
 import pytest
 import requests
 from unittest import mock
+from tests.unit.mock import MockResponse
 
 
 
 def mocked_requests_get(*args, **kwargs):
-    class MockResponse:
-        def __init__(self, json_data, status_code):
-            self.json_data = json_data
-            self.status_code = status_code
-
-        def json(self):
-            return self.json_data
 
     # Mock responses
     if kwargs['params']['function'] == 'SYMBOL_SEARCH' and kwargs['params']['keywords']== 'Tesco':
