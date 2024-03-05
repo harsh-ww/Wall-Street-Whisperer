@@ -42,7 +42,7 @@ const CompanyDetails = () => {
     const fetchCompanyData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/company/${ticker}` //fetch from API address
+          `http://localhost:5000/company/${ticker}` //fetch from API address   (FORMAT IS DIFFERENT for US vs NON-US companies)
         );
         if (!response.ok) {
           throw new Error("Failed to fetch company data");
