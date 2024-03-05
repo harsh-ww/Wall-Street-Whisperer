@@ -166,7 +166,7 @@ CREATE TABLE "public"."company" (
 ) WITH (oids = false);
 
 INSERT INTO "company" ("companyid", "companyname", "commonname", "tickercode", "exchange", "currentscore") VALUES
-(1,	'Tesco PLC',	'Tesco',	'TSCO.L',	'United Kingdom',	NULL),
+(1,	'Tesco PLC',	'Tesco',	'TSCO.LON',	'United Kingdom',	NULL),
 (2,	'Tesla Inc',	'Tesla',	'TSLA',	'United States',	NULL),
 (3,	'Amazon.com Inc',	'Amazon',	'AMZN',	'United States',	NULL);
 
