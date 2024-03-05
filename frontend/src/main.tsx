@@ -35,7 +35,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: "/company/:exchange/:ticker",
+    path: "/company/<symbol>",
     element: <Company />,
     errorElement: <ErrorPage />,
   },
