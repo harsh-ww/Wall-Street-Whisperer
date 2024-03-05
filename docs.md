@@ -154,9 +154,44 @@ NON-US Company: `/company/TSCO.L`
 
 **Description**: Used for getting news articles about a given company
 
-**Status**: PARTIALLY IMPLEMENTED - currently works by company ID. Needs to use ticker 
+**Status**: PARTIALLY IMPLEMENTED - Doesn't currently have the `from_date` param
 
-Example Response: All data held on news articles
+Example Response: 
+```json
+[
+  {
+    "articleid": 1,
+    "articleurl": "https://elitenews.uk/wwf-shelved-report-exposing-river-wye-pollution-to-keep-tesco-happy-pollution/",
+    "authors": "'William Turner'",
+    "imageurl": "https://i.guim.co.uk/img/media/02a07d28ef131a6e77e5d3a86512d5b31f0d0e2d/0_275_8256_4954/master/8256.jpg?width=1200&height=630&quality=85&auto=format&fit=crop&overlay-align=bottom%2Cleft&overlay-width=100p&overlay-base64=L2ltZy9zdGF0aWMvb3ZlcmxheXMvdG8tZGVmYXVsdC5wbmc&enable=upscale&s=d08b8af9ad6f7297a939e3ba72198121",
+    "keywords": "'River Wye pollution', 'River Wye', 'Wye', 'global food production', 'food', 'river pollution', 'supply chains', 'report', 'water catchment projects', 'water pollution'",
+    "overallscore": -67.11759567260742,
+    "publisheddate": "Sun, 03 Mar 2024 00:00:00 GMT",
+    "sentimentlabel": "negative",
+    "sentimentscore": 0.6711759567260742,
+    "sourceid": 1,
+    "sourcepopularity": 8648709,
+    "summary": null,
+    "title": "WWF shelved report exposing River Wye pollution \u2018to keep Tesco happy\u2019"
+  },
+  {
+    "articleid": 2,
+    "articleurl": "https://www.gbnews.com/opinion/supermarket-loyalty-scheme-tesco-sainsburys",
+    "authors": "\"Patrick O'Donnell\"",
+    "imageurl": "https://www.gbnews.com/media-library/british-farmers-facing-impossible-life-due-to-cheap-supermarket-demands.jpg?id=51613348&width=1200&height=600&coordinates=0%2C0%2C0%2C100",
+    "keywords": "'Supermarket loyalty scheme prices', 'regular prices', 'full price', 'decent prices', 'discounted prices', 'other supermarkets', 'loyalty schemes', 'Supermarket shoppers', 'supermarket chains', 'supermarkets'",
+    "overallscore": -49.86607124852658,
+    "publisheddate": "Sun, 03 Mar 2024 00:00:00 GMT",
+    "sentimentlabel": "negative",
+    "sentimentscore": 0.45467740297317505,
+    "sourceid": 2,
+    "sourcepopularity": 1485,
+    "summary": null,
+    "title": "'Supermarket loyalty scheme prices are an outrage. Shoppers need a new deal to make big savings'"
+  }
+]
+
+```
 
 ### Tracked Companies List
 
