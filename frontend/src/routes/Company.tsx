@@ -17,6 +17,7 @@ import {
   SimpleGrid,
   Link,
 } from "@chakra-ui/react";
+import { TriangleUpIcon, TriangleDownIcon } from "@chakra-ui/icons";
 import BaseLayout from "../layouts/BaseLayout";
 import AreaChart from "../components/AreaChart";
 import { IoIosAddCircleOutline } from "react-icons/io";
@@ -31,6 +32,11 @@ interface CompanyDetails {
   symbol: string;
   Exchange: string;
   exchange: string;
+  stock: {
+    //stock information is the same regardless...
+    change: string;
+    price: string;
+  };
 }
 
 const CompanyDetails = () => {
@@ -55,6 +61,9 @@ const CompanyDetails = () => {
       }
     };
     fetchCompanyData();
+    console.log(
+      companyData ? parseFloat(companyData.stock.change) <= 0 : "Nothing"
+    );
   }, [exchange, ticker]); //optional dependencies, the page will refresh if these change, i.e. when different exchange and company identification page is chosen...
 
   function Company() {
@@ -98,6 +107,25 @@ const CompanyDetails = () => {
                         ? companyData.Exchange || companyData.exchange
                         : "..."}
                     </Text>
+                    <Text
+                      fontSize="xx-small"
+                      color={
+                        //colour of stock price data is dependent on whether it has recently gone down or up
+                        companyData?.stock?.change &&
+                        !companyData.stock.change.includes("-") //check if change is negative/positive, more straightforward than parsing as a float
+                          ? "green.500"
+                          : "red.500"
+                      }
+                    >
+                      {companyData ? companyData.stock.price : "..."}{" "}
+                      {companyData?.stock?.change &&
+                      !companyData.stock.change.includes("-") ? (
+                        <TriangleUpIcon />
+                      ) : (
+                        <TriangleDownIcon />
+                      )}
+                      {companyData ? companyData.stock.change : "..."}
+                    </Text>
                   </Box>
                   <Box p={["10px", "10px", "15px"]} fontSize="lg" bg="gray.50">
                     <Badge
@@ -133,13 +161,21 @@ const CompanyDetails = () => {
                     ml={["10px", "10px", "250px"]}
                   >
                     <ButtonGroup gap="4">
-                      <Button
-                        colorScheme="purple"
-                        variant="outline"
-                        rightIcon={<HiExternalLink />}
+                      <Link
+                        href={`https://www.google.com/search?q=${
+                          companyData
+                            ? companyData.Name || companyData.name
+                            : "#"
+                        }`} //straightforwardly returns the google search results page for the companies' name
                       >
-                        Website
-                      </Button>
+                        <Button
+                          colorScheme="purple"
+                          variant="outline"
+                          rightIcon={<HiExternalLink />}
+                        >
+                          Website
+                        </Button>
+                      </Link>
                       <Link
                         href={`https://www.nasdaq.com/market-activity/stocks/${
                           companyData
