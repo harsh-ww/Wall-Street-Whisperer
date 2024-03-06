@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_mail import Mail
 from flask_cors import CORS
+from psycopg2 import DatabaseError
 from connect import get_db_connection
 import os
 
@@ -31,6 +32,11 @@ def create_app():
     return app 
 
 app = create_app()
+
+@app.errorhandler(DatabaseError)
+def handle_db_error():
+    return 'Database Error', 500
+
 
 @app.route('/')
 def hello():
