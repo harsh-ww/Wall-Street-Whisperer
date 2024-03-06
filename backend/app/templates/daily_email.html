@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <style>
+        *{
+            font-family: "Segoe UI", sans-serif;
+        }
+
+        h1, h2 {
+          color: purple;
+        }
+
+        ul{
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .green{
+            color:green;
+        }
+
+        .red{
+            color:red;
+        }
+        
+        .box{
+            background-color: #f1f0f0;
+            padding: 10px;
+            padding-left: 10%;
+            padding-right: 10%;
+        }
+        .darkbox{
+            background-color: #e3dfdf;
+            padding: 10px;
+            padding-left: 5%;
+            padding-right: 5%;
+            padding-bottom: 5%;
+            margin-top: 10px;
+        }
+
+        a{
+            text-decoration: none;
+        }
+        a:hover{
+            text-decoration: underline;
+            text-decoration-color: purple;
+        }
+
+        .center{
+            text-align: center;
+        }
+
+        .news{
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .news-content{
+            flex:2;
+        }
+        .news-image{
+            flex:1;
+            width: 40%;
+            height: 40%;
+            margin-right: 5%;
+        }
+        .news-title{
+            margin-top:0%;
+            margin-bottom: 0%;
+            color:black;
+        }
+        .news-desc{
+            color:rgb(57, 57, 57);
+            text-decoration: none;
+        }
+
+        .pink-highlight {
+            background-color: pink;
+            border-radius: 4px;
+            display: inline;
+            padding: 2px;
+        }
+        .red-highlight {
+            background-color: #ffa4a4;
+            border-radius: 4px;
+            display: inline;
+            padding: 2px;
+        }
+        .turquoise-highlight {
+            background-color: rgb(168, 245, 237);
+            border-radius: 4px;
+            display: inline;
+            padding: 2px;
+        }
+        .green-highlight {
+            background-color: #a0da94;
+            border-radius: 4px;
+            display: inline;
+            padding: 2px;
+        }
+        .yellow-highlight{
+            background-color: #fcf7bb;
+            border-radius: 4px;
+            display: inline;
+            padding: 2px;  
+        }
+
+        button{
+            background-color: purple;
+            color:white;
+            font-size: 18px ;
+            font-weight: bold;
+            width: 300px;
+            height:60px;
+        }
+        button:hover{
+            background-color: rgb(88, 5, 88);
+        }
+      </style>
+</head>
+<body class = "box">
+
+    <div class = "center">
+        <h1>Daily Update on Your Tracked Companies</h1>
+        <h2>{{ date }}</h2>
+        This is a daily update on the companies you have tracked. <br>
+        Click the company name to view their page.
+    </div>
+
+    <hr>
+
+    <ul>
+        {% for company in stock_data %}
+
+        <li>
+            <a href="http://localhost:5173/company/{{company.TickerCode}}">
+                <h2>{{company.CompanyName}} <div style="color: gray; display:inline;">({{company.TickerCode}})</div></h2>
+            </a>
+            <div class = "{% if company.Change>=0 %}green{% else %}red{% endif %}" style = "display: inline-block;"> US ${{company.Price}} </div>
+            <div class = "{% if company.Change>=0 %}green-highlight{% else %}pink-highlight{% endif %}"> {% if company.Change>=0 %}+{% endif %}{{company.Change}} </div> 
+            
+            <!-- The highest scoring news article displayed, if it exists -->
+            {% if company.Title %}
+            <h3>Highest scoring news article</h3>
+            <li class = "news">
+                <img class="news-image" src= "{{ company.Imageurl }}">
+                <div class="news-content">
+                    <a href = "{{ company.Articleurl }}">
+                        <h3 class="news-title"> {{ company.Title }} </h3>
+                        <div style = "margin-top: 5px; margin-bottom: 10px;">
+                            <span style = "color: gray;">{{ company.PublishedDate }}</span>
+                            <span style = "color: rgb(60, 159, 225); margin-left: 20px;"> View full article </span>
+                        </div>
+                    </a>
+                        {% if company.OverallScore < -50 %}
+                        <div class = "pink-highlight">Bearish</div>
+                        {% elif company.OverallScore > 50 %}
+                        <div class = "turquoise-highlight">Bullish</div>
+                        {% else %}
+                        <div class = "yellow-highlight">Neutral</div>
+                        {% endif %}
+                
+                    <p class = "news-desc">
+                        {% if company.Summary %}
+                        {{ company.Summary }}
+                        {% else %}
+                        No description available
+                        {% endif %}
+                    </p>
+                </div>
+            </li>
+            <!-- There are no news articles on that day -->
+            {% else %}
+            <h3>There are no news articles for this company today.</h3>
+            {% endif %}
+        </li>
+        <hr>
+        
+        {% endfor %}
+    </ul>
+
+    <div class = "center">
+        <a href = "http://localhost:5173/home">
+            <button>View your tracked companies</button>
+        </a>
+    </div>
+</body>
+</html>

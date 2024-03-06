@@ -7,7 +7,7 @@ def test_sendemail(client):
 
     # Make a post request to send email
     # Email sending is disabled when app.config['TESTING] = True
-    response = client.post('http://localhost:5000/sendemail',
+    response = client.post('http://localhost:5000/senddailyemail',
                             content_type='application/json',
                             data = json.dumps(dict(data)))
 

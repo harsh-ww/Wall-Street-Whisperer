@@ -6,8 +6,10 @@ import logging
 from typing import List, Tuple
 from services import NewsService, AnalysisService
 import tldextract
+import requests, json
 
 INGESTION_FREQUENCY = 24
+SCORE_THRESHOLD = 50   # An article have to be greater than this score to notify users
 
 # gets a list of Company objects for tracked companies
 
@@ -44,6 +46,8 @@ def saveAnalysedArticles(articles: List[AnalysisService.AnalysedArticle]):
     """
 
     conn = get_db_connection()
+
+    newarticleIDs = []  # A list of important new news articles
 
     with conn.cursor() as cur:
         for article in articles:
@@ -89,7 +93,13 @@ def saveAnalysedArticles(articles: List[AnalysisService.AnalysedArticle]):
 
             conn.commit()
 
+            # Add the article ID to a list to be notified, if its score exceeds threshold
+            if abs(article.score) >= SCORE_THRESHOLD:
+                newarticleIDs.append(articleID)
+
     conn.close()
+
+    return newarticleIDs
 
 def job():
     """
@@ -107,7 +117,23 @@ def job():
     analysedArticles = processor.processArticlesParallel()
 
     logging.info("Saving analysed articles")
-    saveAnalysedArticles(analysedArticles)
+    newartleIDs = saveAnalysedArticles(analysedArticles)
+
+
+    """
+    Job for sending emails 
+    """
+    if newartleIDs:
+        data = {'recipients':["stockapp220@gmail.com"], 'articleList': newartleIDs} #CHANGE
+
+        response = requests.post('http://localhost:5000/sendarticleemail',
+                            content_type='application/json',
+                            data = json.dumps(dict(data)))
+        
+        if response.status_code == 201:
+            logging.info("Daily emails sent successfully.")
+        else:
+            logging.error("There is an error sending article emails.")
 
 # Run this as a CRON JOB
 # schedule.every(INGESTION_FREQUENCY).hours()
