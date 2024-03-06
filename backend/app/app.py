@@ -2,6 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 from psycopg2 import DatabaseError
 import os
+import logging
 
 def create_app():
     app = Flask(__name__)
@@ -34,5 +35,7 @@ def create_app():
 app = create_app()
 
 @app.errorhandler(DatabaseError)
-def handle_db_error():
+def handle_db_error(err):
+    logging.error(err)
+    print(err)
     return 'Database Error', 500
