@@ -35,6 +35,7 @@ interface CompanyDetails {
   stock: {
     //stock information is the same regardless...
     change: string;
+    "change percent": string;
     price: string;
   };
 }
@@ -117,6 +118,8 @@ const CompanyDetails = () => {
                           : "red.500"
                       }
                     >
+                      {" "}
+                      {/*feel free to style as you want */}
                       {companyData ? companyData.stock.price : "..."}{" "}
                       {companyData?.stock?.change &&
                       !companyData.stock.change.includes("-") ? (
@@ -124,7 +127,9 @@ const CompanyDetails = () => {
                       ) : (
                         <TriangleDownIcon />
                       )}
-                      {companyData ? companyData.stock.change : "..."}
+                      {companyData
+                        ? companyData.stock["change percent"]
+                        : "..."}
                     </Text>
                   </Box>
                   <Box p={["10px", "10px", "15px"]} fontSize="lg" bg="gray.50">
