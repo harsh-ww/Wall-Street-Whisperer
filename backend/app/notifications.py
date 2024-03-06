@@ -1,177 +1,76 @@
-from flask import current_app, request, Blueprint, jsonify, render_template
-from flask_mail import Message, Mail
+from flask import Blueprint, redirect, request, jsonify
 from connect import get_db_connection
-from api_routes import company_details
-import requests, json, logging, datetime
+import json
 
 notifications_blueprint = Blueprint('notifications', __name__)
 
-# Generate daily update email content
-@notifications_blueprint.route('/dailyemail', methods = ['GET'])
-def daily_email_content():
-    # Extract details about tracked companies
+# Visit an article by setting it to visited and redirecting to its link
+@notifications_blueprint.route('/visit/<articleID>', methods=['GET', 'POST'])
+def visit(articleID):
+    if request.method == 'GET':
+        conn = get_db_connection()
+        link = "http://localhost:5173/"
+
+        with conn.cursor() as cur:
+            # Redirect to the link of the article
+            getLink = """SELECT ArticleURL FROM article WHERE ArticleID = %s"""
+            cur.execute(getLink, (articleID,))
+            link = cur.fetchone()[0]
+        
+        return redirect(link)
+    
+    if request.method == 'POST':
+        conn = get_db_connection()
+        # Mark the article as visited
+        with conn.cursor() as cur:
+            markVisited = """UPDATE notifications SET Visited = TRUE WHERE ArticleID = %s"""
+            cur.execute(markVisited, (articleID,))
+            conn.commit()
+
+        return jsonify({'message': 'Notification marked as visited'}), 201
+
+# Mark all articles as visited
+@notifications_blueprint.route('/visitAll', methods=['POST'])
+def visitAll():
     conn = get_db_connection()
+    
     with conn.cursor() as cur:
-        cur = conn.cursor()
+        markAllVisited = """UPDATE notifications SET Visited = TRUE"""
+        cur.execute(markAllVisited)
+        conn.commit()
 
-        # Fetch company details from company table, currently it fetches all companies
-        cur.execute("SELECT CompanyName, TickerCode FROM company ORDER BY CompanyName ASC")
-        stock_data = [{"CompanyName":item[0], "TickerCode":item[1]} for item in cur.fetchall()]
+    return jsonify({'message': 'All notifications marked as visited'}), 201
 
-        if not stock_data:
-            return None
-        
-        else:
-            current_date = datetime.datetime.now().date()
-            # Add the price and change columns from the API call
-            # These are the details displayed in the email
-            for company in stock_data:
-                stock = company_details(company['TickerCode'])['stock']
-                company['Price'] = float(stock['price'])
-                company['Change'] = float(stock['change'])
-            
-                # Find the highest scoring article on the last 24 hours that belongs to that company
-                # Add the article data to the company dictionary
-                query = """SELECT Title, Articleurl, PublishedDate, Imageurl, Summary, OverallScore
-                        FROM article JOIN company_articles ON article.articleID = company_articles.articleID 
-                        JOIN company ON company_articles.companyID = company.companyID
-                        WHERE CompanyName = %s AND PublishedDate = %s
-                        ORDER BY ABS(OverallScore) DESC LIMIT 1
-                        """
-                
-                cur.execute(query, (company['CompanyName'], current_date,))
-                if cur.fetchall():
-                    article = cur.fetchall()[0]
-
-                    company["Title"] = article[0]
-                    company["Articleurl"] = article[1]
-                    company["PublishedDate"] = article[2]
-                    company["Imageurl"] = article[3]
-                    company["Summary"] = article[4]
-                    company["OverallScore"] = float(article[5])
-
-            
-            return render_template("daily_email.html", stock_data = stock_data, date = current_date)
-
-# Generate article email content
-@notifications_blueprint.route('/articleemail', methods = ['GET'])
-def article_email_content(articleList):
-
-    # Extract articles from a list of article IDs supplied
+# Endpoint to get all unvisited articles that appear in notifications
+@notifications_blueprint.route('/unvisitednotifications', methods = ['GET'])
+def unvisitednotifications():
     conn = get_db_connection()
+    
     with conn.cursor() as cur:
-        cur = conn.cursor()
+        query = """SELECT ("title", "articleurl", "sourceid", "publisheddate", "authors", "imageurl", "sentimentlabel", "sentimentscore", "overallscore", "summary", "keywords") 
+        FROM notifications JOIN article ON notifications.articleID = article.articleID
+        WHERE Visited = FALSE
+        ORDER BY publisheddate DESC"""
 
-        query = """SELECT CompanyName, TickerCode, Title, Articleurl, PublishedDate, Imageurl, Summary, OverallScore
-                FROM article JOIN company_articles ON article.articleID = company_articles.articleID 
-                JOIN company ON company_articles.companyID = company.companyID
-                WHERE article.articleID = ANY(%s)
-                ORDER BY CompanyName ASC
-                """
+        cur.execute(query)
         
-        cur.execute(query, (articleList,))
-
-        # This is in the format of { name: [TickerCode, [{articles}] ] }
-        company_article_data = {}
-
-        for article in cur.fetchall():
-            companyName = article[0]
-            article_data = {} 
-            # Modify this to control what to be displayed in the email
-            article_data["Title"] = article[2]
-            article_data["Articleurl"] = article[3]
-            article_data["PublishedDate"] = article[4]
-            article_data["Imageurl"] = article[5]
-            article_data["Summary"] = article[6]
-            article_data["OverallScore"] = float(article[7])
-
-            if companyName not in company_article_data:
-                company_article_data[companyName] = [article[1], [article_data]]  # The ticker code of company is stored in a tuple with articles
-
-            else:
-                company_article_data[companyName][1].append(article_data)
+        data = cur.fetchall()
+        return data
 
 
-        return render_template("article_email.html", company_article_data = company_article_data)
+# Endpoint to get all articles that have appeared in notifications
+@notifications_blueprint.route('/notifications', methods = ['GET'])
+def notifications():
+    conn = get_db_connection()
+    
+    with conn.cursor() as cur:
+        query = """SELECT ("title", "articleurl", "sourceid", "publisheddate", "authors", "imageurl", "sentimentlabel", "sentimentscore", "overallscore", "summary", "keywords") 
+        FROM notifications JOIN article ON notifications.articleID = article.articleID
+        ORDER BY publisheddate DESC"""
+        cur.execute(query)
         
-# Endpoint to send daily update email
-@notifications_blueprint.route('/senddailyemail', methods = ['POST'])
-def senddailyemail():
+        data = cur.fetchall()
+        return data
 
-    # Create mail object
-    mail = Mail(current_app)
 
-    # Retrieve post data
-    data = request.get_json()
-    msg_recipients = data.get("recipients")  # Will be changed when users are implemented
-
-    # Generate daily email content
-    email_content = daily_email_content()
-
-    # Dont send email if there are no users, or users do not follow any companies
-    if not msg_recipients or not email_content:
-        return jsonify({'message': 'No emails are sent'}), 200
     
-    # Construct email
-    msg_title = "Daily Stock Market Update"
-    msg = Message(msg_title, recipients = msg_recipients)
-    msg.html = email_content
-
-    try:
-        # Send the mail
-        mail.send(msg)
-        return jsonify({'message': 'Emails successfully sent'}), 201
-
-    except Exception as e:
-        error = str(e)
-        return jsonify({"error" : "Error sending emails: " + error}), 500
-
-# Endpoint to send article email, given a list of article IDs
-@notifications_blueprint.route('/sendarticleemail', methods = ['POST'])
-def sendarticleemail():
-
-    # Create mail object
-    mail = Mail(current_app)
-
-    # Retrieve post data
-    data = request.get_json()
-    msg_recipients = data.get("recipients")  
-    articleList = data.get("articleList")
-
-    # Generate article email content when given an article ID
-    email_content = article_email_content(articleList)
-
-    # Dont send email if there are no users
-    if not msg_recipients:
-        return jsonify({'message': 'No emails are sent'}), 200
-    
-    # Construct email
-    msg_title = "News Article From Your Tracked Companies"
-    msg = Message(msg_title, recipients = msg_recipients)
-    msg.html = email_content
-
-    try:
-        # Send the mail
-        mail.send(msg)
-        return jsonify({'message': 'Emails successfully sent'}), 201
-
-    except Exception as e:
-        error = str(e)
-        return jsonify({"error" : "Error sending emails: " + error}), 500
-    
-
-# CRON Job to send daily email every 23:59pm
-def job():
-    data = {'recipients':["stockapp220@gmail.com"]} #CHANGE
-
-    response = requests.post('http://localhost:5000/senddailyemail',
-                        content_type='application/json',
-                        data = json.dumps(dict(data)))
-    
-    if response.status_code == 201:
-        logging.info("Daily emails sent successfully.")
-    else:
-        logging.error("There is an error sending daily emails.")
-
-if __name__ == "__main__":
-    job()

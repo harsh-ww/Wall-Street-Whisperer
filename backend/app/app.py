@@ -22,10 +22,12 @@ def create_app():
     # Register blueprints
     from track import track_blueprint
     from api_routes import api_routes_blueprint
+    from emails import emails_blueprint
     from notifications import notifications_blueprint
 
     app.register_blueprint(track_blueprint)
     app.register_blueprint(api_routes_blueprint)
+    app.register_blueprint(emails_blueprint)
     app.register_blueprint(notifications_blueprint)
 
     return app 

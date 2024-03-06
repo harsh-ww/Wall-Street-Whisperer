@@ -97,6 +97,9 @@ def saveAnalysedArticles(articles: List[AnalysisService.AnalysedArticle]):
             if abs(article.score) >= SCORE_THRESHOLD:
                 newarticleIDs.append(articleID)
 
+                # Add important articles to the notifications table
+                cur.execute("""INSERT INTO notifications (ArticleID) VALUES (%s)""", (articleID,))
+
     conn.close()
 
     return newarticleIDs
@@ -131,7 +134,7 @@ def job():
                             data = json.dumps(dict(data)))
         
         if response.status_code == 201:
-            logging.info("Daily emails sent successfully.")
+            logging.info("Article emails sent successfully.")
         else:
             logging.error("There is an error sending article emails.")
 
