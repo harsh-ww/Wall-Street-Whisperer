@@ -6,7 +6,7 @@ from services.exceptions import APIError
 import pytest
 import requests
 from unittest import mock
-from tests.unit.mock import MockResponse
+from tests.unit_mock.mock import MockResponse
 from models.Article import Article
 import datetime
 

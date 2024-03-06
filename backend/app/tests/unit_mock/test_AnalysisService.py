@@ -2,7 +2,7 @@ import os
 os.environ['SIMILARWEB_KEY'] = ''
 
 from unittest import mock
-from tests.unit.mock import MockResponse
+from tests.unit_mock.mock import MockResponse
 
 # Mock the NewsSentiment library - we don't want to install it in CI (because it's massive) or run it in tests (slow) when we can mock the data
 # aim of these tests is to test surrounding business logic

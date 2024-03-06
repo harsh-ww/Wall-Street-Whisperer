@@ -1,16 +1,13 @@
 import pytest
 import os
 os.environ['EMAIL_PASSWORD'] = ''
-from app import create_app
 from connect import get_db_connection
 from testcontainers.postgres import PostgresContainer
-
 
 postgres = PostgresContainer('postgres:latest')
 
 @pytest.fixture(scope="module", autouse=True)
 def setup(request):
-    print(os.getcwd())
     postgres.start()
 
     def teardown():
@@ -42,27 +39,4 @@ def clear_data():
     conn = get_db_connection()
     with conn.cursor() as cur:
         cur.execute("TRUNCATE TABLE user_follows_company, company_articles, company_social_posts, article, social_post, web_source, stock_price, company, users CASCADE;")
-    conn.close()
-
-# Create app for the test environment
-@pytest.fixture()
-def test_app():
-    testapp = create_app()
-    testapp.config['TESTING'] =  True
-    yield testapp
-
-# Create client fixture
-@pytest.fixture()
-def client(test_app):
-    return test_app.test_client()
-
-# Create database fixture
-@pytest.fixture()
-def test_db():
-
-    conn = get_db_connection()
-    
-    yield conn
-
-    # Close the db after test function
     conn.close()
