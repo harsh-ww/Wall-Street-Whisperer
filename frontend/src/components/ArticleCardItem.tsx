@@ -14,6 +14,8 @@ import {
   TagLabel,
   TagRightIcon,
   useDisclosure,
+  Badge,
+  Box,
 } from "@chakra-ui/react";
 import {
   Modal,
@@ -25,8 +27,9 @@ import {
   ModalCloseButton,
   Link,
 } from "@chakra-ui/react";
-import { formatDistanceToNow, parseISO, parse } from "date-fns";
+import { formatDistanceToNow, parseISO, format } from "date-fns";
 import { FaArrowTrendDown, FaArrowTrendUp } from "react-icons/fa6";
+import { HiExternalLink } from "react-icons/hi";
 
 interface ItemProps {
   article: Article;
@@ -54,6 +57,10 @@ function ArticleCardItem({ article }: ItemProps) {
     const date = parseISO(str);
     return formatDistanceToNow(date, { addSuffix: true });
   };
+  const getFormattedDate = (str: string): string => {
+    const date = parseISO(str);
+    return format(date, "dd MMM yyyy");
+  };
 
   return (
     <>
@@ -66,6 +73,12 @@ function ArticleCardItem({ article }: ItemProps) {
         p="10px"
         borderRadius="5px"
         borderWidth="2px"
+        _hover={{
+          shadow: "sm",
+          transform: "translateY(-5px)",
+          transitionDuration: "0.2s",
+          transitionTimingFunction: "ease-in-out",
+        }}
         borderColor={
           article.overallscore < 0
             ? "red.100"
@@ -121,13 +134,59 @@ function ArticleCardItem({ article }: ItemProps) {
           </CardBody>
         </Stack>
       </Card>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose} size="3xl">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
+          <Flex align="center">
+            <ModalHeader fontSize="3xl" minW="80%">
+              {article.title}
+            </ModalHeader>
+            <Box p="5px" fontSize="md">
+              <Badge
+                colorScheme="green"
+                borderRadius="lg"
+                fontSize="1.5em"
+                p="10px"
+              >
+                {Math.round(article.overallscore)}
+              </Badge>
+            </Box>
+          </Flex>
+
           <ModalCloseButton />
           <ModalBody>
-            <p>jfnlsrnjerglongtjkrdgtnjdkrgrnthjktrnhjkrt</p>
+            <Flex align="center" justify="space-between" mb="20px">
+              <Flex align="center">
+                <Text>{article.authors}</Text>
+                <Text mr="10px" ml="10px">
+                  {"\u2022"}
+                </Text>{" "}
+                {/* Bullet character */}
+                <Text>{getFormattedDate(article.publisheddate)}</Text>
+              </Flex>
+              <Button
+                colorScheme="purple"
+                variant="outline"
+                rightIcon={<HiExternalLink />}
+                size="sm"
+                onClick={() => window.open(article.articleurl, "_blank")}
+                mr="30px"
+              >
+                Read Full Article
+              </Button>
+            </Flex>
+
+            <Text>{article.summary}</Text>
+            <Flex alignItems="center" justifyContent="center">
+              <Image
+                borderRadius="5px"
+                objectFit="cover"
+                maxW={{ base: "100%", sm: "70%", md: "70%" }}
+                src={article.imageurl}
+                alt="Caffe Latte"
+                mt="10px"
+              />
+            </Flex>
           </ModalBody>
 
           <ModalFooter>

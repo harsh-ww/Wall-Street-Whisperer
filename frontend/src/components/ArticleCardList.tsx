@@ -57,7 +57,7 @@ const mockdata = [
     articleid: 1,
     articleurl:
       "https://elitenews.uk/wwf-shelved-report-exposing-river-wye-pollution-to-keep-tesco-happy-pollution/",
-    authors: "'William Turner'",
+    authors: "William Turner",
     imageurl:
       "https://i.guim.co.uk/img/media/02a07d28ef131a6e77e5d3a86512d5b31f0d0e2d/0_275_8256_4954/master/8256.jpg?width=1200&height=630&quality=85&auto=format&fit=crop&overlay-align=bottom%2Cleft&overlay-width=100p&overlay-base64=L2ltZy9zdGF0aWMvb3ZlcmxheXMvdG8tZGVmYXVsdC5wbmc&enable=upscale&s=d08b8af9ad6f7297a939e3ba72198121",
     keywords:
@@ -68,7 +68,8 @@ const mockdata = [
     sentimentscore: 0.6711759567260742,
     sourceid: 1,
     sourcepopularity: 8648709,
-    summary: null,
+    summary:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ac risus vitae ligula viverra semper. Proin a efficitur est. Phasellus tortor mi, dapibus rutrum neque nec, pharetra fermentum diam. Donec eu ornare justo. Maecenas leo ipsum, elementum venenatis aliquet in, fermentum et sapien. Nunc consequat est sed molestie posuere. Mauris non malesuada felis, eu pretium sapien. Donec laoreet vitae ligula eget ultricies. In et dui sed ipsum venenatis rutrum. Etiam auctor ante eros, vel maximus ipsum vestibulum sit amet",
     title:
       "WWF shelved report exposing River Wye pollution \u2018to keep Tesco happy\u2019",
   },
@@ -76,7 +77,7 @@ const mockdata = [
     articleid: 2,
     articleurl:
       "https://www.gbnews.com/opinion/supermarket-loyalty-scheme-tesco-sainsburys",
-    authors: '"Patrick O\'Donnell"',
+    authors: "Patrick O'Donnell",
     imageurl:
       "https://www.gbnews.com/media-library/british-farmers-facing-impossible-life-due-to-cheap-supermarket-demands.jpg?id=51613348&width=1200&height=600&coordinates=0%2C0%2C0%2C100",
     keywords:
@@ -87,7 +88,8 @@ const mockdata = [
     sentimentscore: 0.45467740297317505,
     sourceid: 2,
     sourcepopularity: 1485,
-    summary: null,
+    summary:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ac risus vitae ligula viverra semper. Proin a efficitur est. Phasellus tortor mi, dapibus rutrum neque nec, pharetra fermentum diam. Donec eu ornare justo. Maecenas leo ipsum, elementum venenatis aliquet in, fermentum et sapien. Nunc consequat est sed molestie posuere. Mauris non malesuada felis, eu pretium sapien. Donec laoreet vitae ligula eget ultricies. In et dui sed ipsum venenatis rutrum. Etiam auctor ante eros, vel maximus ipsum vestibulum sit amet",
     title:
       "'Supermarket loyalty scheme prices are an outrage. Shoppers need a new deal to make big savings'",
   },
@@ -95,7 +97,7 @@ const mockdata = [
     articleid: 1,
     articleurl:
       "https://elitenews.uk/wwf-shelved-report-exposing-river-wye-pollution-to-keep-tesco-happy-pollution/",
-    authors: "'William Turner'",
+    authors: "William Turner",
     imageurl:
       "https://i.guim.co.uk/img/media/02a07d28ef131a6e77e5d3a86512d5b31f0d0e2d/0_275_8256_4954/master/8256.jpg?width=1200&height=630&quality=85&auto=format&fit=crop&overlay-align=bottom%2Cleft&overlay-width=100p&overlay-base64=L2ltZy9zdGF0aWMvb3ZlcmxheXMvdG8tZGVmYXVsdC5wbmc&enable=upscale&s=d08b8af9ad6f7297a939e3ba72198121",
     keywords:
@@ -106,7 +108,8 @@ const mockdata = [
     sentimentscore: 0.6711759567260742,
     sourceid: 1,
     sourcepopularity: 8648709,
-    summary: null,
+    summary:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ac risus vitae ligula viverra semper. Proin a efficitur est. Phasellus tortor mi, dapibus rutrum neque nec, pharetra fermentum diam. Donec eu ornare justo. Maecenas leo ipsum, elementum venenatis aliquet in, fermentum et sapien. Nunc consequat est sed molestie posuere. Mauris non malesuada felis, eu pretium sapien. Donec laoreet vitae ligula eget ultricies. In et dui sed ipsum venenatis rutrum. Etiam auctor ante eros, vel maximus ipsum vestibulum sit amet",
     title:
       "WWF shelved report exposing River Wye pollution \u2018to keep Tesco happy\u2019",
   },
@@ -114,7 +117,7 @@ const mockdata = [
     articleid: 2,
     articleurl:
       "https://www.gbnews.com/opinion/supermarket-loyalty-scheme-tesco-sainsburys",
-    authors: '"Patrick O\'Donnell"',
+    authors: "Patrick O'Donnell",
     imageurl:
       "https://www.gbnews.com/media-library/british-farmers-facing-impossible-life-due-to-cheap-supermarket-demands.jpg?id=51613348&width=1200&height=600&coordinates=0%2C0%2C0%2C100",
     keywords:
@@ -125,7 +128,8 @@ const mockdata = [
     sentimentscore: 0.45467740297317505,
     sourceid: 2,
     sourcepopularity: 1485,
-    summary: null,
+    summary:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ac risus vitae ligula viverra semper. Proin a efficitur est. Phasellus tortor mi, dapibus rutrum neque nec, pharetra fermentum diam. Donec eu ornare justo. Maecenas leo ipsum, elementum venenatis aliquet in, fermentum et sapien. Nunc consequat est sed molestie posuere. Mauris non malesuada felis, eu pretium sapien. Donec laoreet vitae ligula eget ultricies. In et dui sed ipsum venenatis rutrum. Etiam auctor ante eros, vel maximus ipsum vestibulum sit amet",
     title:
       "'Supermarket loyalty scheme prices are an outrage. Shoppers need a new deal to make big savings'",
   },
