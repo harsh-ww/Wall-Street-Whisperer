@@ -39,4 +39,5 @@ def clear_data():
     conn = get_db_connection()
     with conn.cursor() as cur:
         cur.execute("TRUNCATE TABLE user_follows_company, company_articles, company_social_posts, article, social_post, web_source, stock_price, company, users CASCADE;")
+        conn.commit()
     conn.close()

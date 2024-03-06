@@ -30,20 +30,25 @@ def mockedAVUS(*args, **kwargs):
     else:
         return {}
 
-@mock.patch('services.AlphaVantageService.getCompanyDetailsNonUS', side_effect=mockedAVNonUS)
-@mock.patch('services.AlphaVantageService.getCompanyDetails', side_effect=mockedAVUS)
-def test_get_company_info(mocked_nonus, mocked_us):
-    # Invalid ticker Non-US
-    result = track.get_company_info('FAKE.LON')
-    assert result is None
-    # Invalid ticker US
-    result = track.get_company_info('FAKE')
-    assert result is None
+class TestGetCompanyInfo:
+    @mock.patch('services.AlphaVantageService.getCompanyDetailsNonUS', side_effect=mockedAVNonUS)
+    @mock.patch('services.AlphaVantageService.getCompanyDetails', side_effect=mockedAVUS)
+    def test_invalid(self, mocked_nonus, mocked_us):
+        # Invalid ticker Non-US
+        result = track.get_company_info('FAKE.LON')
+        assert result is None
 
-    # valid ticker Non-US
-    result = track.get_company_info('TSCO.LON')
-    assert result == {'name': 'Tesco PLC', 'exchange': 'United Kingdom'}
+        # Invalid ticker US
+        result = track.get_company_info('FAKE')
+        assert result is None
 
-    # valid ticker US
-    result = track.get_company_info('IBM')
-    assert result == {'name': 'International Business Machines', 'exchange': 'NYSE'}
+    @mock.patch('services.AlphaVantageService.getCompanyDetailsNonUS', side_effect=mockedAVNonUS)
+    @mock.patch('services.AlphaVantageService.getCompanyDetails', side_effect=mockedAVUS)
+    def test_valid(self, mocked_nonus, mocked_us):
+        # valid ticker Non-US
+        result = track.get_company_info('TSCO.LON')
+        assert result == {'name': 'Tesco PLC', 'exchange': 'United Kingdom'}
+
+        # valid ticker US
+        result = track.get_company_info('IBM')
+        assert result == {'name': 'International Business Machines', 'exchange': 'NYSE'}
