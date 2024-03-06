@@ -1,14 +1,12 @@
 from flask import Blueprint, request, jsonify
 from services.AlphaVantageService import getCompanyDetails, companySearch, getCompanyDetailsNonUS, getCurrentStockPrice, getTimeSeries
 from connect import get_db_connection
-import json
 
-
-api_routes_blueprint = Blueprint('api_routes', __name__)
+company_routes_blueprint = Blueprint('company_routes', __name__)
 
 # API endpoint to return company details
 # Companies are made unique by a ticker and exchange. New company searching has unique tickers
-@api_routes_blueprint.route('/company/<symbol>', methods = ['GET'])
+@company_routes_blueprint.route('/company/<symbol>', methods = ['GET'])
 def company_details(symbol: str):
     stockInfo = getCurrentStockPrice(symbol)
     if not stockInfo:
@@ -45,7 +43,7 @@ def company_details(symbol: str):
     return details
 
 ## [PROJ-11] Setup endpoint to allow searching for company names
-@api_routes_blueprint.route('/company', methods=['GET'])
+@company_routes_blueprint.route('/company', methods=['GET'])
 def search_companies():
     
     search_query = request.args.get('query', '')
@@ -94,33 +92,7 @@ def getFromDB(squery):
         
     return companies
 
-@api_routes_blueprint.route('/articles/<ticker>', methods=['GET'])
-def get_articles(ticker:str):
-        #from_date = request.args.get('from_date')
-        
-        query = """
-            SELECT article.*, web_source.Popularity AS SourcePopularity
-            FROM article
-            JOIN company_articles ON article.ArticleID = company_articles.ArticleID
-            JOIN company ON company_articles.CompanyID = company.CompanyID
-            JOIN web_source ON article.SourceID = web_source.SourceID
-            WHERE company.TickerCode = %s;
-        """
-
-        conn = get_db_connection()
-        articles = []
-        with conn.cursor() as cur:
-            cur.execute(query, [ticker])
-            rows = cur.fetchall()
-            for row in rows:
-                row_dict = dict(zip([column[0] for column in cur.description], row))
-                articles.append(row_dict)
-
-        conn.close()
-
-        return jsonify(articles)
-
-@api_routes_blueprint.route('/company/<ticker>/timeseries', methods=['GET'])
+@company_routes_blueprint.route('/company/<ticker>/timeseries', methods=['GET'])
 def get_timeSeries(ticker):
     granularity = request.args.get('granularity') or 'DAILY'
     data = getTimeSeries(ticker, granularity)

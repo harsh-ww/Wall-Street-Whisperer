@@ -1,8 +1,6 @@
 from flask import Flask
-from flask_mail import Mail
 from flask_cors import CORS
 from psycopg2 import DatabaseError
-from connect import get_db_connection
 import os
 
 def create_app():
@@ -21,13 +19,15 @@ def create_app():
     app.config['MAIL_DEFAULT_SENDER'] = ('no-reply', "no-reply@stockapp.com")
 
     # Register blueprints
-    from track import track_blueprint
-    from api_routes import api_routes_blueprint
+    from routes.track_routes import track_blueprint
+    from routes.company_routes import company_routes_blueprint
+    from routes.article_routes import article_routes_blueprint
     from notifications import notifications_blueprint
 
     app.register_blueprint(track_blueprint)
-    app.register_blueprint(api_routes_blueprint)
+    app.register_blueprint(company_routes_blueprint)
     app.register_blueprint(notifications_blueprint)
+    app.register_blueprint(article_routes_blueprint)
 
     return app 
 
