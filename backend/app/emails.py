@@ -7,7 +7,6 @@ import requests, json, logging, datetime
 emails_blueprint = Blueprint('emails', __name__)
 
 # Generate daily update email content
-@emails_blueprint.route('/dailyemail', methods = ['GET'])
 def daily_email_content():
     # Extract details about tracked companies
     conn = get_db_connection()
@@ -54,7 +53,6 @@ def daily_email_content():
             return render_template("daily_email.html", stock_data = stock_data, date = current_date)
 
 # Generate article email content
-@emails_blueprint.route('/articleemail', methods = ['GET'])
 def article_email_content(articleList):
 
     # Extract articles from a list of article IDs supplied

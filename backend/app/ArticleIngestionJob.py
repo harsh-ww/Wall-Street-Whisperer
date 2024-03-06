@@ -9,7 +9,7 @@ import tldextract
 import requests, json
 
 INGESTION_FREQUENCY = 24
-SCORE_THRESHOLD = 50   # An article have to be greater than this score to notify users
+SCORE_THRESHOLD = 70   # An article have to be greater than this score to notify users
 
 # gets a list of Company objects for tracked companies
 
