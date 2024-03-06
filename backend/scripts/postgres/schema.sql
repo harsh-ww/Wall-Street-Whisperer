@@ -7,7 +7,6 @@ CREATE TABLE users (
     Email VARCHAR(255) NOT NULL,
     Password VARCHAR(255) NOT NULL
 );
-
 -- Companies
 
 DROP TABLE IF EXISTS company CASCADE; 

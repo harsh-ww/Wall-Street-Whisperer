@@ -3,6 +3,17 @@ import SideBar from "../components/SideBar";
 import ArticleMotif from "../components/ArticleMotif";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  useToast,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+} from "@chakra-ui/react";
 
 import {
   Box,
@@ -16,6 +27,7 @@ import {
   ButtonGroup,
   SimpleGrid,
   Link,
+  Input,
 } from "@chakra-ui/react";
 import { TriangleUpIcon, TriangleDownIcon } from "@chakra-ui/icons";
 import BaseLayout from "../layouts/BaseLayout";
@@ -40,7 +52,13 @@ interface CompanyDetails {
   };
 }
 
+//tracking added companies
+
 const CompanyDetails = () => {
+  const [commonName, setCommonName] = useState(""); //provide database common_name insertion
+  const { isOpen, onOpen, onClose } = useDisclosure(); //reactive modal dialog to be used when trying to track company
+  const [isValid, setIsValid] = useState(false); //reactive to when database insertion fails for modal dialog
+  const toastTrack = useToast();
   const { exchange, ticker } = useParams();
   const [companyData, setCompanyData] = useState<CompanyDetails>(); //fill page with relevant data from server once retrieved, initially null
 
@@ -68,6 +86,38 @@ const CompanyDetails = () => {
   }, [exchange, ticker]); //optional dependencies, the page will refresh if these change, i.e. when different exchange and company identification page is chosen...
 
   function Company() {
+    //function to handle storing tracked company data for that user
+
+    const handleTrackCompany = async () => {
+      const data = {
+        ticker_code: companyData
+          ? companyData.Symbol || companyData.symbol || "undefined" //provide data to POST request
+          : "undefined",
+        common_name: commonName, //to be retrieved from a user-input
+      };
+
+      try {
+        const response = await fetch(
+          "http://localhost:5000/track", //calls track.py function
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to track company");
+        }
+        const responseData = await response.json();
+        console.log(responseData);
+        setIsValid(true); //frontend clarification using toast component
+      } catch (error) {
+        console.error("Error, tracking try catch failed");
+      }
+    };
+
     let articles = [
       "Headliner",
       "ArticleTitle",
@@ -75,6 +125,7 @@ const CompanyDetails = () => {
       "MoneyLaundering",
       "DidaGoodThing",
     ]; //dummy data
+
     return (
       <>
         <Box>
@@ -155,10 +206,62 @@ const CompanyDetails = () => {
                       w={["auto", "282px", "282px"]}
                       // mt="6"
                       rightIcon={<IoIosAddCircleOutline size={28} />}
+                      onClick={onOpen}
                     >
                       Track Company
                     </Button>
                   </Box>
+                  {/* modal dialog popup to assign a new name to the tracked company */}
+                  <Modal isOpen={isOpen} onClose={onClose}>
+                    {" "}
+                    <ModalOverlay />
+                    <ModalContent paddingTop="10px">
+                      <ModalBody>
+                        <ModalCloseButton />
+                      </ModalBody>
+                      <ModalFooter>
+                        {/*input acts as common name for the the database insertion */}
+                        <Input
+                          placeholder="Assign a name for this company"
+                          w="80%"
+                          mr={4}
+                          value={commonName}
+                          onChange={(e) => setCommonName(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              handleTrackCompany();
+                              onClose();
+                            }
+                          }}
+                        />
+                        <Button
+                          variant="ghost"
+                          backgroundColor="purple.700"
+                          color="white"
+                          w="20%"
+                          onClick={() => {
+                            //function adds to database tracked company for the user
+                            handleTrackCompany();
+                            onClose();
+
+                            toastTrack({
+                              title: isValid ? "Added" : "An error has occured",
+                              description: isValid
+                                ? "This company is now being tracked!"
+                                : "",
+                              status: isValid ? "success" : "error",
+                              duration: 3500,
+                              variant: "subtle",
+                              isClosable: true,
+                            });
+                            setIsValid(false); //ensure that valid is set to false after first successful tracking
+                          }}
+                        >
+                          Confirm
+                        </Button>
+                      </ModalFooter>
+                    </ModalContent>
+                  </Modal>
                   <Box
                     display="flex"
                     justifyContent="center"

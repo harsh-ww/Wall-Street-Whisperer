@@ -29,7 +29,7 @@ def track_company():
         existing_company = cur.fetchone()
 
         if existing_company:
-            return jsonify({'error': 'Company already tracked'}), 400
+            return jsonify({'error': 'Company already tracked'}), 409 #conflict status code
         
         
 
@@ -57,10 +57,32 @@ def track_company():
         # Save the company to the tracked companies table
         # This should be modified to be added into the user_follows_company table.
         # cur.execute("INSERT INTO tracked_company (company_id) VALUES (%s)", (new_company_id,))
+        cur.execute("INSERT INTO user_follows_company (UserID, CompanyID) VALUES (%s, %s)", (1, new_company_id)) 
+        # default test userid = 1
 
         # Commit changes
         conn.commit()
         conn.close()
-        return jsonify({'message': 'Company successfully tracked'}), 201
+        return jsonify({'message': f'Company successfully tracked, Common Name = {common_name}, tickerCode= {ticker_code}'}), 201
+
+
+# API endpoint to return tracked company common names and links
+@track_blueprint.route('/trackedCompanies', methods=['GET'])
+def tracked_companies():
+    conn = get_db_connection()
+    with conn.cursor() as cur:
+        # Query database to get all tracked company user-created names and ticker codes 
+        cur.execute("SELECT c.CommonName, TickerCode FROM user_follows_company ufc JOIN company c ON ufc.CompanyID = c.CompanyID WHERE ufc.UserID = 1;")
+        results = cur.fetchall()
+    
+    conn.close()
+    #if rows were found
+    tracked_companies = []
+    for result in results:
+        tracked_companies.append({
+            "CommonName": result[0],
+            "TickerCode": result[1]
+        })
+    return jsonify(tracked_companies)
 
 
