@@ -59,6 +59,5 @@ class TestPerigonService:
         exampleDate = datetime.datetime(2024, 2, 27, 14, 45, 12)
         with mock.patch('services.PerigonService.datetime') as mock_datetime:
             mock_datetime.now.return_value = exampleDate
-            print(datetime.datetime.now())
             perigon.getCompanyNewsPerigon('Apple', 24, 1)
             assert mocked_get.call_args.kwargs['params']['from'] == '2024-02-26'

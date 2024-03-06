@@ -10,7 +10,6 @@ API_KEY = os.environ['PERIGON_KEY']
 
 def getCompanyNewsPerigon(companyName: str, timePeriodHours: int, count:int, topSources:bool=False) -> list[Article]:
     timeFrom = datetime.now() - timedelta(hours=timePeriodHours)
-    print(datetime.now())
 
     endpoint = f'{API_URL}/all'
     payload = {
