@@ -36,25 +36,3 @@ app = create_app()
 @app.errorhandler(DatabaseError)
 def handle_db_error():
     return 'Database Error', 500
-
-
-@app.route('/')
-def hello():
-    return 'Hello, World!'
-
-@app.route('/example')
-def example_database_call():
-    try:
-        sql_query = "SELECT * FROM company"
-        conn = get_db_connection()
-        with conn.cursor() as cur:
-            cur.execute(sql_query)
-
-            rows = cur.fetchone()
-            print(rows)
-    finally:
-        conn.close()
-        
-    return 'Success'
-
-
