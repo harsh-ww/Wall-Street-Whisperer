@@ -15,23 +15,42 @@ import {
   Badge,
   ButtonGroup,
   SimpleGrid,
+  Link,
 } from "@chakra-ui/react";
+import { TriangleUpIcon, TriangleDownIcon } from "@chakra-ui/icons";
 import BaseLayout from "../layouts/BaseLayout";
 import AreaChart from "../components/AreaChart";
 import ArticleCardList from "../components/ArticleCardList";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { HiExternalLink } from "react-icons/hi";
 
+interface CompanyDetails {
+  //explicit type casting for the returned JSON
+  //add necessary headers when required
+  Name: string;
+  name: string; //for non-US companies
+  Symbol: string;
+  symbol: string;
+  Exchange: string;
+  exchange: string;
+  stock: {
+    //stock information is the same regardless...
+    change: string;
+    "change percent": string;
+    price: string;
+  };
+}
+
 const CompanyDetails = () => {
   const { exchange, ticker } = useParams();
-  const [companyData, setCompanyData] = useState(null); //fill page with relevant data from server once retrieved, initially null
+  const [companyData, setCompanyData] = useState<CompanyDetails>(); //fill page with relevant data from server once retrieved, initially null
 
   useEffect(() => {
     //after rendering, fetch company data
     const fetchCompanyData = async () => {
       try {
         const response = await fetch(
-          `http://server:5000/company/${ticker}` //fetch from API address
+          `http://localhost:5000/company/${ticker}` //fetch from API address   (FORMAT IS DIFFERENT for US vs NON-US companies)
         );
         if (!response.ok) {
           throw new Error("Failed to fetch company data");
@@ -44,6 +63,9 @@ const CompanyDetails = () => {
       }
     };
     fetchCompanyData();
+    console.log(
+      companyData ? parseFloat(companyData.stock.change) <= 0 : "Nothing"
+    );
   }, [exchange, ticker]); //optional dependencies, the page will refresh if these change, i.e. when different exchange and company identification page is chosen...
 
   function Company() {
@@ -77,9 +99,39 @@ const CompanyDetails = () => {
                 <Flex direction={["column", "column", "row"]}>
                   <Box bg="gray.50" p={["10px", "10px", "15px"]}>
                     <Heading as="h3" fontSize={["2xl", "3xl", "5xl"]} mt="1">
-                      CompanyName:{" "}
-                      {/*currently do not know the stae of the json formatting*/}
+                      {companyData
+                        ? companyData.Name || companyData.name
+                        : "..."}
+                      {/*non-US companies json has lowercase name*/}
                     </Heading>
+                    <Text fontStyle="italic">
+                      {companyData
+                        ? companyData.Exchange || companyData.exchange
+                        : "..."}
+                    </Text>
+                    <Text
+                      fontSize="xx-small"
+                      color={
+                        //colour of stock price data is dependent on whether it has recently gone down or up
+                        companyData?.stock?.change &&
+                        !companyData.stock.change.includes("-") //check if change is negative/positive, more straightforward than parsing as a float
+                          ? "green.500"
+                          : "red.500"
+                      }
+                    >
+                      {" "}
+                      {/*feel free to style as you want */}
+                      {companyData ? companyData.stock.price : "..."}{" "}
+                      {companyData?.stock?.change &&
+                      !companyData.stock.change.includes("-") ? (
+                        <TriangleUpIcon />
+                      ) : (
+                        <TriangleDownIcon />
+                      )}
+                      {companyData
+                        ? companyData.stock["change percent"]
+                        : "..."}
+                    </Text>
                   </Box>
                   <Box p={["10px", "10px", "15px"]} fontSize="lg" bg="gray.50">
                     <Badge
@@ -115,20 +167,37 @@ const CompanyDetails = () => {
                     ml={["10px", "10px", "250px"]}
                   >
                     <ButtonGroup gap="4">
-                      <Button
-                        colorScheme="purple"
-                        variant="outline"
-                        rightIcon={<HiExternalLink />}
+                      <Link
+                        href={`https://www.google.com/search?q=${
+                          companyData
+                            ? companyData.Name || companyData.name
+                            : "#"
+                        }`} //straightforwardly returns the google search results page for the companies' name
                       >
-                        Website
-                      </Button>
-                      <Button
-                        colorScheme="purple"
-                        variant="outline"
-                        rightIcon={<HiExternalLink />}
+                        <Button
+                          colorScheme="purple"
+                          variant="outline"
+                          rightIcon={<HiExternalLink />}
+                        >
+                          Website
+                        </Button>
+                      </Link>
+                      <Link
+                        href={`https://www.nasdaq.com/market-activity/stocks/${
+                          companyData
+                            ? companyData.Symbol || companyData.symbol
+                            : "#"
+                        }`}
+                        isExternal
                       >
-                        Stock Exchange ref
-                      </Button>
+                        <Button
+                          colorScheme="purple"
+                          variant="outline"
+                          rightIcon={<HiExternalLink />}
+                        >
+                          Stock Exchange ref
+                        </Button>
+                      </Link>
                     </ButtonGroup>
                   </Box>
                 </Flex>
