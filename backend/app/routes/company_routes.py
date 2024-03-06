@@ -4,11 +4,29 @@ from connect import get_db_connection
 
 company_routes_blueprint = Blueprint('company_routes', __name__)
 
+def get_company_details_db(ticker:str):
+    conn = get_db_connection()
+    with conn.cursor() as cur:
+        cur.execute("SELECT CompanyName, CurrentScore FROM company WHERE TickerCode = %s", [ticker])
+        result = cur.fetchone()
+
+    conn.close()
+
+    if result is not None:
+        return {
+            'tracked': True,
+            'score': result[1],
+            'name': result[0],
+        }
+    else:
+        return {}
 # API endpoint to return company details
 # Companies are made unique by a ticker and exchange. New company searching has unique tickers
-@company_routes_blueprint.route('/company/<symbol>', methods = ['GET'])
-def company_details(symbol: str):
-    stockInfo = getCurrentStockPrice(symbol)
+@company_routes_blueprint.route('/company/<ticker>', methods = ['GET'])
+def company_details(ticker: str):
+    # Get current stock price
+    stockInfo = getCurrentStockPrice(ticker)
+    
     if not stockInfo:
         return jsonify({'error': 'Ticker does not exist'}), 404
 
@@ -16,28 +34,19 @@ def company_details(symbol: str):
     details['stock'] = stockInfo
     tracked = False
 
-    # Add in additional data if the company is tracked
-    conn = get_db_connection()
-    with conn.cursor() as cur:
-        # Query database to check if company is tracked
-        cur.execute("SELECT CompanyName, CurrentScore FROM company WHERE TickerCode = %s", [symbol])
-        result = cur.fetchone()
-        # If company is tracked, add attributes to the data (eg score)
-        if result is not None:
-            details['tracked'] = True
-            details['score'] = result[1]
-            details['name'] = result[0]
-            tracked = True
-    
-    conn.close()
+    # Get company info from database
+    db_details = get_company_details_db(ticker)
+    if db_details != {}:
+        tracked = True
+    details = {**details, **db_details}
 
     # Fetch company overview from AlphaVantage
-    if "." in symbol:
+    if "." in ticker:
         if not tracked:
-            details = {**details, **getCompanyDetailsNonUS(symbol)}
+            details = {**details, **getCompanyDetailsNonUS(ticker)}
     else:
         # Fetch company details from AlphaVantage
-        details = {**details, **getCompanyDetails(symbol)}
+        details = {**details, **getCompanyDetails(ticker)}
 
         
     return details
@@ -47,13 +56,17 @@ def company_details(symbol: str):
 def search_companies():
     
     search_query = request.args.get('query', '')
+
     companies = []
-    DBcompanies = getFromDB(search_query)
-    #NASDAQcompanies = getFromNASDAQ(search_query, DBcompanies)
+
+    # Get companies from DB
+    DBcompanies = search_companies_db(search_query)
+
+    # Get companies from AV search
     otherCompanies = companySearch(search_query)
+
+    # Eliminate duplicates and set tracked=False on non-tracked
     dbtickers = [x['ticker'] for x in DBcompanies]
-    print(dbtickers)
-    print(otherCompanies)
     companiesToReturn = []
     for c in otherCompanies:
         if c['symbol'] not in dbtickers:
@@ -64,31 +77,31 @@ def search_companies():
 
     return jsonify(companies)
 
-def getFromDB(squery):
-    try:
-        # Create SQL query which uses ILIKE to find companies which match the query
-        sql_query = """
-            SELECT CompanyName, TickerCode, Exchange
-            FROM company
-            WHERE CompanyName ILIKE %s OR TickerCode ILIKE %s
-        """
-        searchTerm = '%'+ squery + '%'
-        # Connect to DB and execute query
-        # Create json data for valid companies from DB
-        conn = get_db_connection()
-        with conn.cursor() as cur:
-            cur.execute(sql_query, (searchTerm, searchTerm))
-            rows = cur.fetchall()
-            companies = []
-            for row in rows:
-                companies.append({
-                    'name': row[0],
-                    'ticker': row[1],
-                    'exchange': row[2],
-                    'tracked': True # Only tracked companies will exist in the database
-                    })
-    finally:
-        conn.close()
+def search_companies_db(ticker):
+
+    # Create SQL query which uses ILIKE to find companies which match the query
+    sql_query = """
+        SELECT CompanyName, TickerCode, Exchange
+        FROM company
+        WHERE CompanyName ILIKE %s OR TickerCode ILIKE %s
+    """
+    searchTerm = '%'+ ticker + '%'
+    # Connect to DB and execute query
+    # Create json data for valid companies from DB
+    conn = get_db_connection()
+    with conn.cursor() as cur:
+        cur.execute(sql_query, (searchTerm, searchTerm))
+        rows = cur.fetchall()
+        companies = []
+        for row in rows:
+            companies.append({
+                'name': row[0],
+                'ticker': row[1],
+                'exchange': row[2],
+                'tracked': True # Only tracked companies will exist in the database
+            })
+    
+    conn.close()
         
     return companies
 

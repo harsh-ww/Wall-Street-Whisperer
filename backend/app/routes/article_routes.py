@@ -4,10 +4,7 @@ from connect import get_db_connection
 
 article_routes_blueprint = Blueprint('article_routes', __name__)
 
-@article_routes_blueprint.route('/articles/<ticker>', methods=['GET'])
-def get_articles(ticker:str):
-        #from_date = request.args.get('from_date')
-        
+def get_articles_by_ticker_db(ticker: str):
         query = """
             SELECT article.*, web_source.Popularity AS SourcePopularity
             FROM article
@@ -27,5 +24,12 @@ def get_articles(ticker:str):
                 articles.append(row_dict)
 
         conn.close()
+        return articles
+     
+
+@article_routes_blueprint.route('/articles/<ticker>', methods=['GET'])
+def get_articles(ticker:str):
+        #from_date = request.args.get('from_date')
+        articles = get_articles_by_ticker_db(ticker)
 
         return jsonify(articles)
