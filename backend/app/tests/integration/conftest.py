@@ -2,6 +2,9 @@ import pytest
 from app import create_app
 from connect import get_db_connection
 
+@pytest.fixture(scope='function', autouse=True)
+def clear_db(clear_data):
+    pass
 
 # Create app for the test environment
 @pytest.fixture()

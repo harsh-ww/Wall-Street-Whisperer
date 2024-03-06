@@ -6,7 +6,7 @@ from testcontainers.postgres import PostgresContainer
 
 postgres = PostgresContainer('postgres:latest')
 
-@pytest.fixture(scope="module", autouse=True)
+@pytest.fixture(scope="session", autouse=True)
 def setup(request):
     postgres.start()
 
@@ -33,7 +33,7 @@ def setupSchema():
         conn.commit()
     conn.close()
 
-@pytest.fixture(scope='function', autouse=True)
+@pytest.fixture(scope='function', autouse=False)
 def clear_data():
     # Clears data in between each test
     conn = get_db_connection()
