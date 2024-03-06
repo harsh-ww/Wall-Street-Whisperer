@@ -18,6 +18,7 @@ import {
 } from "@chakra-ui/react";
 import BaseLayout from "../layouts/BaseLayout";
 import AreaChart from "../components/AreaChart";
+import ArticleCardList from "../components/ArticleCardList";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { HiExternalLink } from "react-icons/hi";
 
@@ -46,13 +47,13 @@ const CompanyDetails = () => {
   }, [exchange, ticker]); //optional dependencies, the page will refresh if these change, i.e. when different exchange and company identification page is chosen...
 
   function Company() {
-    let articles = [
-      "Headliner",
-      "ArticleTitle",
-      "NotAdmissible",
-      "MoneyLaundering",
-      "DidaGoodThing",
-    ]; //dummy data
+    // let articles = [
+    //   "Headliner",
+    //   "ArticleTitle",
+    //   "NotAdmissible",
+    //   "MoneyLaundering",
+    //   "DidaGoodThing",
+    // ]; //dummy data
     return (
       <>
         <Box>
@@ -152,12 +153,13 @@ const CompanyDetails = () => {
                   bg="gray.50"
                   p={["15px", "15px", "30px"]}
                 >
-                  <Text textAlign="left">Articles will go here</Text>
-                  <SimpleGrid columns={2} spacing={2}>
-                    {articles.map((article) => (
+                  {/* <SimpleGrid columns={2} spacing={5}> */}
+                  {/* pass in ticker later */}
+                  <ArticleCardList ticker={""} />
+                  {/* {articles.map((article) => (
                       <ArticleMotif articleName={article} />
-                    ))}
-                  </SimpleGrid>
+                    ))} */}
+                  {/* </SimpleGrid> */}
                 </GridItem>
               </Grid>
             </Box>

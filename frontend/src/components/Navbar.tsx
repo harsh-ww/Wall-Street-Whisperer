@@ -120,7 +120,7 @@ export default function App() {
                   Home
                 </Button>
               </NavLink>
-              <NavLink to="/company">
+              <NavLink to="/company/<symbol>">
                 <Button
                   variant="ghost"
                   leftIcon={<MdOutlineBusinessCenter />}
