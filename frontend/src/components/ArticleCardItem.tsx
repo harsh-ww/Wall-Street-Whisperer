@@ -33,6 +33,7 @@ import { HiExternalLink } from "react-icons/hi";
 
 interface ItemProps {
   article: Article;
+  company?: string;
 }
 
 export interface Article {
@@ -51,14 +52,14 @@ export interface Article {
   title: string;
 }
 
-function ArticleCardItem({ article }: ItemProps) {
+function ArticleCardItem({ article, company }: ItemProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const getRelativeDate = (str: string): string => {
-    const date = parseISO(str);
+    const date = new Date(str)
     return formatDistanceToNow(date, { addSuffix: true });
   };
   const getFormattedDate = (str: string): string => {
-    const date = parseISO(str);
+    const date = new Date(str)
     return format(date, "dd MMM yyyy");
   };
 
@@ -87,14 +88,16 @@ function ArticleCardItem({ article }: ItemProps) {
             : "orange.100"
         }
       >
-        <Image
+        {article.imageurl ?  <Image
           mr="10px"
           borderRadius="10px"
           objectFit="cover"
           maxW={{ base: "100%", sm: "150px", md: "200px" }}
           src={article.imageurl}
-          alt="Caffe Latte"
+          alt="Decorative image"
         />
+        : null}
+        
 
         <Stack>
           <CardBody>
@@ -105,6 +108,9 @@ function ArticleCardItem({ article }: ItemProps) {
                 </Heading>
               </Link>
               <Flex align="center">
+                {company ? <Tag size="lg" color="pink.500" mr={3} borderRadius="5px" colorScheme="pink">
+                  {company}
+                </Tag> : null}
                 {article.overallscore < 0 ? (
                   <Tag size="lg" colorScheme="red" borderRadius="full">
                     <TagLabel>

@@ -226,7 +226,7 @@ const CompanyDetails = () => {
                 >
                   {/* <SimpleGrid columns={2} spacing={5}> */}
                   {/* pass in ticker later */}
-                  <ArticleCardList ticker={""} />
+                  <ArticleCardList ticker={ticker || ''} />
                   {/* {articles.map((article) => (
                       <ArticleMotif articleName={article} />
                     ))} */}
