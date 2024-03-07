@@ -21,11 +21,7 @@ function SuggestionsGenerator({ companyName, ticker }: Props) {
       direction="column"
     >
       <Link href={`/company/${ticker}`}>{companyName}</Link>
-      <Box align="center" >
-        <Text fontSize="xs" overflow="hidden">
-          {companyName} score
-        </Text>
-      </Box>
+
     </Flex>
   );
 }

@@ -27,7 +27,7 @@ function HomePage() {
     // Fetch suggestions data
     const fetchSuggestions = async () => {
       try {
-        const response = await fetch('http://localhost:5000/suggestions');
+        const response = await fetch('https://solid-broccoli-jjxrwgw7j9jfj79q-5000.app.github.dev/suggestions');
         if (!response.ok) {
           throw new Error('Failed to fetch suggestions');
         }
@@ -189,7 +189,7 @@ function HomePage() {
                 </Heading>
                 <SimpleGrid columns={2} spacing={2}>
                   {suggestions.map((company) => (
-                    <SuggestionsGenerator key={company[1]} companyName={company[0]} ticker={company[1]} />
+                    <SuggestionsGenerator key={company['ticker']} companyName={company['name']} ticker={company['ticker']} />
                   ))}
                 </SimpleGrid>
               </GridItem>

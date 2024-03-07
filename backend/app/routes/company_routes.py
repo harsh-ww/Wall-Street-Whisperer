@@ -1,6 +1,8 @@
 from flask import Blueprint, request, jsonify
 from services.AlphaVantageService import getCompanyDetails, companySearch, getCompanyDetailsNonUS, getCurrentStockPrice, getTimeSeries
 from connect import get_db_connection
+import pandas as pd
+import random
 
 company_routes_blueprint = Blueprint('company_routes', __name__)
 
@@ -152,7 +154,7 @@ def generateSuggestions():
         ## For each company in database, get stock price (in AV service)
         totalPrice = 0
         for ticker in tickers:
-            totalPrice += getCurrentStockPrice(ticker)
+            totalPrice += float(getCurrentStockPrice(ticker)['price'])
         ## Get average stock price
         averagePrice = totalPrice / len(tickers)
     else:
@@ -163,14 +165,17 @@ def generateSuggestions():
     minPrice = averagePrice - RANGE
 
     ## Read CSV
-    df = pd.read_csv('../nasdaq_listed.csv')
-    untracked = df[['Name', 'Symbol']]
+    df = pd.read_csv('nasdaq_listed.csv')
+    untracked = df[['Name', 'Symbol', 'Last Sale']]
     ## Get companies which have stock price which lies within this valid range
     for index, row in untracked.iterrows():
-        companyPrice = getCurrentStockPrice(row['Symbol'])
+        companyPrice = float(row['Last Sale'][1:])
         ## Get company name and ticker of these companies
         if companyPrice is not None and companyPrice > minPrice and companyPrice < maxPrice:
-            suggestions.append([row['Name'], row['Symbol']])
+            suggestions.append({
+                'name': row['Name'],
+                'ticker': row['Symbol']
+            })
 
     ## Get SUGGESTION_COUNT(6) random companies from this list
     suggestions = random.sample(suggestions, SUGGESTION_COUNT)
