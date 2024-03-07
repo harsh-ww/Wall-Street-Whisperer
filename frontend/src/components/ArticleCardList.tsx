@@ -2,6 +2,8 @@ import { Box } from "@chakra-ui/react";
 import ArticleCardItem from "./ArticleCardItem";
 import { useEffect, useState } from "react";
 import { Article } from "./ArticleCardItem";
+import { API_URL } from '../config'
+
 
 interface Props {
   ticker: string;
@@ -24,7 +26,7 @@ export default function ArticleCardList({ ticker }: Props) {
 
   //   const fetchArticles = async () => {
   //     try {
-  //       const response = await fetch(`http://localhost:5000/articles/${ticker}`);
+  //       const response = await fetch(`${API_URL}/articles/${ticker}`);
   //       if (!response.ok) {
   //         console.error(`HTTP error! status: ${response.status}`);
   //         throw new Error("Failed to fetch articles");
