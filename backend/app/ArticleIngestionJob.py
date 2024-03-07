@@ -7,6 +7,7 @@ from typing import List, Tuple
 from services import NewsService, AnalysisService
 import tldextract
 import requests, json
+from datetime import date, timedelta
 
 INGESTION_FREQUENCY = 24
 SCORE_THRESHOLD = 70   # An article have to be greater than this score to notify users
@@ -91,6 +92,20 @@ def saveAnalysedArticles(articles: List[AnalysisService.AnalysedArticle]):
             # Link company and article
             cur.execute("""INSERT INTO company_articles (CompanyID, ArticleID) VALUES (%s, %s)""", [company_id, articleID])
 
+            conn.commit()
+            
+            # Update company current score after insertion
+            date_30_days_ago = date.today() - timedelta(days=30)
+
+            update_company_score = """UPDATE company 
+                                    SET CurrentScore = (
+                                        SELECT AVG(OverallScore) FROM article 
+                                        JOIN company_articles ON article.ArticleID = company_articles.ArticleID
+                                        WHERE company_articles.CompanyID = %s AND article.PublishedDate >= %s
+                                    )
+                                    WHERE CompanyID = %s
+                                    """
+            cur.execute(update_company_score, (company_id, date_30_days_ago, company_id))
             conn.commit()
 
             # Add the article ID to a list to be notified, if its score exceeds threshold
