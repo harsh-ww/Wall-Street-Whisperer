@@ -15,10 +15,32 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { mockGridData, UnitConversion } from "../components/mockData";
 import { DataGrid } from "../components/DataGrid";
 import ArticleMotif from "../components/ArticleMotif";
-import { useState } from "react";
+import SuggestionsGenerator from "../components/Suggestions"
+import { useState, useEffect } from "react";
 import { CloseIcon } from "@chakra-ui/icons";
 
 function HomePage() {
+
+  const [suggestions, setSuggestions] = useState([]); // State variable for suggestions
+
+  useEffect(() => {
+    // Fetch suggestions data
+    const fetchSuggestions = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/suggestions');
+        if (!response.ok) {
+          throw new Error('Failed to fetch suggestions');
+        }
+        const data = await response.json();
+        setSuggestions(data);
+      } catch (error) {
+        console.error('Error fetching suggestions:', error.message);
+      }
+    };
+
+    fetchSuggestions();
+  }, []);
+
   function handleDelete(id: number) {
     console.log("delete", id);
   }
@@ -152,6 +174,26 @@ function HomePage() {
                 </Heading>
                 Notifications go here
               </GridItem>
+
+              {/* Third item in grid: Suggested companies */}
+              <GridItem
+                colSpan={2}
+                rowSpan={1}
+                bg="whiteAlpha.900"
+                borderRadius="md"
+                p="10px"
+              >
+                {" "}
+                <Heading as="h4" size={["md", "lg", "lg"]} pb="10px">
+                  Suggestions
+                </Heading>
+                <SimpleGrid columns={2} spacing={2}>
+                  {suggestions.map((company) => (
+                    <SuggestionsGenerator key={company[1]} companyName={company[0]} />
+                  ))}
+                </SimpleGrid>
+              </GridItem>
+
               <GridItem
                 colSpan={5}
                 bg="whiteAlpha.900"
