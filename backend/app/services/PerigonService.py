@@ -28,7 +28,7 @@ def getCompanyNewsPerigon(companyName: str, timePeriodHours: int, count:int, top
 
     if response.status_code != 200:
         logging.error(f'Failed Perigon news fetching. Error {response.status_code} - {response.json()}')
-        raise APIError('Problem fetching news articles from AlphaVantage')
+        raise APIError('Problem fetching news articles from GoPerigon')
     
     data = response.json()
 

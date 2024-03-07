@@ -34,7 +34,7 @@ If you choose not to use docker, you will have to follow the steps below. Keep i
 #### Installation
 ```
 cd backend
-pip install -r requirements.txt
+pip install -r dev.requirements.txt
 cd ../frontend
 npm install
 ```
