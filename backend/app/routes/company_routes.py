@@ -131,11 +131,11 @@ def changeFormat(data):
 # Returns the Company name and Ticker of companies to suggest
 @company_routes_blueprint.route('/suggestions')
 def generateSuggestions():
-    
+
     SUGGESTION_COUNT = 6
     RANGE = 50
     suggestions = []
-    
+
     ## Get all companies' tickers stored in DB
     sql_query = "SELECT TickerCode FROM company;"
     # execute query
@@ -147,7 +147,7 @@ def generateSuggestions():
             tickers = [row[0] for row in rows]
     finally:
         conn.close()
-    
+
     if len(tickers) > 0:
         ## For each company in database, get stock price (in AV service)
         totalPrice = 0
@@ -157,11 +157,11 @@ def generateSuggestions():
         averagePrice = totalPrice / len(tickers)
     else:
         averagePrice = 100 #Default to 100 if anything doesn't work for whatever reason
-        
+
     ## Create range of acceptable stock prices
     maxPrice = averagePrice + RANGE
     minPrice = averagePrice - RANGE
-    
+
     ## Read CSV
     df = pd.read_csv('../nasdaq_listed.csv')
     untracked = df[['Name', 'Symbol']]
@@ -171,9 +171,9 @@ def generateSuggestions():
         ## Get company name and ticker of these companies
         if companyPrice is not None and companyPrice > minPrice and companyPrice < maxPrice:
             suggestions.append([row['Name'], row['Symbol']])
-            
+
     ## Get SUGGESTION_COUNT(6) random companies from this list
     suggestions = random.sample(suggestions, SUGGESTION_COUNT)
-    
+
     return jsonify(suggestions)
 ## \\ [PROJ-42]

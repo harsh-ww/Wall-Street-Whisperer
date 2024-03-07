@@ -1,12 +1,12 @@
-
 import { Flex } from "@chakra-ui/react";
 import { Link, Text, Box } from "@chakra-ui/react";
 
 interface Props {
   companyName: string;
+  ticker: string;
 }
 
-function SuggestionsGenerator({ companyName }: Props) {
+function SuggestionsGenerator({ companyName, ticker }: Props) {
   return (
     <Flex
       h="50%"
@@ -20,7 +20,7 @@ function SuggestionsGenerator({ companyName }: Props) {
       borderColor="purple.900"
       direction="column"
     >
-      <Link href="">{companyName}</Link>
+      <Link href={`/company/${ticker}`}>{companyName}</Link>
       <Box align="center" >
         <Text fontSize="xs" overflow="hidden">
           {companyName} score

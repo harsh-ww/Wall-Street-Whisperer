@@ -189,7 +189,7 @@ function HomePage() {
                 </Heading>
                 <SimpleGrid columns={2} spacing={2}>
                   {suggestions.map((company) => (
-                    <SuggestionsGenerator key={company[1]} companyName={company[0]} />
+                    <SuggestionsGenerator key={company[1]} companyName={company[0]} ticker={company[1]} />
                   ))}
                 </SimpleGrid>
               </GridItem>
