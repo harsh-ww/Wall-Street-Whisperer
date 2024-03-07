@@ -56,7 +56,7 @@ function MyCard() {
       boxShadow="md"
       position="absolute"
       zIndex="100"
-      left={isMoved ? "2em" : "-10em"}
+      left={isMoved ? "2em" : "-12.4em"}
       transition="left 0.3s ease"
     >
       <Button
@@ -83,6 +83,7 @@ function MyCard() {
               <CompanyMotif
                 companyName={company ? company.CommonName : ""}
                 textSize="xs"
+                TickerCode={company ? company.TickerCode : ""}
               />
             </Box>
           )

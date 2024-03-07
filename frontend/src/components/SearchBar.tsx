@@ -30,7 +30,7 @@ function SearchBar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<Company[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [isBarVisible, setIsBarVisible] = useState(true); // State to track the visibility of the search bar
   const handleSearch = async () => {
     try {
       setIsLoading(true);
@@ -65,7 +65,10 @@ function SearchBar() {
   const handleMouseLeave = () => {
     setHoveredCompany(null);
   };
-
+  const handleNavLinkClick = () => {
+    setIsBarVisible(false); // Hide the search bar when NavLink is clicked
+    setSearchQuery(""); //revert search query to empty when new page loaded
+  };
   return (
     <>
       <Flex
@@ -86,6 +89,7 @@ function SearchBar() {
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
+                setIsBarVisible(true);
                 handleSearch();
               }
             }}
@@ -108,63 +112,64 @@ function SearchBar() {
               maxWidth="70%"
               // padding="5px"
             >
-              <CardBody width="100%">
-                <Stack divider={<StackDivider />} spacing="2" width="100%">
-                  {searchResults.map(
-                    (
-                      company,
-                      index //response from json will stack and fill the possible search results
-                    ) => (
-                      <React.Fragment key={index}>
-                        {/* <NavLink to={`/company/${company.symbol}`}> */}{" "}
-                        {/*commented out until company page logic is complete*/}
-                        <NavLink to={`/company/<symbol>`}>
-                          <Flex
-                            color={company.tracked ? "pink.500" : "black"}
-                            p="5px"
-                            width="100%"
-                            alignItems="center"
-                            as="button"
-                            bg={
-                              hoveredCompany === index
-                                ? "gray.200"
-                                : "transparent"
-                            } // change bg color based on hoveredCompany
-                            onMouseEnter={() => handleMouseEnter(index)}
-                            onMouseLeave={handleMouseLeave}
-                          >
-                            <Badge
-                              fontSize="0.8em"
-                              mr="3"
-                              // variant="subtle"
-                              colorScheme={company.tracked ? "pink" : "gray"}
-                              borderRadius="5px"
+              {isBarVisible && (
+                <CardBody width="100%">
+                  <Stack divider={<StackDivider />} spacing="2" width="100%">
+                    {searchResults.map(
+                      (
+                        company,
+                        index //response from json will stack and fill the possible search results
+                      ) => (
+                        <React.Fragment key={index}>
+                          <NavLink to={`/company/${company.symbol} `}>
+                            <Flex
+                              color={company.tracked ? "pink.500" : "black"}
+                              p="5px"
+                              width="100%"
+                              alignItems="center"
+                              as="button"
+                              bg={
+                                hoveredCompany === index
+                                  ? "gray.200"
+                                  : "transparent"
+                              } // change bg color based on hoveredCompany
+                              onMouseEnter={() => handleMouseEnter(index)}
+                              onMouseLeave={handleMouseLeave}
+                              onClick={handleNavLinkClick}
                             >
-                              {company.symbol}
-                            </Badge>
-                            <Heading size="xs" textTransform="uppercase">
-                              {company.name}{" "}
-                            </Heading>
-                            <Spacer />
-                            {company.tracked && (
                               <Badge
                                 fontSize="0.8em"
                                 mr="3"
-                                variant="outline"
-                                colorScheme="pink"
+                                // variant="subtle"
+                                colorScheme={company.tracked ? "pink" : "gray"}
                                 borderRadius="5px"
                               >
-                                Following
+                                {company.symbol}
                               </Badge>
-                            )}
-                            <Text fontSize="sm">{company.exchange}</Text>
-                          </Flex>
-                        </NavLink>
-                      </React.Fragment>
-                    )
-                  )}
-                </Stack>
-              </CardBody>
+                              <Heading size="xs" textTransform="uppercase">
+                                {company.name}{" "}
+                              </Heading>
+                              <Spacer />
+                              {company.tracked && (
+                                <Badge
+                                  fontSize="0.8em"
+                                  mr="3"
+                                  variant="outline"
+                                  colorScheme="pink"
+                                  borderRadius="5px"
+                                >
+                                  Following
+                                </Badge>
+                              )}
+                              <Text fontSize="sm">{company.exchange}</Text>
+                            </Flex>
+                          </NavLink>
+                        </React.Fragment>
+                      )
+                    )}
+                  </Stack>
+                </CardBody>
+              )}
             </Card>
           </Flex>
         )}

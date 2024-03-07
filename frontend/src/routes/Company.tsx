@@ -32,12 +32,16 @@ import {
 import { TriangleUpIcon, TriangleDownIcon } from "@chakra-ui/icons";
 import BaseLayout from "../layouts/BaseLayout";
 import AreaChart from "../components/AreaChart";
-import { IoIosAddCircleOutline } from "react-icons/io";
+import {
+  IoIosAddCircleOutline,
+  IoIosRemoveCircleOutline,
+} from "react-icons/io";
 import { HiExternalLink } from "react-icons/hi";
 
 interface CompanyDetails {
   //explicit type casting for the returned JSON
   //add necessary headers when required
+  tracked: boolean;
   Name: string;
   name: string; //for non-US companies
   Symbol: string;
@@ -58,7 +62,7 @@ const CompanyDetails = () => {
   const [commonName, setCommonName] = useState(""); //provide database common_name insertion
   const { isOpen, onOpen, onClose } = useDisclosure(); //reactive modal dialog to be used when trying to track company
   const toastTrack = useToast();
-  const { exchange, ticker } = useParams();
+  const { exchange, ticker, tracked } = useParams();
   const [companyData, setCompanyData] = useState<CompanyDetails>(); //fill page with relevant data from server once retrieved, initially null
 
   useEffect(() => {
@@ -79,7 +83,7 @@ const CompanyDetails = () => {
       }
     };
     fetchCompanyData();
-  }, [exchange, ticker]); //optional dependencies, the page will refresh if these change, i.e. when different exchange and company identification page is chosen...
+  }, [exchange, ticker, tracked]); //optional dependencies, the page will refresh if these change, i.e. when different exchange and company identification page is chosen...
 
   function Company() {
     //function to handle storing tracked company data for that user
@@ -128,6 +132,10 @@ const CompanyDetails = () => {
         });
         console.error("Error, tracking try catch failed");
       }
+    };
+
+    const handleUntrackCompany = async () => {
+      //insert untrack company details here
     };
 
     let articles = [
@@ -213,14 +221,30 @@ const CompanyDetails = () => {
                     justifyContent="center"
                   >
                     <Button
-                      colorScheme="purple"
+                      colorScheme={
+                        companyData && companyData.tracked ? "orange" : "purple"
+                      } //change styling depending on whether company is tracked or not
                       size="lg"
                       w={["auto", "282px", "282px"]}
                       // mt="6"
-                      rightIcon={<IoIosAddCircleOutline size={28} />}
-                      onClick={onOpen}
+                      rightIcon={
+                        companyData && companyData.tracked ? (
+                          <IoIosRemoveCircleOutline size={28} />
+                        ) : (
+                          <IoIosAddCircleOutline size={28} />
+                        )
+                      }
+                      onClick={() => {
+                        if (companyData && companyData.tracked) {
+                          handleUntrackCompany();
+                        } else {
+                          onOpen();
+                        }
+                      }}
                     >
-                      Track Company
+                      {companyData && companyData.tracked
+                        ? "Untrack"
+                        : "Track Company"}
                     </Button>
                   </Box>
                   {/* modal dialog popup to assign a new name to the tracked company */}
