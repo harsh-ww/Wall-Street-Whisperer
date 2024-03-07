@@ -57,7 +57,6 @@ interface CompanyDetails {
 const CompanyDetails = () => {
   const [commonName, setCommonName] = useState(""); //provide database common_name insertion
   const { isOpen, onOpen, onClose } = useDisclosure(); //reactive modal dialog to be used when trying to track company
-  const [isValid, setIsValid] = useState(false); //reactive to when database insertion fails for modal dialog
   const toastTrack = useToast();
   const { exchange, ticker } = useParams();
   const [companyData, setCompanyData] = useState<CompanyDetails>(); //fill page with relevant data from server once retrieved, initially null
@@ -80,14 +79,10 @@ const CompanyDetails = () => {
       }
     };
     fetchCompanyData();
-    console.log(
-      companyData ? parseFloat(companyData.stock.change) <= 0 : "Nothing"
-    );
   }, [exchange, ticker]); //optional dependencies, the page will refresh if these change, i.e. when different exchange and company identification page is chosen...
 
   function Company() {
     //function to handle storing tracked company data for that user
-
     const handleTrackCompany = async () => {
       const data = {
         ticker_code: companyData
@@ -112,8 +107,25 @@ const CompanyDetails = () => {
         }
         const responseData = await response.json();
         console.log(responseData);
-        setIsValid(true); //frontend clarification using toast component
+        toastTrack({
+          //usage of reactive toasts that confirm after database update whether the addition was successful
+          title: "Added",
+          description: "This company is now being tracked!",
+          status: "success",
+          duration: 3500,
+          variant: "subtle",
+          isClosable: true,
+        });
       } catch (error) {
+        toastTrack({
+          //in the case that the user manages to track again, relay an error
+          title: "An error has occured",
+          description: "",
+          status: "error",
+          duration: 3500,
+          variant: "subtle",
+          isClosable: true,
+        });
         console.error("Error, tracking try catch failed");
       }
     };
@@ -243,18 +255,6 @@ const CompanyDetails = () => {
                             //function adds to database tracked company for the user
                             handleTrackCompany();
                             onClose();
-
-                            toastTrack({
-                              title: isValid ? "Added" : "An error has occured",
-                              description: isValid
-                                ? "This company is now being tracked!"
-                                : "",
-                              status: isValid ? "success" : "error",
-                              duration: 3500,
-                              variant: "subtle",
-                              isClosable: true,
-                            });
-                            setIsValid(false); //ensure that valid is set to false after first successful tracking
                           }}
                         >
                           Confirm
