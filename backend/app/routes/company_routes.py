@@ -125,3 +125,10 @@ def changeFormat(data):
         formatted_data.append(formatted_item)
     reversed_data = formatted_data[::-1]  # Reverse the list so it is in chronological order
     return reversed_data[-30:]  # return the 30 most recent data points
+
+@company_routes_blueprint.route('/predict', methods=['GET'])
+def predict():
+    import services.FuturePrediction as fpred
+    
+
+    return fpred.getReturns("IBM")
