@@ -299,6 +299,7 @@ const CompanyDetails = () => {
                             ? companyData.Name || companyData.name
                             : "#"
                         }`} //straightforwardly returns the google search results page for the companies' name
+                        isExternal
                       >
                         <Button
                           colorScheme="purple"
