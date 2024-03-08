@@ -1,7 +1,7 @@
 from flask import current_app, request, Blueprint, jsonify, render_template
 from flask_mail import Message, Mail
 from connect import get_db_connection
-from api_routes import company_details
+from routes.company_routes import company_details
 import requests, json, logging, datetime
 
 emails_blueprint = Blueprint('emails', __name__)
