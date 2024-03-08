@@ -154,6 +154,9 @@ INSERT INTO "article" ("articleid", "title", "articleurl", "sourceid", "publishe
 (126,	'Amazon building in Auckland held up due to stormwater plans',	'https://www.rnz.co.nz/news/business/510719/amazon-building-in-auckland-held-up-due-to-stormwater-plans',	105,	'2024-03-03',	'',	'https://media.rnztools.nz/rnz/image/upload/s--smBFaIK5--/t_tohu-badge-facebook/v1643543560/4NIM58M_image_crop_72463',	'neutral',	0.6202390193939209,	31.011950969696045,	NULL,	'''stormwater plans'', ''stormwater'', ''computer servers'', ''access design'', ''adjacent landowners'', ''Data centres'', ''industrial trade activity'', ''resource consent applications'', ''groundwater'', ''hazardous substances'''),
 (127,	'Amazon''s new Auckland building held up',	'https://www.nzherald.co.nz/nz/amazons-auckland-building-held-up-due-to-stormwater-plans/GSQ7IXWKQJG5NOOWSSCUDJKCDE/',	106,	'2024-03-03',	'',	'https://www.nzherald.co.nz/resizer/GwR0cp693dxYLNjBLA4q5nepPsI=/1200x675/smart/filters:quality(70)/cloudfront-ap-southeast-2.images.arcpublishing.com/nzme/NMYTIQEDV2BFCH32CHEXVAFJA4.jpg',	'positive',	0.7503019571304321,	75.03019571304321,	NULL,	'''computer servers'', ''access design'', ''adjacent landowners'', ''Data centres'', ''industrial trade activity'', ''stormwater'', ''resource consent applications'', ''groundwater'', ''hazardous substances'', ''Healthy Waters''');
 
+SELECT nextval('article_articleid_seq') FROM generate_series(1, 127);
+
+
 DROP TABLE IF EXISTS "company";
 DROP SEQUENCE IF EXISTS company_companyid_seq;
 CREATE SEQUENCE company_companyid_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
@@ -173,6 +176,8 @@ INSERT INTO "company" ("companyid", "companyname", "commonname", "tickercode", "
 (1,	'Tesco PLC',	'Tesco',	'TSCO.LON',	'United Kingdom',	NULL),
 (2,	'Tesla Inc',	'Tesla',	'TSLA',	'United States',	NULL),
 (3,	'Amazon.com Inc',	'Amazon',	'AMZN',	'United States',	NULL);
+
+SELECT nextval('company_companyid_seq') FROM generate_series(1, 3);
 
 DROP TABLE IF EXISTS "company_articles";
 CREATE TABLE "public"."company_articles" (
@@ -377,6 +382,17 @@ CREATE TABLE "public"."web_source" (
     CONSTRAINT "web_source_pkey" PRIMARY KEY ("sourceid")
 ) WITH (oids = false);
 
+DROP TABLE IF EXISTS "notifications";
+DROP SEQUENCE IF EXISTS notification_notificationid_seq;
+CREATE SEQUENCE notification_notificationid_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+CREATE TABLE "public"."notifications" (
+    "notificationid" integer DEFAULT nextval('notification_notificationid_seq') NOT NULL,
+    "userid" integer,
+    "articleid" integer NOT NULL,
+    "visited" boolean DEFAULT FALSE,
+    CONSTRAINT "notifications_pkey" PRIMARY KEY ("notificationid")
+) WITH (oids = false);
+
 INSERT INTO "web_source" ("sourceid", "sourcename", "sourceurl", "popularity", "popularitylastfetched") VALUES
 (1,	'elitenews.uk',	'elitenews.uk',	8648709,	'2024-03-04 20:34:51.658643'),
 (2,	'gbnews.com',	'gbnews.com',	1485,	'2024-03-04 20:34:52.077315'),
@@ -485,6 +501,12 @@ INSERT INTO "web_source" ("sourceid", "sourcename", "sourceurl", "popularity", "
 (105,	'rnz.co.nz',	'rnz.co.nz',	NULL,	NULL),
 (106,	'nzherald.co.nz',	'nzherald.co.nz',	NULL,	NULL);
 
+
+INSERT INTO "notifications" ("articleid") VALUES
+(1),(2);
+SELECT nextval('web_source_sourceid_seq') FROM generate_series(1, 50);
+
+
 ALTER TABLE ONLY "public"."article" ADD CONSTRAINT "article_sourceid_fkey" FOREIGN KEY (sourceid) REFERENCES web_source(sourceid) NOT DEFERRABLE;
 
 ALTER TABLE ONLY "public"."company_articles" ADD CONSTRAINT "company_articles_articleid_fkey" FOREIGN KEY (articleid) REFERENCES article(articleid) NOT DEFERRABLE;
@@ -499,5 +521,8 @@ ALTER TABLE ONLY "public"."stock_price" ADD CONSTRAINT "stock_price_companyid_fk
 
 ALTER TABLE ONLY "public"."user_follows_company" ADD CONSTRAINT "user_follows_company_companyid_fkey" FOREIGN KEY (companyid) REFERENCES company(companyid) NOT DEFERRABLE;
 ALTER TABLE ONLY "public"."user_follows_company" ADD CONSTRAINT "user_follows_company_userid_fkey" FOREIGN KEY (userid) REFERENCES users(userid) NOT DEFERRABLE;
+
+ALTER TABLE ONLY "public"."notifications" ADD CONSTRAINT "notifications_articleid_fkey" FOREIGN KEY (articleid) REFERENCES article(articleid) NOT DEFERRABLE;
+ALTER TABLE ONLY "public"."notifications" ADD CONSTRAINT "notifications_userid_fkey" FOREIGN KEY (userid) REFERENCES users(userid) NOT DEFERRABLE;
 
 -- 2024-03-04 21:20:28.604512+00

@@ -17,6 +17,7 @@ import { DataGrid } from "../components/DataGrid";
 import ArticleMotif from "../components/ArticleMotif";
 import { useState } from "react";
 import { CloseIcon } from "@chakra-ui/icons";
+import RecentArticleList from "../components/RecentArticleList";
 
 function HomePage() {
   function handleDelete(id: number) {
@@ -162,10 +163,8 @@ function HomePage() {
                 <Heading as="h4" size={["md", "lg", "lg"]} pb="10px">
                   In the news
                 </Heading>
-                <SimpleGrid columns={2} spacing={2}>
-                  {articles.map((article) => (
-                    <ArticleMotif articleName={article} />
-                  ))}
+                <SimpleGrid columns={1} spacing={2}>
+                  <RecentArticleList />
                 </SimpleGrid>
               </GridItem>
             </Grid>

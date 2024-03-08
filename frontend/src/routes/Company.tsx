@@ -36,7 +36,10 @@ import {
   IoIosAddCircleOutline,
   IoIosRemoveCircleOutline,
 } from "react-icons/io";
+import ArticleCardList from "../components/ArticleCardList";
 import { HiExternalLink } from "react-icons/hi";
+import { API_URL } from '../config'
+
 
 interface CompanyDetails {
   //explicit type casting for the returned JSON
@@ -70,7 +73,7 @@ const CompanyDetails = () => {
     const fetchCompanyData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/company/${ticker}` //fetch from API address   (FORMAT IS DIFFERENT for US vs NON-US companies)
+          `${API_URL}/company/${ticker}` //fetch from API address   (FORMAT IS DIFFERENT for US vs NON-US companies)
         );
         if (!response.ok) {
           throw new Error("Failed to fetch company data");
@@ -349,12 +352,13 @@ const CompanyDetails = () => {
                   bg="gray.50"
                   p={["15px", "15px", "30px"]}
                 >
-                  <Text textAlign="left">Articles will go here</Text>
-                  <SimpleGrid columns={2} spacing={2}>
-                    {articles.map((article, index) => (
-                      <ArticleMotif key={index} articleName={article} />
-                    ))}
-                  </SimpleGrid>
+                  {/* <SimpleGrid columns={2} spacing={5}> */}
+                  {/* pass in ticker later */}
+                  <ArticleCardList ticker={ticker || ''} />
+                  {/* {articles.map((article) => (
+                      <ArticleMotif articleName={article} />
+                    ))} */}
+                  {/* </SimpleGrid> */}
                 </GridItem>
               </Grid>
             </Box>

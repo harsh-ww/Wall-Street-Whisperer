@@ -8,7 +8,7 @@ from models.Company import Company, StockExchange
 
 US_STOCK_EXCHANGES = [StockExchange.NASDAQ, StockExchange.NYSE]
 
-def fetch_news(company: Company, pastHours: int, count:int=50) -> list[Article]:
+def fetch_news(company: Company, pastHours: int, count:int=15) -> list[Article]:
     articles = []
     articles = getCompanyNewsPerigon(company.name, pastHours, count)
 

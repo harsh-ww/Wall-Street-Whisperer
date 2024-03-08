@@ -1,36 +1,64 @@
-from flask import current_app, request, Blueprint, jsonify
-from flask_mail import Message, Mail
+from flask import Blueprint, redirect, request, jsonify
+from connect import get_db_connection
+import json
 
 notifications_blueprint = Blueprint('notifications', __name__)
 
-# Endpoint to send email
-@notifications_blueprint.route('/sendemail', methods = ['POST'])
-def sendemail():
-
-    # Create mail object
-    mail = Mail(current_app)
-
-    # Retrieve post data
-    data = request.get_json()
-
-    # Construct message 
-
-    msg_recipients = data.get("recipients")  
-    # Can be null
-    if not msg_recipients:
-        return jsonify({'message': 'No emails are sent'}), 200
+# Visit an article by setting it to visited
+@notifications_blueprint.route('/visit/<articleID>', methods=['POST'])
+def visit(articleID):
     
-    msg_title = "News article from your tracked companies"
-    msg_body = "There is a news article from one of your tracked companies.\nClick the following link to view."
-    msg = Message(msg_title, 
-            recipients = msg_recipients)
-    msg.body = msg_body
+    conn = get_db_connection()
+    # Mark the article as visited
+    with conn.cursor() as cur:
+        markVisited = """UPDATE notifications SET Visited = TRUE WHERE ArticleID = %s"""
+        cur.execute(markVisited, (articleID,))
+        conn.commit()
 
-    try:
-        # Send the mail
-        mail.send(msg)
-        return jsonify({'message': 'Emails successfully sent'}), 201
+    return jsonify({'message': 'Notification marked as visited'}), 201
 
-    except Exception as e:
-        error = str(e)
-        return jsonify({"error" : "Error sending emails: " + error}), 500
+# Mark all articles as visited
+@notifications_blueprint.route('/visitAll', methods=['POST'])
+def visitAll():
+    conn = get_db_connection()
+    
+    with conn.cursor() as cur:
+        markAllVisited = """UPDATE notifications SET Visited = TRUE"""
+        cur.execute(markAllVisited)
+        conn.commit()
+
+    return jsonify({'message': 'All notifications marked as visited'}), 201
+
+# Endpoint to get all unvisited articles that appear in notifications
+@notifications_blueprint.route('/unvisitednotifications', methods = ['GET'])
+def unvisitednotifications():
+    conn = get_db_connection()
+    
+    with conn.cursor() as cur:
+        query = """SELECT ("title", "articleurl", "sourceid", "publisheddate", "authors", "imageurl", "sentimentlabel", "sentimentscore", "overallscore", "summary", "keywords") 
+        FROM notifications JOIN article ON notifications.articleID = article.articleID
+        WHERE Visited = FALSE
+        ORDER BY publisheddate DESC"""
+
+        cur.execute(query)
+        
+        data = cur.fetchall()
+        return data
+
+
+# Endpoint to get all articles that have appeared in notifications
+@notifications_blueprint.route('/notifications', methods = ['GET'])
+def notifications():
+    conn = get_db_connection()
+    
+    with conn.cursor() as cur:
+        query = """SELECT ("title", "articleurl", "sourceid", "publisheddate", "authors", "imageurl", "sentimentlabel", "sentimentscore", "overallscore", "summary", "keywords") 
+        FROM notifications JOIN article ON notifications.articleID = article.articleID
+        ORDER BY publisheddate DESC"""
+        cur.execute(query)
+        
+        data = cur.fetchall()
+        return data
+
+
+    

@@ -97,3 +97,13 @@ CREATE TABLE company_social_posts (
     FOREIGN KEY (CompanyID) REFERENCES company(CompanyID),
     FOREIGN KEY (SocialPostID) REFERENCES social_post(SocialPostID)
 );
+
+DROP TABLE IF EXISTS notifications CASCADE;
+CREATE TABLE notifications (
+    NotificationID SERIAL PRIMARY KEY,
+    UserID INT,
+    ArticleID INT,
+    Visited BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (UserID) REFERENCES users(UserID),
+    FOREIGN KEY (ArticleID) REFERENCES article(ArticleID)
+);
