@@ -22,7 +22,7 @@ export default function ArticleCardList({ ticker }: Props) {
 
     useEffect(() => {
       fetchArticles();
-    }, []);
+    }, [ticker]);
 
     const fetchArticles = async () => {
       try {
