@@ -48,7 +48,11 @@ function ListCompanies() {
               company //using CompanyMotif as a base, we can use backend data to populate the trending companies data
             ) => (
               <Box>
-                <CompanyMotif companyName={company} textSize="sm" />
+                <CompanyMotif
+                  companyName={company}
+                  textSize="sm"
+                  TickerCode="#"
+                />
               </Box>
             )
           )}

@@ -1,4 +1,7 @@
--- Adminer 4.8.1 PostgreSQL 16.2 (Debian 16.2-1.pgdg120+2) dump
+-- Adminer 4.8.1 PostgreSQL 16.2 (Debian 16.2-1.pgdg120+2) dumpcompany
+
+
+
 
 DROP TABLE IF EXISTS "article";
 DROP SEQUENCE IF EXISTS article_articleid_seq;
@@ -157,6 +160,7 @@ SELECT nextval('article_articleid_seq') FROM generate_series(1, 127);
 DROP TABLE IF EXISTS "company";
 DROP SEQUENCE IF EXISTS company_companyid_seq;
 CREATE SEQUENCE company_companyid_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+SELECT setval('company_companyid_seq', 4); --IMPORTANT, ONLY SET TO 4 TO BYPASS SAMPLE DATA COMPANY INSERTIONS AS SERIALISATION IS HAVING ISSUES
 
 CREATE TABLE "public"."company" (
     "companyid" integer DEFAULT nextval('company_companyid_seq') NOT NULL,
@@ -362,8 +366,9 @@ CREATE TABLE "public"."users" (
     "password" character varying(255) NOT NULL,
     CONSTRAINT "users_pkey" PRIMARY KEY ("userid")
 ) WITH (oids = false);
-
-
+ -- test user account
+INSERT INTO "users" ("userid", "username", "email", "password") VALUES
+(1, 'testUser', 'testAcc@email.com', '12345pass');
 DROP TABLE IF EXISTS "web_source";
 DROP SEQUENCE IF EXISTS web_source_sourceid_seq;
 CREATE SEQUENCE web_source_sourceid_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
@@ -375,6 +380,17 @@ CREATE TABLE "public"."web_source" (
     "popularity" integer,
     "popularitylastfetched" timestamp,
     CONSTRAINT "web_source_pkey" PRIMARY KEY ("sourceid")
+) WITH (oids = false);
+
+DROP TABLE IF EXISTS "notifications";
+DROP SEQUENCE IF EXISTS notification_notificationid_seq;
+CREATE SEQUENCE notification_notificationid_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+CREATE TABLE "public"."notifications" (
+    "notificationid" integer DEFAULT nextval('notification_notificationid_seq') NOT NULL,
+    "userid" integer,
+    "articleid" integer NOT NULL,
+    "visited" boolean DEFAULT FALSE,
+    CONSTRAINT "notifications_pkey" PRIMARY KEY ("notificationid")
 ) WITH (oids = false);
 
 INSERT INTO "web_source" ("sourceid", "sourcename", "sourceurl", "popularity", "popularitylastfetched") VALUES
@@ -485,6 +501,9 @@ INSERT INTO "web_source" ("sourceid", "sourcename", "sourceurl", "popularity", "
 (105,	'rnz.co.nz',	'rnz.co.nz',	NULL,	NULL),
 (106,	'nzherald.co.nz',	'nzherald.co.nz',	NULL,	NULL);
 
+
+INSERT INTO "notifications" ("articleid") VALUES
+(1),(2);
 SELECT nextval('web_source_sourceid_seq') FROM generate_series(1, 50);
 
 
@@ -502,5 +521,8 @@ ALTER TABLE ONLY "public"."stock_price" ADD CONSTRAINT "stock_price_companyid_fk
 
 ALTER TABLE ONLY "public"."user_follows_company" ADD CONSTRAINT "user_follows_company_companyid_fkey" FOREIGN KEY (companyid) REFERENCES company(companyid) NOT DEFERRABLE;
 ALTER TABLE ONLY "public"."user_follows_company" ADD CONSTRAINT "user_follows_company_userid_fkey" FOREIGN KEY (userid) REFERENCES users(userid) NOT DEFERRABLE;
+
+ALTER TABLE ONLY "public"."notifications" ADD CONSTRAINT "notifications_articleid_fkey" FOREIGN KEY (articleid) REFERENCES article(articleid) NOT DEFERRABLE;
+ALTER TABLE ONLY "public"."notifications" ADD CONSTRAINT "notifications_userid_fkey" FOREIGN KEY (userid) REFERENCES users(userid) NOT DEFERRABLE;
 
 -- 2024-03-04 21:20:28.604512+00

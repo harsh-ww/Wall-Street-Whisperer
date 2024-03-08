@@ -7,7 +7,6 @@ CREATE TABLE users (
     Email VARCHAR(255) NOT NULL,
     Password VARCHAR(255) NOT NULL
 );
-
 -- Companies
 
 DROP TABLE IF EXISTS company CASCADE; 
@@ -97,4 +96,14 @@ CREATE TABLE company_social_posts (
     PRIMARY KEY (CompanyID, SocialPostID),
     FOREIGN KEY (CompanyID) REFERENCES company(CompanyID),
     FOREIGN KEY (SocialPostID) REFERENCES social_post(SocialPostID)
+);
+
+DROP TABLE IF EXISTS notifications CASCADE;
+CREATE TABLE notifications (
+    NotificationID SERIAL PRIMARY KEY,
+    UserID INT,
+    ArticleID INT,
+    Visited BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (UserID) REFERENCES users(UserID),
+    FOREIGN KEY (ArticleID) REFERENCES article(ArticleID)
 );
