@@ -23,8 +23,7 @@ import AreaChart from "../components/AreaChart";
 import ArticleCardList from "../components/ArticleCardList";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { HiExternalLink } from "react-icons/hi";
-import { API_URL } from '../config'
-
+import { API_URL } from "../config";
 
 interface CompanyDetails {
   //explicit type casting for the returned JSON
@@ -205,7 +204,7 @@ const CompanyDetails = () => {
                 </Flex>
               </Box>
 
-              <Grid templateColumns="repeat(2, 1fr)" gap={1}>
+              <Grid templateColumns="repeat(2, 1fr)" gap={0}>
                 <GridItem
                   w="100%"
                   height="100%"
@@ -226,7 +225,7 @@ const CompanyDetails = () => {
                 >
                   {/* <SimpleGrid columns={2} spacing={5}> */}
                   {/* pass in ticker later */}
-                  <ArticleCardList ticker={ticker || ''} />
+                  <ArticleCardList ticker={ticker || ""} />
                   {/* {articles.map((article) => (
                       <ArticleMotif articleName={article} />
                     ))} */}
