@@ -10,7 +10,7 @@ import Landing from "./routes/Landing.tsx";
 import HomePage from "./routes/HomePage.tsx";
 import Company from "./routes/Company.tsx";
 import ErrorPage from "./ErrorPage.tsx";
-
+import bgSVG from "../public/bgSVG.svg";
 const theme = extendTheme({
   styles: {
     global: () => ({

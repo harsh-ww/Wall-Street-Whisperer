@@ -1,4 +1,7 @@
--- Adminer 4.8.1 PostgreSQL 16.2 (Debian 16.2-1.pgdg120+2) dump
+-- Adminer 4.8.1 PostgreSQL 16.2 (Debian 16.2-1.pgdg120+2) dumpcompany
+
+
+
 
 DROP TABLE IF EXISTS "article";
 DROP SEQUENCE IF EXISTS article_articleid_seq;
@@ -157,6 +160,7 @@ SELECT nextval('article_articleid_seq') FROM generate_series(1, 127);
 DROP TABLE IF EXISTS "company";
 DROP SEQUENCE IF EXISTS company_companyid_seq;
 CREATE SEQUENCE company_companyid_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+SELECT setval('company_companyid_seq', 4); --IMPORTANT, ONLY SET TO 4 TO BYPASS SAMPLE DATA COMPANY INSERTIONS AS SERIALISATION IS HAVING ISSUES
 
 CREATE TABLE "public"."company" (
     "companyid" integer DEFAULT nextval('company_companyid_seq') NOT NULL,
@@ -362,8 +366,9 @@ CREATE TABLE "public"."users" (
     "password" character varying(255) NOT NULL,
     CONSTRAINT "users_pkey" PRIMARY KEY ("userid")
 ) WITH (oids = false);
-
-
+ -- test user account
+INSERT INTO "users" ("userid", "username", "email", "password") VALUES
+(1, 'testUser', 'testAcc@email.com', '12345pass');
 DROP TABLE IF EXISTS "web_source";
 DROP SEQUENCE IF EXISTS web_source_sourceid_seq;
 CREATE SEQUENCE web_source_sourceid_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;

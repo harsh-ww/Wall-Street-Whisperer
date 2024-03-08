@@ -1,17 +1,19 @@
-import { ReactNode } from "react";
 import { Box } from "@chakra-ui/react";
-
-//consistent background implementing gradient effect
-//considering background png for more visual design
+import React from "react";
 
 interface Props {
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
 function Background({ children }: Props) {
   return (
-    <Box height="20vh" width="100vw" p="4">
-      {children} {/*where the logo gets put */}
+    <Box
+      height="20vh"
+      width="100vw"
+      p="4"
+      bgGradient="linear(to-b, purple.300, purple.100)" // Gradient from purple.500 to purple.900
+    >
+      {children}
     </Box>
   );
 }
