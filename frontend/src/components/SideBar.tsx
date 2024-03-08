@@ -2,6 +2,7 @@ import { Card, Text, Button, Divider, Box, Flex } from "@chakra-ui/react";
 import { ArrowLeftIcon, ArrowRightIcon, BellIcon } from "@chakra-ui/icons";
 import { useState, useEffect } from "react";
 import CompanyMotif from "./CompanyMotif";
+import { API_URL } from "../config";
 
 //side bar, not located in Landing page, contains company motif links and alert links
 
@@ -22,7 +23,7 @@ function MyCard() {
   useEffect(() => {
     const fetchTracked = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/trackedCompanies`);
+        const response = await fetch(`${API_URL}/tracked`);
         if (!response.ok) {
           throw new Error("Failed to fetch tracked companies");
         }

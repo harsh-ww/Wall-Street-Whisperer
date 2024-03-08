@@ -100,7 +100,7 @@ const CompanyDetails = () => {
 
       try {
         const response = await fetch(
-          "http://localhost:5000/track", //calls track.py function
+          `${API_URL}/track`, //calls track.py function
           {
             method: "POST",
             headers: {

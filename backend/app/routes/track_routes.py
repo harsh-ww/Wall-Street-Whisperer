@@ -55,7 +55,7 @@ def track_company():
 
     # Check if already tracked
     if check_already_tracked(ticker_code):
-          return jsonify({'error': 'Company already tracked'}), 400
+          return jsonify({'error': 'Company already tracked'}), 409
     
     # Get company details from AV
     company_details = get_company_info(ticker_code)
@@ -75,15 +75,16 @@ def get_tracked_companies():
     conn = get_db_connection()
     with conn.cursor() as cur:
         cur.execute("""
-            SELECT c.CompanyID, c.CompanyName, c.TickerCode, c.Exchange
+            SELECT c.CompanyID, c.CompanyName, c.TickerCode, c.Exchange, c.CommonName
             FROM company c
         """)
                     # INNER JOIN user_follows_company ufc ON c.CompanyID = ufc.CompanyID
         tracked_companies = [{
             'id': row[0],
             'name': row[1],
-            'ticker_code': row[2],
-            'exchange': row[3]
+            'TickerCode': row[2],
+            'exchange': row[3],
+            'CommonName': row[4]
         } for row in cur.fetchall()]
     
     conn.close()
