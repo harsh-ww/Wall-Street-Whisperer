@@ -76,11 +76,7 @@ class BatchArticleAnalysis():
             time.sleep(1)
         else:
             if response.status_code != 200:
-                logging.error(f'Failed Similarweb fetching. Error {response.status_code} ')
-                try:
-                    logging.error(f"Error: {response.json()}")
-                except requests.exceptions.JSONDecodeError:
-                    logging.error("Unknown SimilarWeb error")
+                logging.error(f'Failed Similarweb fetching. Error {response.status_code} - {response.text} ')
                 return None
         
         return response.json()['similar_rank']['rank']

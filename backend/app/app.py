@@ -1,8 +1,8 @@
 from flask import Flask
-from flask_mail import Mail
 from flask_cors import CORS
-from connect import get_db_connection
+from psycopg2 import DatabaseError
 import os
+import logging
 
 def create_app():
     app = Flask(__name__)
@@ -20,37 +20,22 @@ def create_app():
     app.config['MAIL_DEFAULT_SENDER'] = ('no-reply', "no-reply@stockapp.com")
 
     # Register blueprints
-    from track import track_blueprint
-    from api_routes import api_routes_blueprint
-    from emails import emails_blueprint
+    from routes.track_routes import track_blueprint
+    from routes.company_routes import company_routes_blueprint
+    from routes.article_routes import article_routes_blueprint
     from notifications import notifications_blueprint
 
     app.register_blueprint(track_blueprint)
-    app.register_blueprint(api_routes_blueprint)
-    app.register_blueprint(emails_blueprint)
+    app.register_blueprint(company_routes_blueprint)
     app.register_blueprint(notifications_blueprint)
+    app.register_blueprint(article_routes_blueprint)
 
     return app 
 
 app = create_app()
 
-@app.route('/')
-def hello():
-    return 'Hello, World!'
-
-@app.route('/example')
-def example_database_call():
-    try:
-        sql_query = "SELECT * FROM company"
-        conn = get_db_connection()
-        with conn.cursor() as cur:
-            cur.execute(sql_query)
-
-            rows = cur.fetchone()
-            print(rows)
-    finally:
-        conn.close()
-        
-    return 'Success'
-
-
+@app.errorhandler(DatabaseError)
+def handle_db_error(err):
+    logging.error(err)
+    print(err)
+    return 'Database Error', 500

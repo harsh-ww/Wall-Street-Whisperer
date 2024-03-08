@@ -50,8 +50,8 @@ function MyCard() {
         Tracked Companies
       </Text>
       <Flex flexDirection="column" height="55%" overflow="auto">
-        {trackedCompanies.map((company) => (
-          <Box transform="scale(0.8)">
+        {trackedCompanies.map((company, index) => (
+          <Box transform="scale(0.8)" key={index}>
             <CompanyMotif companyName={company} textSize="xs" />
           </Box>
         ))}
