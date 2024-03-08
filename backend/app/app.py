@@ -23,12 +23,14 @@ def create_app():
     from routes.track_routes import track_blueprint
     from routes.company_routes import company_routes_blueprint
     from routes.article_routes import article_routes_blueprint
+    from routes.tracked_companies_routes import tracked_companies_blueprint
     from notifications import notifications_blueprint
 
     app.register_blueprint(track_blueprint)
     app.register_blueprint(company_routes_blueprint)
     app.register_blueprint(notifications_blueprint)
     app.register_blueprint(article_routes_blueprint)
+    app.register_blueprint(tracked_companies_blueprint)
 
     return app 
 
