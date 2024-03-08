@@ -19,6 +19,7 @@ import SuggestionsGenerator from "../components/Suggestions"
 import { useState, useEffect } from "react";
 import { CloseIcon } from "@chakra-ui/icons";
 import RecentArticleList from "../components/RecentArticleList";
+import { API_URL } from "../config";
 
 function HomePage() {
 
@@ -28,7 +29,7 @@ function HomePage() {
     // Fetch suggestions data
     const fetchSuggestions = async () => {
       try {
-        const response = await fetch('https://solid-broccoli-jjxrwgw7j9jfj79q-5000.app.github.dev/suggestions');
+        const response = await fetch(`${API_URL}/suggestions`);
         if (!response.ok) {
           throw new Error('Failed to fetch suggestions');
         }
