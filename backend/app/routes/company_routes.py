@@ -58,6 +58,8 @@ def company_details(ticker: str):
 def search_companies():
     
     search_query = request.args.get('query', '')
+    if not search_query:
+        return []
 
     companies = []
 

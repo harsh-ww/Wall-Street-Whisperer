@@ -14,14 +14,17 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { API_URL } from '../config'
+
 
 interface Company {
   exchange: string; //region
   name: string;
-  symbol: string;
+  symbol?: string;
+  ticker?: string;
   tracked: boolean;
   link: string;
 }
@@ -31,11 +34,18 @@ function SearchBar() {
   const [searchResults, setSearchResults] = useState<Company[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    if(searchQuery.length > 1){
+      handleSearch()
+    }
+  }, [searchQuery])
+
   const handleSearch = async () => {
     try {
       setIsLoading(true);
+      console.log(API_URL)
       const response = await fetch(
-        `http://localhost:5000/company?query=${searchQuery}` //make call to server using api route search_companies()
+        `${API_URL}/company?query=${searchQuery}` //make call to server using api route search_companies()
       );
       if (!response.ok) {
         //appropriate error handling
@@ -83,11 +93,8 @@ function SearchBar() {
             onFocus={handleToggle}
             onBlur={handleToggle}
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleSearch();
-              }
+            onChange={(e) => {
+              setSearchQuery(e.target.value)
             }}
             placeholder="Search for Company..."
             variant="filled"
@@ -118,7 +125,7 @@ function SearchBar() {
                       <React.Fragment key={index}>
                         {/* <NavLink to={`/company/${company.symbol}`}> */}{" "}
                         {/*commented out until company page logic is complete*/}
-                        <NavLink to={`/company/<symbol>`}>
+                        <NavLink to={`/company/${company.symbol || company.ticker}`}>
                           <Flex
                             color={company.tracked ? "pink.500" : "black"}
                             p="5px"
@@ -140,7 +147,7 @@ function SearchBar() {
                               colorScheme={company.tracked ? "pink" : "gray"}
                               borderRadius="5px"
                             >
-                              {company.symbol}
+                              {company.symbol || company.ticker}
                             </Badge>
                             <Heading size="xs" textTransform="uppercase">
                               {company.name}{" "}

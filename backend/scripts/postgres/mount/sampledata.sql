@@ -377,6 +377,17 @@ CREATE TABLE "public"."web_source" (
     CONSTRAINT "web_source_pkey" PRIMARY KEY ("sourceid")
 ) WITH (oids = false);
 
+DROP TABLE IF EXISTS "notifications";
+DROP SEQUENCE IF EXISTS notification_notificationid_seq;
+CREATE SEQUENCE notification_notificationid_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+CREATE TABLE "public"."notifications" (
+    "notificationid" integer DEFAULT nextval('notification_notificationid_seq') NOT NULL,
+    "userid" integer,
+    "articleid" integer NOT NULL,
+    "visited" boolean DEFAULT FALSE,
+    CONSTRAINT "notifications_pkey" PRIMARY KEY ("notificationid")
+) WITH (oids = false);
+
 INSERT INTO "web_source" ("sourceid", "sourcename", "sourceurl", "popularity", "popularitylastfetched") VALUES
 (1,	'elitenews.uk',	'elitenews.uk',	8648709,	'2024-03-04 20:34:51.658643'),
 (2,	'gbnews.com',	'gbnews.com',	1485,	'2024-03-04 20:34:52.077315'),
@@ -485,6 +496,9 @@ INSERT INTO "web_source" ("sourceid", "sourcename", "sourceurl", "popularity", "
 (105,	'rnz.co.nz',	'rnz.co.nz',	NULL,	NULL),
 (106,	'nzherald.co.nz',	'nzherald.co.nz',	NULL,	NULL);
 
+
+INSERT INTO "notifications" ("articleid") VALUES
+(1),(2);
 SELECT nextval('web_source_sourceid_seq') FROM generate_series(1, 50);
 
 
@@ -502,5 +516,8 @@ ALTER TABLE ONLY "public"."stock_price" ADD CONSTRAINT "stock_price_companyid_fk
 
 ALTER TABLE ONLY "public"."user_follows_company" ADD CONSTRAINT "user_follows_company_companyid_fkey" FOREIGN KEY (companyid) REFERENCES company(companyid) NOT DEFERRABLE;
 ALTER TABLE ONLY "public"."user_follows_company" ADD CONSTRAINT "user_follows_company_userid_fkey" FOREIGN KEY (userid) REFERENCES users(userid) NOT DEFERRABLE;
+
+ALTER TABLE ONLY "public"."notifications" ADD CONSTRAINT "notifications_articleid_fkey" FOREIGN KEY (articleid) REFERENCES article(articleid) NOT DEFERRABLE;
+ALTER TABLE ONLY "public"."notifications" ADD CONSTRAINT "notifications_userid_fkey" FOREIGN KEY (userid) REFERENCES users(userid) NOT DEFERRABLE;
 
 -- 2024-03-04 21:20:28.604512+00

@@ -23,6 +23,8 @@ import AreaChart from "../components/AreaChart";
 import ArticleCardList from "../components/ArticleCardList";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { HiExternalLink } from "react-icons/hi";
+import { API_URL } from '../config'
+
 
 interface CompanyDetails {
   //explicit type casting for the returned JSON
@@ -50,7 +52,7 @@ const CompanyDetails = () => {
     const fetchCompanyData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/company/${ticker}` //fetch from API address   (FORMAT IS DIFFERENT for US vs NON-US companies)
+          `${API_URL}/company/${ticker}` //fetch from API address   (FORMAT IS DIFFERENT for US vs NON-US companies)
         );
         if (!response.ok) {
           throw new Error("Failed to fetch company data");
@@ -224,7 +226,7 @@ const CompanyDetails = () => {
                 >
                   {/* <SimpleGrid columns={2} spacing={5}> */}
                   {/* pass in ticker later */}
-                  <ArticleCardList ticker={""} />
+                  <ArticleCardList ticker={ticker || ''} />
                   {/* {articles.map((article) => (
                       <ArticleMotif articleName={article} />
                     ))} */}

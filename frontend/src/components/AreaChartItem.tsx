@@ -10,6 +10,7 @@ import {
 import { useState, useEffect } from "react";
 import { format, parseISO, subDays } from "date-fns";
 import { Box, Text } from "@chakra-ui/react";
+import { API_URL } from '../config'
 
 interface AreaChartItemProps {
   ticker: string;
@@ -36,7 +37,7 @@ export const AreaChartItem: React.FC<AreaChartItemProps> = ({
   const fetchData = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/company/${ticker}/timeseries?granularity=${granularity}`
+        `${API_URL}/company/${ticker}/timeseries?granularity=${granularity}`
       );
       if (!response.ok) {
         console.error(`HTTP error! status: ${response.status}`);
