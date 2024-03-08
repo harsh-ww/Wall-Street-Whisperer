@@ -1,5 +1,4 @@
 import "../App.css";
-import SideBar from "../components/SideBar";
 import {
   Box,
   Grid,
@@ -14,10 +13,9 @@ import BaseLayout from "../layouts/BaseLayout";
 import { createColumnHelper } from "@tanstack/react-table";
 import { mockGridData, UnitConversion } from "../components/mockData";
 import { DataGrid } from "../components/DataGrid";
-import ArticleMotif from "../components/ArticleMotif";
-import { useState } from "react";
 import { CloseIcon } from "@chakra-ui/icons";
 import RecentArticleList from "../components/RecentArticleList";
+import Notifications from "../components/Notifications";
 
 function HomePage() {
   function handleDelete(id: number) {
@@ -108,10 +106,10 @@ function HomePage() {
           >
             <Heading lineHeight="tall">
               <Highlight
-                query="Followed"
+                query="Tracked"
                 styles={{ px: "2", py: "1", rounded: "full", bg: "blue.100" }}
               >
-                Your Followed Companies
+                Your Tracked Companies
               </Highlight>
             </Heading>
           </Box>
@@ -141,18 +139,18 @@ function HomePage() {
                 <DataGrid columns={columns} data={mockGridData} />
               </GridItem>
               <GridItem
-                colSpan={2}
-                rowSpan={2}
-                bg="whiteAlpha.900"
-                borderRadius="md"
-                p="10px"
-              >
-                {" "}
-                <Heading as="h4" size={["md", "lg", "lg"]} pb="10px">
-                  Alerts
-                </Heading>
-                Notifications go here
-              </GridItem>
+            colSpan={2}
+            rowSpan={2}
+            bg="whiteAlpha.900"
+            borderRadius="md"
+            p="10px"
+        >
+            {" "}
+            <Heading as="h4" size={["md", "lg", "lg"]} pb="10px">
+                Notifications
+            </Heading>
+            <Notifications />
+            </GridItem>
               <GridItem
                 colSpan={5}
                 bg="whiteAlpha.900"

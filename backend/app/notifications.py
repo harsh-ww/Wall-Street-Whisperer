@@ -14,6 +14,7 @@ def visit(articleID):
         markVisited = """UPDATE notifications SET Visited = TRUE WHERE ArticleID = %s"""
         cur.execute(markVisited, (articleID,))
         conn.commit()
+    conn.close()
 
     return jsonify({'message': 'Notification marked as visited'}), 201
 
@@ -27,15 +28,19 @@ def visitAll():
         cur.execute(markAllVisited)
         conn.commit()
 
+    conn.close()
+
     return jsonify({'message': 'All notifications marked as visited'}), 201
 
 # Endpoint to get all unvisited articles that appear in notifications
 @notifications_blueprint.route('/unvisitednotifications', methods = ['GET'])
 def unvisitednotifications():
     conn = get_db_connection()
+
+    articles = []
     
     with conn.cursor() as cur:
-        query = """SELECT ("title", "articleurl", "sourceid", "publisheddate", "authors", "imageurl", "sentimentlabel", "sentimentscore", "overallscore", "summary", "keywords") 
+        query = """SELECT "title", "articleurl", "sourceid", "publisheddate", "authors", "imageurl", "sentimentlabel", "sentimentscore", "overallscore", "summary", "keywords"
         FROM notifications JOIN article ON notifications.articleID = article.articleID
         WHERE Visited = FALSE
         ORDER BY publisheddate DESC"""
@@ -43,7 +48,11 @@ def unvisitednotifications():
         cur.execute(query)
         
         data = cur.fetchall()
-        return data
+        for row in data:
+                row_dict = dict(zip([column[0] for column in cur.description], row))
+                articles.append(row_dict)
+    conn.close()
+    return articles
 
 
 # Endpoint to get all articles that have appeared in notifications
@@ -58,7 +67,8 @@ def notifications():
         cur.execute(query)
         
         data = cur.fetchall()
-        return data
+    conn.close()
+    return data
 
 
     
