@@ -351,13 +351,7 @@ const CompanyDetails = () => {
                   bg="gray.50"
                   p={["15px", "15px", "30px"]}
                 >
-                  {/* <SimpleGrid columns={2} spacing={5}> */}
-                  {/* pass in ticker later */}
-                  <ArticleCardList ticker={ticker || ""} />
-                  {/* {articles.map((article) => (
-                      <ArticleMotif articleName={article} />
-                    ))} */}
-                  {/* </SimpleGrid> */}
+                  <ArticleCardList ticker={ticker || ""} tracked={companyData?.tracked || false} />
                 </GridItem>
               </Grid>
             </Box>
