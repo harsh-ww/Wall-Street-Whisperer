@@ -14,7 +14,6 @@ import {
   IconButton,
   CloseButton,
 } from "@chakra-ui/react";
-// import { Logo } from "@choc-ui/logo";
 import Logo from "./Logo";
 import {
   AiOutlineMenu,
@@ -73,17 +72,6 @@ export default function App() {
                   justifySelf="self-start"
                   onClick={mobileNav.onClose}
                 />
-                <NavLink to="/">
-                  <Button
-                    variant="ghost"
-                    // colorScheme="brand"
-                    leftIcon={<MdExplore />}
-                    size="md"
-                  >
-                    Explore
-                    {/* this is the landing page */}
-                  </Button>
-                </NavLink>
                 <NavLink to="/home">
                   <Button variant="ghost" leftIcon={<AiFillHome />} size="md">
                     Home
@@ -102,26 +90,11 @@ export default function App() {
             </chakra.a>
 
             <HStack spacing={3} display={{ base: "none", md: "inline-flex" }}>
-              <NavLink to="/">
-                <Button variant="ghost" leftIcon={<MdExplore />} size="md">
-                  Explore
-                  {/* this is the landing page */}
-                </Button>
-              </NavLink>
               <NavLink to="/home">
                 <Button variant="ghost" leftIcon={<AiFillHome />} size="md">
                   Home
                 </Button>
               </NavLink>
-              {/* <NavLink to="/company/<symbol>">
-                <Button
-                  variant="ghost"
-                  leftIcon={<MdOutlineBusinessCenter />}
-                  size="md"
-                >
-                  Companies
-                </Button>
-              </NavLink> */}
             </HStack>
           </HStack>
           <HStack
