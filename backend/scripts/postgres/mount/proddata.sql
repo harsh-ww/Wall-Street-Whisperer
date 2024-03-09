@@ -75,6 +75,9 @@ CREATE TABLE "public"."company" (
     "tickercode" character varying(10) NOT NULL,
     "exchange" character varying(255),
     "currentscore" double precision,
+    "avgreturn" double precision,
+    "avgsentiment" double precision,
+    "modesentiment" character varying(255),
     CONSTRAINT "company_pkey" PRIMARY KEY ("companyid")
 ) WITH (oids = false);
 
