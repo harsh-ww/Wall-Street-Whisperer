@@ -36,9 +36,15 @@ function SearchBar() {
 
   useEffect(() => {
     if(searchQuery.length > 1){
-      handleSearch()
+      handleSearch();
+    }else{
+      setSearchResults([]);
     }
   }, [searchQuery])
+
+  const handleNavigate = () => {
+    setSearchQuery("");
+  }
 
   const handleSearch = async () => {
     try {
@@ -139,6 +145,7 @@ function SearchBar() {
                             } // change bg color based on hoveredCompany
                             onMouseEnter={() => handleMouseEnter(index)}
                             onMouseLeave={handleMouseLeave}
+                            onClick={handleNavigate}
                           >
                             <Badge
                               fontSize="0.8em"

@@ -4,13 +4,14 @@ from models.Article import Article
 from connect import get_db_connection
 import logging
 from typing import List, Tuple
-from services import NewsService, AnalysisService
+from services import NewsService, AnalysisService, FuturePrediction
 import tldextract
 import requests, json
 from datetime import date, timedelta
+from collections import Counter
 
 INGESTION_FREQUENCY = 24
-SCORE_THRESHOLD = 70   # An article have to be greater than this score to notify users
+SCORE_THRESHOLD = 90   # An article have to be greater than this score to notify users
 
 # gets a list of Company objects for tracked companies
 
@@ -18,7 +19,7 @@ def getTrackedCompanies() -> List[Company]:
     """
     Gets a list of tracked companies from the database
     """
-    query = "SELECT CommonName, Exchange, TickerCode FROM company"
+    query = "SELECT CommonName, Exchange, TickerCode FROM company WHERE Tracked=True"
     conn = get_db_connection()
 
     with conn.cursor() as cur:
@@ -80,18 +81,15 @@ def saveAnalysedArticles(articles: List[AnalysisService.AnalysedArticle]):
             # Storing keywords and authors as text for simplicity
             keywordsAsText = str([x['name'] for x in article.keywords]).replace("[","").replace("]", "")
             authorsAsText =  str(article.authors).replace("[","").replace("]", "")
-
+            
             insertSQL = """
-                INSERT INTO article (Title, ArticleURL, SourceID, PublishedDate, Authors, ImageURL, SentimentLabel, SentimentScore, OverallScore, Keywords) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING ArticleID
+                INSERT INTO article (Title, ArticleURL, SourceID, PublishedDate, Authors, ImageURL, SentimentLabel, SentimentScore, OverallScore, Summary, Keywords, CompanyID) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s, %s) RETURNING ArticleID
             """
 
-            cur.execute(insertSQL, [article.title, article.sourceURL, sourceID, article.datePublished, authorsAsText, article.image, article.sentimentLabel, article.sentimentProb, article.score, keywordsAsText])
+            cur.execute(insertSQL, [article.title, article.sourceURL, sourceID, article.datePublished, authorsAsText, article.image, article.sentimentLabel, article.sentimentProb, article.score, article.summary, keywordsAsText, company_id])
             
             articleID = cur.fetchone()[0]
-
-            # Link company and article
-            cur.execute("""INSERT INTO company_articles (CompanyID, ArticleID) VALUES (%s, %s)""", [company_id, articleID])
-
+            
             conn.commit()
             
             # Update company current score after insertion
@@ -100,8 +98,7 @@ def saveAnalysedArticles(articles: List[AnalysisService.AnalysedArticle]):
             update_company_score = """UPDATE company 
                                     SET CurrentScore = (
                                         SELECT AVG(OverallScore) FROM article 
-                                        JOIN company_articles ON article.ArticleID = company_articles.ArticleID
-                                        WHERE company_articles.CompanyID = %s AND article.PublishedDate >= %s
+                                        WHERE CompanyID = %s AND article.PublishedDate >= %s
                                     )
                                     WHERE CompanyID = %s
                                     """
@@ -118,6 +115,52 @@ def saveAnalysedArticles(articles: List[AnalysisService.AnalysedArticle]):
     conn.close()
 
     return newarticleIDs
+
+def updatePredictions(companies: List[Company]):
+
+    conn = get_db_connection()
+    with conn.cursor() as cur:
+        for company in companies:
+
+            # Get company ID 
+            cur.execute("SELECT CompanyID FROM company WHERE TickerCode=%s AND Tracked=TRUE", [company.ticker])
+            company_id = cur.fetchone()[0]
+
+            # Get average return for company
+            avg_return = FuturePrediction.getReturnsAverage(company.ticker, 3) * 100
+
+            threeDaysAgo = date.today() - timedelta(days=3)
+            # Get article sentiments from last 3 days
+            cur.execute("SELECT SentimentLabel, SentimentScore FROM article WHERE CompanyID=%s AND PublishedDate > %s", [company_id, threeDaysAgo])
+            rows = cur.fetchall()
+
+            sentiments = [(row[0], row[1]) for row in rows]
+            posNeg = lambda x: 1 if x=='positive' else -1
+            sentimentsScores = [x[1] * (posNeg(x[0])) for x in sentiments if x[0]!='neutral']
+            sentimentLabels = [x[0] for x in sentiments]
+
+            avg_sentiment = sum(sentimentsScores)/len(sentimentsScores)
+            mode_sentiment = Counter(sentimentLabels).most_common()[0][0]
+
+            cur.execute("UPDATE company SET AvgReturn=%s, AvgSentiment=%s, ModeSentiment=%s WHERE CompanyID=%s", [avg_return, avg_sentiment, mode_sentiment, company_id])
+            conn.commit()
+    conn.close()
+
+def send_emails(article_ids:List[int]):
+    """
+    Job for sending emails 
+    """
+    if article_ids:
+        data = {'recipients':["stockapp220@gmail.com"], 'articleList': article_ids} #CHANGE
+
+        response = requests.post('http://localhost:5000/sendarticleemail',
+                            content_type='application/json',
+                            data = json.dumps(dict(data)))
+        
+        if response.status_code == 201:
+            logging.info("Article emails sent successfully.")
+        else:
+            logging.error("There is an error sending article emails.")
 
 def job():
     """
@@ -137,21 +180,12 @@ def job():
     logging.info("Saving analysed articles")
     newartleIDs = saveAnalysedArticles(analysedArticles)
 
+    logging.info("Updating predictions")
+    updatePredictions(companies)
 
-    """
-    Job for sending emails 
-    """
-    if newartleIDs:
-        data = {'recipients':["stockapp220@gmail.com"], 'articleList': newartleIDs} #CHANGE
+    logging.info("Sending notification emails")
+    send_emails(newartleIDs)
 
-        response = requests.post('http://localhost:5000/sendarticleemail',
-                            content_type='application/json',
-                            data = json.dumps(dict(data)))
-        
-        if response.status_code == 201:
-            logging.info("Article emails sent successfully.")
-        else:
-            logging.error("There is an error sending article emails.")
 
 # Run this as a CRON JOB
 # schedule.every(INGESTION_FREQUENCY).hours()

@@ -18,7 +18,7 @@ def test_track(client, test_db):
 
     with test_db.cursor() as cur:
         # Check if the data has exactly one row
-        cur.execute('SELECT COUNT(*) FROM company')
+        cur.execute('SELECT COUNT(*) FROM company WHERE Tracked=True')
         rows_count = cur.fetchone()
         assert rows_count[0] == 1
 

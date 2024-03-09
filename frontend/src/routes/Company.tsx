@@ -3,6 +3,17 @@ import SideBar from "../components/SideBar";
 import ArticleMotif from "../components/ArticleMotif";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  useToast,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+} from "@chakra-ui/react";
 
 import {
   Box,
@@ -16,19 +27,23 @@ import {
   ButtonGroup,
   SimpleGrid,
   Link,
+  Input,
 } from "@chakra-ui/react";
 import { TriangleUpIcon, TriangleDownIcon } from "@chakra-ui/icons";
 import BaseLayout from "../layouts/BaseLayout";
 import AreaChart from "../components/AreaChart";
+import {
+  IoIosAddCircleOutline,
+  IoIosRemoveCircleOutline,
+} from "react-icons/io";
 import ArticleCardList from "../components/ArticleCardList";
-import { IoIosAddCircleOutline } from "react-icons/io";
 import { HiExternalLink } from "react-icons/hi";
-import { API_URL } from '../config'
-
+import { API_URL } from "../config";
 
 interface CompanyDetails {
   //explicit type casting for the returned JSON
   //add necessary headers when required
+  tracked: boolean;
   Name: string;
   name: string; //for non-US companies
   Symbol: string;
@@ -43,8 +58,13 @@ interface CompanyDetails {
   };
 }
 
+//tracking added companies
+
 const CompanyDetails = () => {
-  const { exchange, ticker } = useParams();
+  const [commonName, setCommonName] = useState(""); //provide database common_name insertion
+  const { isOpen, onOpen, onClose } = useDisclosure(); //reactive modal dialog to be used when trying to track company
+  const toastTrack = useToast();
+  const { exchange, ticker, tracked } = useParams();
   const [companyData, setCompanyData] = useState<CompanyDetails>(); //fill page with relevant data from server once retrieved, initially null
 
   useEffect(() => {
@@ -65,19 +85,69 @@ const CompanyDetails = () => {
       }
     };
     fetchCompanyData();
-    console.log(
-      companyData ? parseFloat(companyData.stock.change) <= 0 : "Nothing"
-    );
-  }, [exchange, ticker]); //optional dependencies, the page will refresh if these change, i.e. when different exchange and company identification page is chosen...
+  }, [exchange, ticker, tracked]); //optional dependencies, the page will refresh if these change, i.e. when different exchange and company identification page is chosen...
 
   function Company() {
-    // let articles = [
-    //   "Headliner",
-    //   "ArticleTitle",
-    //   "NotAdmissible",
-    //   "MoneyLaundering",
-    //   "DidaGoodThing",
-    // ]; //dummy data
+    //function to handle storing tracked company data for that user
+    const handleTrackCompany = async () => {
+      const data = {
+        ticker_code: companyData
+          ? companyData.Symbol || companyData.symbol || "undefined" //provide data to POST request
+          : "undefined",
+        common_name: commonName, //to be retrieved from a user-input
+      };
+
+      try {
+        const response = await fetch(
+          `${API_URL}/track`, //calls track.py function
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to track company");
+        }
+        const responseData = await response.json();
+        console.log(responseData);
+        toastTrack({
+          //usage of reactive toasts that confirm after database update whether the addition was successful
+          title: "Added",
+          description: "This company is now being tracked!",
+          status: "success",
+          duration: 3500,
+          variant: "subtle",
+          isClosable: true,
+        });
+      } catch (error) {
+        toastTrack({
+          //in the case that the user manages to track again, relay an error
+          title: "An error has occured",
+          description: "",
+          status: "error",
+          duration: 3500,
+          variant: "subtle",
+          isClosable: true,
+        });
+        console.error("Error, tracking try catch failed");
+      }
+    };
+
+    const handleUntrackCompany = async () => {
+      //insert untrack company details here
+    };
+
+    let articles = [
+      "Headliner",
+      "ArticleTitle",
+      "NotAdmissible",
+      "MoneyLaundering",
+      "DidaGoodThing",
+    ]; //dummy data
+
     return (
       <>
         <Box>
@@ -153,15 +223,71 @@ const CompanyDetails = () => {
                     justifyContent="center"
                   >
                     <Button
-                      colorScheme="purple"
+                      colorScheme={
+                        companyData && companyData.tracked ? "orange" : "purple"
+                      } //change styling depending on whether company is tracked or not
                       size="lg"
                       w={["auto", "282px", "282px"]}
                       // mt="6"
-                      rightIcon={<IoIosAddCircleOutline size={28} />}
+                      rightIcon={
+                        companyData && companyData.tracked ? (
+                          <IoIosRemoveCircleOutline size={28} />
+                        ) : (
+                          <IoIosAddCircleOutline size={28} />
+                        )
+                      }
+                      onClick={() => {
+                        if (companyData && companyData.tracked) {
+                          handleUntrackCompany();
+                        } else {
+                          onOpen();
+                        }
+                      }}
                     >
-                      Track Company
+                      {companyData && companyData.tracked
+                        ? "Untrack"
+                        : "Track Company"}
                     </Button>
                   </Box>
+                  {/* modal dialog popup to assign a new name to the tracked company */}
+                  <Modal isOpen={isOpen} onClose={onClose}>
+                    {" "}
+                    <ModalOverlay />
+                    <ModalContent paddingTop="10px">
+                      <ModalBody>
+                        <ModalCloseButton />
+                      </ModalBody>
+                      <ModalFooter>
+                        {/*input acts as common name for the the database insertion */}
+                        <Input
+                          placeholder="Assign a name for this company"
+                          w="80%"
+                          mr={4}
+                          value={commonName}
+                          onChange={(e) => setCommonName(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              handleTrackCompany();
+                              onClose();
+                            }
+                          }}
+                        />
+                        <Button
+                          variant="ghost"
+                          backgroundColor="purple.700"
+                          color="white"
+                          w="20%"
+                          onClick={() => {
+                            //function adds to database tracked company for the user
+                            handleTrackCompany();
+                            onClose();
+                          }}
+                        >
+                          Confirm
+                        </Button>
+                      </ModalFooter>
+                    </ModalContent>
+                  </Modal>
                   <Box
                     display="flex"
                     justifyContent="center"
@@ -175,6 +301,7 @@ const CompanyDetails = () => {
                             ? companyData.Name || companyData.name
                             : "#"
                         }`} //straightforwardly returns the google search results page for the companies' name
+                        isExternal
                       >
                         <Button
                           colorScheme="purple"
@@ -205,7 +332,7 @@ const CompanyDetails = () => {
                 </Flex>
               </Box>
 
-              <Grid templateColumns="repeat(2, 1fr)" gap={1}>
+              <Grid templateColumns="repeat(2, 1fr)" gap={0}>
                 <GridItem
                   w="100%"
                   height="100%"
@@ -224,13 +351,7 @@ const CompanyDetails = () => {
                   bg="gray.50"
                   p={["15px", "15px", "30px"]}
                 >
-                  {/* <SimpleGrid columns={2} spacing={5}> */}
-                  {/* pass in ticker later */}
-                  <ArticleCardList ticker={ticker || ''} />
-                  {/* {articles.map((article) => (
-                      <ArticleMotif articleName={article} />
-                    ))} */}
-                  {/* </SimpleGrid> */}
+                  <ArticleCardList ticker={ticker || ""} tracked={companyData?.tracked || false} />
                 </GridItem>
               </Grid>
             </Box>

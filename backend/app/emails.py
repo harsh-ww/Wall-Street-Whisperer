@@ -1,7 +1,7 @@
 from flask import current_app, request, Blueprint, jsonify, render_template
 from flask_mail import Message, Mail
 from connect import get_db_connection
-from api_routes import company_details
+from services.AlphaVantageService import getCurrentStockPrice
 import requests, json, logging, datetime
 
 emails_blueprint = Blueprint('emails', __name__)
@@ -14,7 +14,7 @@ def daily_email_content():
         cur = conn.cursor()
 
         # Fetch company details from company table, currently it fetches all companies
-        cur.execute("SELECT CompanyName, TickerCode FROM company ORDER BY CompanyName ASC")
+        cur.execute("SELECT CompanyName, TickerCode FROM company WHERE Tracked=True ORDER BY CompanyName ASC")
         stock_data = [{"CompanyName":item[0], "TickerCode":item[1]} for item in cur.fetchall()]
 
         if not stock_data:
@@ -25,15 +25,15 @@ def daily_email_content():
             # Add the price and change columns from the API call
             # These are the details displayed in the email
             for company in stock_data:
-                stock = company_details(company['TickerCode'])['stock']
+                stock = getCurrentStockPrice(company['TickerCode'])
                 company['Price'] = float(stock['price'])
                 company['Change'] = float(stock['change'])
             
                 # Find the highest scoring article on the last 24 hours that belongs to that company
                 # Add the article data to the company dictionary
-                query = """SELECT Title, Articleurl, PublishedDate, Imageurl, Summary, OverallScore
-                        FROM article JOIN company_articles ON article.articleID = company_articles.articleID 
-                        JOIN company ON company_articles.companyID = company.companyID
+                query = """SELECT Title, Articleurl, PublishedDate, Imageurl, Summary, OverallScore, CompanyID
+                        FROM article
+                        JOIN company ON article.companyID = company.companyID
                         WHERE CompanyName = %s AND PublishedDate = %s
                         ORDER BY ABS(OverallScore) DESC LIMIT 1
                         """
@@ -60,9 +60,9 @@ def article_email_content(articleList):
     with conn.cursor() as cur:
         cur = conn.cursor()
 
-        query = """SELECT CompanyName, TickerCode, Title, Articleurl, PublishedDate, Imageurl, Summary, OverallScore
-                FROM article JOIN company_articles ON article.articleID = company_articles.articleID 
-                JOIN company ON company_articles.companyID = company.companyID
+        query = """SELECT CompanyName, TickerCode, Title, Articleurl, PublishedDate, Imageurl, Summary, OverallScore, CompanyID
+                FROM article
+                JOIN company ON article.companyID = company.companyID
                 WHERE article.articleID = ANY(%s)
                 ORDER BY CompanyName ASC
                 """
