@@ -9,7 +9,7 @@ track_blueprint = Blueprint('track', __name__)
 def check_already_tracked(ticker:str) -> bool:
     conn = get_db_connection()
     with conn.cursor() as cur:
-        cur.execute("SELECT * FROM company WHERE TickerCode = %s", (ticker,))
+        cur.execute("SELECT * FROM company WHERE TickerCode = %s AND Tracked=TRUE", (ticker,))
         existing_company = cur.fetchone()
     
     conn.close()
@@ -76,7 +76,7 @@ def get_tracked_companies():
     with conn.cursor() as cur:
         cur.execute("""
             SELECT c.CompanyID, c.CompanyName, c.TickerCode, c.Exchange, c.CommonName
-            FROM company c
+            FROM company c WHERE Tracked=True
         """)
                     # INNER JOIN user_follows_company ufc ON c.CompanyID = ufc.CompanyID
         tracked_companies = [{
@@ -90,4 +90,30 @@ def get_tracked_companies():
     conn.close()
     
     return jsonify(tracked_companies)
+
+
+def untrack_db(ticker: str):
+    conn = get_db_connection()
+    with conn.cursor() as cur:
+        cur.execute("UPDATE company SET Tracked=FALSE WHERE TickerCode=%s", [ticker])
+        conn.commit()
+    conn.close()
+ 
+# API endpoint to untrack a company
+@track_blueprint.route('/untrack', methods=['POST'])
+def untrack_company():
+    # Get request body
+    data = request.get_json()
+
+    ticker_code = data.get('ticker_code')
+    
+    if not check_already_tracked(ticker_code):
+        return jsonify({'error': f'Ticker {ticker_code} is not tracked'}), 400
+
+    if not ticker_code:
+        return jsonify({'error': 'Ticker code is required'}), 400
+    
+    untrack_db(ticker_code)
+
+    return jsonify({'message': 'success'}), 204
 

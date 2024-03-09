@@ -8,7 +8,8 @@ CREATE TABLE company (
     CurrentScore FLOAT,
     AvgReturn FLOAT,
     AvgSentiment FLOAT,
-    ModeSentiment VARCHAR(255)
+    ModeSentiment VARCHAR(255),
+    Tracked BOOLEAN DEFAULT TRUE
 );
 -- News 
 

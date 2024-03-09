@@ -76,13 +76,14 @@ CREATE TABLE "public"."company" (
     "avgreturn" double precision,
     "avgsentiment" double precision,
     "modesentiment" character varying(255),
+    "tracked" boolean default TRUE,
     CONSTRAINT "company_pkey" PRIMARY KEY ("companyid")
 ) WITH (oids = false);
 
-INSERT INTO "company" ("companyid", "companyname", "commonname", "tickercode", "exchange", "currentscore", "avgreturn", "avgsentiment", "modesentiment") VALUES
-(1,	'Natwest Group PLC',	'NatWest',	'NWG.LON',	'United Kingdom',	42.2191982784528,	0.10943728122145835,	0.47349481691013684,	'positive'),
-(2,	'Tesla Inc',	'Tesla',	'TSLA',	'United States',	3.8334312284632377,	-0.9937894113898967,	-0.03042227327823639,	'negative'),
-(3,	'Microsoft Corp',	'Microsoft',	'MSFT',	'United States',	-1.624696886940086,	0.30018935525891743,	-0.057064695791764694,	'negative');
+INSERT INTO "company" ("companyid", "companyname", "commonname", "tickercode", "exchange", "currentscore", "avgreturn", "avgsentiment", "modesentiment", "tracked") VALUES
+(1,	'Natwest Group PLC',	'NatWest',	'NWG.LON',	'United Kingdom',	42.2191982784528,	0.10943728122145835,	0.47349481691013684,	'positive', TRUE),
+(2,	'Tesla Inc',	'Tesla',	'TSLA',	'United States',	3.8334312284632377,	-0.9937894113898967,	-0.03042227327823639,	'negative', TRUE),
+(3,	'Microsoft Corp',	'Microsoft',	'MSFT',	'United States',	-1.624696886940086,	0.30018935525891743,	-0.057064695791764694,	'negative', TRUE);
 
 DROP TABLE IF EXISTS "notifications";
 DROP SEQUENCE IF EXISTS notifications_notificationid_seq;
