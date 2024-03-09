@@ -40,8 +40,9 @@ def unvisitednotifications():
     articles = []
     
     with conn.cursor() as cur:
-        query = """SELECT "title", "articleurl", "sourceid", "publisheddate", "authors", "imageurl", "sentimentlabel", "sentimentscore", "overallscore", "summary", "keywords"
-        FROM notifications JOIN article ON notifications.articleID = article.articleID
+        query = """SELECT a.Title, a.ArticleURL, a.SourceID, a.PublishedDate, a.Authors, a.ImageURL, a.SentimentLabel, a.SentimentScore, a.OverallScore, a.Summary, a.Keywords, c.CompanyName, c.TickerCode
+        FROM notifications JOIN article a ON notifications.articleID = a.articleID
+        JOIN company c ON a.companyID = c.companyID
         WHERE Visited = FALSE
         ORDER BY publisheddate DESC"""
 
