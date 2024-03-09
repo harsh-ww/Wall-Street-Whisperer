@@ -32,18 +32,18 @@ CREATE TABLE article (
     OverallScore FLOAT,
     Summary TEXT,
     Keywords TEXT,
-    CompanyID INT NOT NULL
+    CompanyID INT NOT NULL,
     FOREIGN KEY (SourceID) REFERENCES web_source(SourceID),
-    FOREIGN KEY (CompanyID) REFERENCES company(companyID)
+    FOREIGN KEY (CompanyID) REFERENCES company(CompanyID)
 );
 
 DROP TABLE IF EXISTS notifications CASCADE;
 CREATE TABLE notifications (
     NotificationID SERIAL PRIMARY KEY,
-    UserID INT,
+    --UserID INT,
     ArticleID INT,
     Visited BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (UserID) REFERENCES users(UserID),
+    --FOREIGN KEY (UserID) REFERENCES users(UserID),
     FOREIGN KEY (ArticleID) REFERENCES article(ArticleID)
 );
 

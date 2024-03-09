@@ -232,8 +232,9 @@ class BatchArticleAnalysis():
         for aa in analysedArticles:
             aa.score = self.calculateArticleScore(aa)
 
+        logging.info("Generating article summaries")
         # Generate article summaries
-        for aa in analysedArticles:
-            aa.summary = generateSummary(aa.text)
+        # for aa in analysedArticles:
+        #     aa.summary = generateSummary(aa.text)
             
         return analysedArticles

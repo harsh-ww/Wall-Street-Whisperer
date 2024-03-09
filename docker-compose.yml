@@ -28,7 +28,7 @@ services:
       timeout: 5s
       retries: 5
     volumes:
-      - ./backend/scripts/postgres/mount:/docker-entrypoint-initdb.d/
+      - ./backend/scripts/postgres:/docker-entrypoint-initdb.d/
     ports:
       - "5432:5432"
   
