@@ -31,9 +31,9 @@ def daily_email_content():
             
                 # Find the highest scoring article on the last 24 hours that belongs to that company
                 # Add the article data to the company dictionary
-                query = """SELECT Title, Articleurl, PublishedDate, Imageurl, Summary, OverallScore
-                        FROM article JOIN company_articles ON article.articleID = company_articles.articleID 
-                        JOIN company ON company_articles.companyID = company.companyID
+                query = """SELECT Title, Articleurl, PublishedDate, Imageurl, Summary, OverallScore, CompanyID
+                        FROM article
+                        JOIN company ON article.companyID = company.companyID
                         WHERE CompanyName = %s AND PublishedDate = %s
                         ORDER BY ABS(OverallScore) DESC LIMIT 1
                         """
@@ -60,9 +60,9 @@ def article_email_content(articleList):
     with conn.cursor() as cur:
         cur = conn.cursor()
 
-        query = """SELECT CompanyName, TickerCode, Title, Articleurl, PublishedDate, Imageurl, Summary, OverallScore
-                FROM article JOIN company_articles ON article.articleID = company_articles.articleID 
-                JOIN company ON company_articles.companyID = company.companyID
+        query = """SELECT CompanyName, TickerCode, Title, Articleurl, PublishedDate, Imageurl, Summary, OverallScore, CompanyID
+                FROM article
+                JOIN company ON article.companyID = company.companyID
                 WHERE article.articleID = ANY(%s)
                 ORDER BY CompanyName ASC
                 """

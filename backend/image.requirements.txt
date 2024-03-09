@@ -17,4 +17,3 @@ Flask-Cors==4.0.0
 NewsSentiment==1.2.28
 tldextract==5.1.1
 schedule==1.2.1
-transformers

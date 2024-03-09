@@ -38,6 +38,6 @@ def clear_data():
     # Clears data in between each test
     conn = get_db_connection()
     with conn.cursor() as cur:
-        cur.execute("TRUNCATE TABLE user_follows_company, company_articles, company_social_posts, article, social_post, web_source, stock_price, company, users CASCADE;")
+        cur.execute("TRUNCATE TABLE article, web_source, company, notifications CASCADE;")
         conn.commit()
     conn.close()

@@ -10,7 +10,7 @@ import logging
 from datetime import datetime, timedelta
 from typing import List
 import time
-from services.SummaryService import generateSummary
+#from services.SummaryService import batch_generateSummary
 
 SIMILARWEB_API_KEY = os.environ['SIMILARWEB_KEY']
 
@@ -23,7 +23,7 @@ class AnalysedArticle(Article):
     summary = ''
 
     def __init__(self, company:Company, article:Article, sentimentLabel: str, sentimentProb: float) -> None:
-        super().__init__(article.title, article.sourceURL, article.datePublished, article.sourceName, article.authors, article.image, article.text, article.keywords)
+        super().__init__(article.title, article.sourceURL, article.datePublished, article.sourceName, article.authors, article.image, article.text, article.keywords, article.summary)
         self.company = company
         self.sentimentLabel = sentimentLabel
         self.sentimentProb = sentimentProb
@@ -126,7 +126,7 @@ class BatchArticleAnalysis():
             result = cur.fetchone()
 
             # Retrieve cached result or refetch
-            if result is None:
+            if result is None or result[0] is None:
                 # don't have a rank for the current domain - fetch it
                 rank = self.fetchPopularity(domain)
 
@@ -233,7 +233,9 @@ class BatchArticleAnalysis():
             aa.score = self.calculateArticleScore(aa)
 
         # Generate article summaries
-        for aa in analysedArticles:
-            aa.summary = generateSummary(aa.text)
-            
+        # logging.info("Generating article summaries")
+        # summaries = batch_generateSummary([aa.text for aa in analysedArticles])
+        # for i,summary in enumerate(summaries):
+        #     analysedArticles[i].summary = summary
+
         return analysedArticles

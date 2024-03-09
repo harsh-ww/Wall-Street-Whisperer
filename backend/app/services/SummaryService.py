@@ -1,7 +1,9 @@
-from transformers import pipeline
+# from transformers import pipeline
+# from typing import List
 
-def generateSummary(text: str) -> str:
-    article_text = text
-    summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
-    summary = summarizer(article_text, min_length=30, do_sample=False, truncation=True)
-    return summary[0]['summary_text']
+# def batch_generateSummary(articles: List[str]) -> List[str]:
+#     summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+#     summaries = summarizer(articles, batch_size=4, min_length=30, max_length=150, do_sample=True, truncation=True)
+#     return [x['summary_text'] for x in summaries]
+
+
