@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify
 from connect import get_db_connection
+from datetime import datetime
 
 
 article_routes_blueprint = Blueprint('article_routes', __name__)
@@ -14,6 +15,15 @@ def get_articles_by_ticker_db(ticker: str):
             WHERE company.TickerCode = %s;
         """
 
+        params = [ticker]
+
+        if from_date:
+                query += " AND article.PublishedDate >= %s"
+                params.append(from_date)
+        if to_date:
+                query += " AND article.PublishedDate <= %s"
+                params.append(to_date)
+        
         conn = get_db_connection()
         articles = []
         with conn.cursor() as cur:
@@ -28,11 +38,11 @@ def get_articles_by_ticker_db(ticker: str):
      
 
 @article_routes_blueprint.route('/articles/<ticker>', methods=['GET'])
-def get_articles(ticker:str):
-        #from_date = request.args.get('from_date')
-        articles = get_articles_by_ticker_db(ticker)
-
-        return jsonify(articles)
+def get_articles(ticker: str):
+    from_date = request.args.get('from_date')
+    to_date = request.args.get('to_date')
+    articles = get_articles_by_ticker_db(ticker, from_date, to_date)
+    return jsonify(articles)
 
 def get_recent_articles():
     conn = get_db_connection()
