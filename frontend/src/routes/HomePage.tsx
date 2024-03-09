@@ -94,9 +94,9 @@ function HomePage() {
           <Box
             h="fit-content"
             bg="whiteAlpha.900"
-            maxW="70vw"
+            maxW="80vw"
             margin="auto"
-            mt="-20"
+            mt="-12vh"
             mb="10px"
             borderRadius="md"
             overflow="auto"
@@ -117,7 +117,7 @@ function HomePage() {
             // h="fit-content"
             h="105vh"
             // bg="gray.400"
-            maxW="75vw"
+            maxW="80vw"
             margin="auto"
             // mt="-20"
             mb="50"
@@ -127,7 +127,7 @@ function HomePage() {
           >
             <Grid
               h="75vh"
-              w="75vw"
+              w="80vw"
               templateRows="repeat(2, 1fr)"
               templateColumns="repeat(7, 1fr)"
               gap={4}
@@ -139,18 +139,18 @@ function HomePage() {
                 <DataGrid columns={columns} data={mockGridData} />
               </GridItem>
               <GridItem
-            colSpan={2}
-            rowSpan={2}
-            bg="whiteAlpha.900"
-            borderRadius="md"
-            p="10px"
-        >
-            {" "}
-            <Heading as="h4" size={["md", "lg", "lg"]} pb="10px">
-                Notifications
-            </Heading>
-            <Notifications />
-            </GridItem>
+                colSpan={2}
+                rowSpan={2}
+                bg="whiteAlpha.900"
+                borderRadius="md"
+                p="10px"
+              >
+                {" "}
+                <Heading as="h4" size={["md", "lg", "lg"]} pb="10px">
+                  Notifications
+                </Heading>
+                <Notifications />
+              </GridItem>
               <GridItem
                 colSpan={5}
                 bg="whiteAlpha.900"
