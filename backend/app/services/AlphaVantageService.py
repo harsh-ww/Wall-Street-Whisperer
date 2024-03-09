@@ -113,6 +113,8 @@ def getCompanyNews(symbol: str, timePeriodHours: int, count:int) -> List[Article
     return articles
 
 def getCurrentStockPrice(symbol: str):
+    if not symbol:
+        return None
     endpoint = f'{API_URL}/query'
     payload = {'function': 'GLOBAL_QUOTE', 'symbol': symbol, 'apikey': API_KEY}
 
