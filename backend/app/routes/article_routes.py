@@ -37,7 +37,7 @@ def get_recent_articles():
     conn = get_db_connection()
     articles = []
     with conn.cursor() as cur:
-          cur.execute("WITH Ranked AS (SELECT a.*, ca.companyID, ROW_NUMBER() OVER (PARTITION BY a.CompanyID ORDER BY a.PublishedDate DESC, ABS(a.overallScore) DESC) AS rn FROM article a) SELECT r.*, c.CompanyName FROM Ranked r JOIN company c ON r.companyID=c.companyID ORDER BY rn ASC, PublishedDate DESC LIMIT 6;")
+          cur.execute("WITH Ranked AS (SELECT a.*, ROW_NUMBER() OVER (PARTITION BY a.CompanyID ORDER BY a.PublishedDate DESC, ABS(a.overallScore) DESC) AS rn FROM article a) SELECT r.*, c.CompanyName FROM Ranked r JOIN company c ON r.companyID=c.companyID ORDER BY rn ASC, PublishedDate DESC LIMIT 6;")
           rows = cur.fetchall()
           for row in rows:
                 row_dict = dict(zip([column[0] for column in cur.description], row))
