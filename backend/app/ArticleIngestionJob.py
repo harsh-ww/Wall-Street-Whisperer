@@ -76,14 +76,11 @@ def saveAnalysedArticles(articles: List[AnalysisService.AnalysedArticle]):
             keywordsAsText = str([x['name'] for x in article.keywords]).replace("[","").replace("]", "")
             authorsAsText =  str(article.authors).replace("[","").replace("]", "")
             
-            # Generate summary for article
-            summary = SummaryService.generateSummary(article.text)
-
             insertSQL = """
                 INSERT INTO article (Title, ArticleURL, SourceID, PublishedDate, Authors, ImageURL, SentimentLabel, SentimentScore, OverallScore, Summary, Keywords) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING ArticleID
             """
 
-            cur.execute(insertSQL, [article.title, article.sourceURL, sourceID, article.datePublished, authorsAsText, article.image, article.sentimentLabel, article.sentimentProb, article.score, summary, keywordsAsText])
+            cur.execute(insertSQL, [article.title, article.sourceURL, sourceID, article.datePublished, authorsAsText, article.image, article.sentimentLabel, article.sentimentProb, article.score, article.summary, keywordsAsText])
             
             articleID = cur.fetchone()[0]
 
