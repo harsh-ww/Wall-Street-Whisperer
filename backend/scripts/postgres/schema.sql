@@ -9,7 +9,8 @@ CREATE TABLE company (
     AvgReturn FLOAT,
     AvgSentiment FLOAT,
     ModeSentiment VARCHAR(255),
-    Tracked BOOLEAN DEFAULT TRUE
+    Tracked BOOLEAN DEFAULT TRUE,
+    Currency VARCHAR(10) NOT NULL
 );
 -- News 
 
