@@ -82,7 +82,7 @@ def saveAnalysedArticles(articles: List[AnalysisService.AnalysedArticle]):
             authorsAsText =  str(article.authors).replace("[","").replace("]", "")
             
             insertSQL = """
-                INSERT INTO article (Title, ArticleURL, SourceID, PublishedDate, Authors, ImageURL, SentimentLabel, SentimentScore, OverallScore, Summary, Keywords, CompanyID) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING ArticleID
+                INSERT INTO article (Title, ArticleURL, SourceID, PublishedDate, Authors, ImageURL, SentimentLabel, SentimentScore, OverallScore, Summary, Keywords, CompanyID) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s, %s) RETURNING ArticleID
             """
 
             cur.execute(insertSQL, [article.title, article.sourceURL, sourceID, article.datePublished, authorsAsText, article.image, article.sentimentLabel, article.sentimentProb, article.score, article.summary, keywordsAsText, company_id])
@@ -122,9 +122,11 @@ def job():
 
     logging.info("Beginning tracked article ingestion pipeline")
     companies = getTrackedCompanies()
+    print([c.name for c in companies])
 
     logging.info("Fetching articles for tracked companies")
     articlesToProcess = ingestNewsArticles(companies)
+    print([(a[0].name, a[1].title) for a in articlesToProcess])
 
     logging.info("Performing article analysis")
     processor = AnalysisService.BatchArticleAnalysis(articlesToProcess)
