@@ -2,8 +2,8 @@ from services.AlphaVantageService import getTimeSeries
 from typing import List
 import pandas as pd
 
-def getReturns(ticker: str) -> List[float]:
-    """Calculates the returns for the last 100 days for a given ticker"""
+def getReturnsAverage(ticker: str, days: int) -> List[float]:
+    """Calculates the average return for the last 100 days for a given ticker"""
     timeSeries = getTimeSeries(ticker, 'DAILY')
 
     # Create DataFrame
@@ -19,11 +19,10 @@ def getReturns(ticker: str) -> List[float]:
     # Calculate returns
     df['return'] = df['4. close'].pct_change()
 
-    return df['return'].tolist()[1:]
-
-def predictFuture(sentimentScores, returns):
-    mean_sentiment = sum(sentimentScores)/len(sentimentScores)
     
+    # df['return'].tolist()[1:]
+    return df['return'][-days:].mean()
+
 
 
 

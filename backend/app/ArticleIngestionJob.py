@@ -4,10 +4,11 @@ from models.Article import Article
 from connect import get_db_connection
 import logging
 from typing import List, Tuple
-from services import NewsService, AnalysisService
+from services import NewsService, AnalysisService, FuturePrediction
 import tldextract
 import requests, json
 from datetime import date, timedelta
+from collections import Counter
 
 INGESTION_FREQUENCY = 24
 SCORE_THRESHOLD = 70   # An article have to be greater than this score to notify users
@@ -118,6 +119,28 @@ def saveAnalysedArticles(articles: List[AnalysisService.AnalysedArticle]):
     conn.close()
 
     return newarticleIDs
+
+def updatePredictions(id:int, ticker:str):
+    avg_return = FuturePrediction.getReturnsAverage(ticker, 3) * 100
+
+    threeDaysAgo = date.today() - timedelta(days=3)
+
+    conn = get_db_connection()
+    with conn.cursor() as cur:
+        cur.execute("SELECT SentimentLabel, SentimentScore FROM articles JOIN company_articles ca ON ca.ArticleID=article.ArticleID WHERE ca.CompanyID=%s AND article.PublishedDate > %s", [id, threeDaysAgo])
+        rows = cur.fetchall()
+
+        sentiments = [(row[0], row[1]) for row in rows]
+        posNeg = lambda x: 1 if x=='positive' else -1
+        sentimentsScores = [x[1] * (posNeg(x[0])) for x in sentiments if x[0]!='neutral']
+        sentimentLabels = [x[0] for x in sentiments]
+
+        avg_sentiment = sum(sentimentsScores)/len(sentimentsScores)
+        mode_sentiment = Counter(sentimentLabels).most_common()[0]
+
+        cur.execute("UPDATE company SET AvgReturn=%s, AvgSentiment=%s, ModeSentiment=%s WHERE CompanyID=%s", [avg_return, avg_sentiment, mode_sentiment, id])
+        conn.commit()
+    conn.close()
 
 def job():
     """
