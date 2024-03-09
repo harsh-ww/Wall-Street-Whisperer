@@ -9,6 +9,9 @@ from tests.unit.mock import MockResponse
 NewsSentiment = mock.MagicMock()
 mock.patch.dict("sys.modules", NewsSentiment=NewsSentiment).start()
 
+transformers = mock.MagicMock()
+mock.patch.dict("sys.modules", transformers=transformers).start()
+
 
 from services.AnalysisService import BatchArticleAnalysis
 def mock_infer():

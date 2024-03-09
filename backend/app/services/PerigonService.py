@@ -18,6 +18,7 @@ def getCompanyNewsPerigon(companyName: str, timePeriodHours: int, count:int, top
         'from': timeFrom.strftime('%Y-%m-%d'),
         'size': count,
         'language': 'en',
+        'showReprints': False,
         'apiKey': API_KEY
     }
 
@@ -44,7 +45,8 @@ def getCompanyNewsPerigon(companyName: str, timePeriodHours: int, count:int, top
             image=articleJson['imageUrl'],
             sourceName=articleJson['source']['domain'],
             text=articleJson['content'],
-            keywords=articleJson['keywords']
+            keywords=articleJson['keywords'],
+            summary=articleJson['summary']
         )
 
         articles.append(article)
