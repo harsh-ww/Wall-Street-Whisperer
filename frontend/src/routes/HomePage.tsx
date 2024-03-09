@@ -10,6 +10,7 @@ import {
 import BaseLayout from "../layouts/BaseLayout";
 import RecentArticleList from "../components/RecentArticleList";
 import DataTable from "../components/DataTable";
+import Notifications from "../components/Notifications";
 
 function HomePage() {
 
