@@ -170,15 +170,15 @@ def job():
     logging.info("Beginning tracked article ingestion pipeline")
     companies = getTrackedCompanies()
 
-    # logging.info("Fetching articles for tracked companies")
-    # articlesToProcess = ingestNewsArticles(companies)
+    logging.info("Fetching articles for tracked companies")
+    articlesToProcess = ingestNewsArticles(companies)
 
-    # logging.info("Performing article analysis")
-    # processor = AnalysisService.BatchArticleAnalysis(articlesToProcess)
-    # analysedArticles = processor.processArticlesParallel()
+    logging.info("Performing article analysis")
+    processor = AnalysisService.BatchArticleAnalysis(articlesToProcess)
+    analysedArticles = processor.processArticlesParallel()
 
-    # logging.info("Saving analysed articles")
-    # newartleIDs = saveAnalysedArticles(analysedArticles)
+    logging.info("Saving analysed articles")
+    newartleIDs = saveAnalysedArticles(analysedArticles)
 
     logging.info("Updating predictions")
     updatePredictions(companies)
