@@ -5,7 +5,10 @@ CREATE TABLE company (
     CommonName VARCHAR(255) NOT NULL,
     TickerCode VARCHAR(10) NOT NULL,
     Exchange VARCHAR(255), -- Need to add more exchanges here, not exhausted
-    CurrentScore FLOAT
+    CurrentScore FLOAT,
+    AvgReturn FLOAT,
+    AvgSentiment FLOAT,
+    ModeSentiment VARCHAR(255)
 );
 -- News 
 

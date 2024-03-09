@@ -4,10 +4,11 @@ from models.Article import Article
 from connect import get_db_connection
 import logging
 from typing import List, Tuple
-from services import NewsService, AnalysisService
+from services import NewsService, AnalysisService, FuturePrediction
 import tldextract
 import requests, json
 from datetime import date, timedelta
+from collections import Counter
 
 INGESTION_FREQUENCY = 24
 SCORE_THRESHOLD = 90   # An article have to be greater than this score to notify users
@@ -115,6 +116,52 @@ def saveAnalysedArticles(articles: List[AnalysisService.AnalysedArticle]):
 
     return newarticleIDs
 
+def updatePredictions(companies: List[Company]):
+
+    conn = get_db_connection()
+    with conn.cursor() as cur:
+        for company in companies:
+
+            # Get company ID 
+            cur.execute("SELECT CompanyID FROM company WHERE TickerCode=%s", [company.ticker])
+            company_id = cur.fetchone()[0]
+
+            # Get average return for company
+            avg_return = FuturePrediction.getReturnsAverage(company.ticker, 3) * 100
+
+            threeDaysAgo = date.today() - timedelta(days=3)
+            # Get article sentiments from last 3 days
+            cur.execute("SELECT SentimentLabel, SentimentScore FROM article WHERE CompanyID=%s AND PublishedDate > %s", [company_id, threeDaysAgo])
+            rows = cur.fetchall()
+
+            sentiments = [(row[0], row[1]) for row in rows]
+            posNeg = lambda x: 1 if x=='positive' else -1
+            sentimentsScores = [x[1] * (posNeg(x[0])) for x in sentiments if x[0]!='neutral']
+            sentimentLabels = [x[0] for x in sentiments]
+
+            avg_sentiment = sum(sentimentsScores)/len(sentimentsScores)
+            mode_sentiment = Counter(sentimentLabels).most_common()[0][0]
+
+            cur.execute("UPDATE company SET AvgReturn=%s, AvgSentiment=%s, ModeSentiment=%s WHERE CompanyID=%s", [avg_return, avg_sentiment, mode_sentiment, company_id])
+            conn.commit()
+    conn.close()
+
+def send_emails(article_ids:List[int]):
+    """
+    Job for sending emails 
+    """
+    if article_ids:
+        data = {'recipients':["stockapp220@gmail.com"], 'articleList': article_ids} #CHANGE
+
+        response = requests.post('http://localhost:5000/sendarticleemail',
+                            content_type='application/json',
+                            data = json.dumps(dict(data)))
+        
+        if response.status_code == 201:
+            logging.info("Article emails sent successfully.")
+        else:
+            logging.error("There is an error sending article emails.")
+
 def job():
     """
     Main job for article ingestion and analysis
@@ -133,21 +180,12 @@ def job():
     logging.info("Saving analysed articles")
     newartleIDs = saveAnalysedArticles(analysedArticles)
 
+    logging.info("Updating predictions")
+    updatePredictions(companies)
 
-    """
-    Job for sending emails 
-    """
-    if newartleIDs:
-        data = {'recipients':["stockapp220@gmail.com"], 'articleList': newartleIDs} #CHANGE
+    logging.info("Sending notification emails")
+    send_emails(newartleIDs)
 
-        response = requests.post('http://localhost:5000/sendarticleemail',
-                            content_type='application/json',
-                            data = json.dumps(dict(data)))
-        
-        if response.status_code == 201:
-            logging.info("Article emails sent successfully.")
-        else:
-            logging.error("There is an error sending article emails.")
 
 # Run this as a CRON JOB
 # schedule.every(INGESTION_FREQUENCY).hours()

@@ -62,8 +62,6 @@ INSERT INTO "article" ("articleid", "title", "articleurl", "sourceid", "publishe
 (157,	'Microsoft to announce new AI-powered features for Windows 11 soon, confirms Surface and Windows event',	'https://www.indiatoday.in/technology/news/story/microsoft-to-announce-new-ai-powered-features-for-windows-11-soon-confirms-surface-and-windows-event-2512359-2024-03-08',	51,	'2024-03-08',	'''Divyanshi Sharma''',	'https://akm-img-a-in.tosshub.com/indiatoday/images/story/202403/microsoft-075121660-16x9.jpg?VersionId=62QSAz8cmnvrgXfbZCd87FJBccbhGsoF',	'positive',	0.8759453296661377,	96.2092625759077,	'Microsoft has confirmed its New Era of Work event for March 21, which will take place at 9am PDT and 10:30pm Indian time. The event is expected to include new AI-powered features for Windows, new Surface laptops, and updates on the Surface lineup. During the event, Microsoft will also be launching the all-new Surface Pro and Surface Laptops powered by Intel Core Ultra and Snapdragon X Elite-based processors. Other notable features are the "AI Explorer," which transforms PC activities into a searchable memory using natural language. This event may also serve as the platform for the formal announcement of the next major Windows 11 update, Windows 11 version 24H2.',	'''new Surface laptops'', ''AI features'', ''Surface Pro'', ''Surface Laptop'', ''Microsoft Copilot developments'', ''Surface Laptops'', ''Surface'', ''Windows'', ''Copilot'', ''Windows Central''',	3),
 (158,	'5 ways college students can use Copilot for Microsoft 365, starting next month',	'https://www.zdnet.com/article/5-ways-college-students-can-use-copilot-for-microsoft-365-starting-next-month/',	52,	'2024-03-08',	'''Sabrina Ortiz''',	'https://www.zdnet.com/a/img/resize/e2b859d6bebae7ed220c4b0835a82978566ca2e8/2024/03/07/61f6c2bd-467c-4160-b2b1-b6addc8d2660/img-9732.jpg?auto=webp&fit=crop&height=675&width=1200',	'positive',	0.6608123183250427,	71.60017772019864,	'Microsoft has revealed that its Copilot for Microsoft 365, a powerful tool that can promote learning, understanding, and retention of material. Starting April 1, the company will offer Copilot to higher education institutions as an add-in for their students aged 18+. The company shared a list of ways students can use AI within their Microsoft 365 workflows. Copilot can provide quick summaries of chats, remote classes, meetings, or calls, and assist students in composing replies. It can also help students create and edit emails so they can reduce time and communicate better with peers and faculty. The company also shared a Microsoft Education AI Toolkit and an AI in Education Report.',	'''Students'', ''students'', ''college students'', ''less time'', ''Microsoft Excel'', ''generative AI'', ''material'', ''materials'', ''time'', ''Microsoft''',	3);
 
-SELECT setval('article_articleid_seq', 159); 
-
 DROP TABLE IF EXISTS "company";
 DROP SEQUENCE IF EXISTS company_companyid_seq;
 CREATE SEQUENCE company_companyid_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
@@ -75,15 +73,16 @@ CREATE TABLE "public"."company" (
     "tickercode" character varying(10) NOT NULL,
     "exchange" character varying(255),
     "currentscore" double precision,
+    "avgreturn" double precision,
+    "avgsentiment" double precision,
+    "modesentiment" character varying(255),
     CONSTRAINT "company_pkey" PRIMARY KEY ("companyid")
 ) WITH (oids = false);
 
-INSERT INTO "company" ("companyid", "companyname", "commonname", "tickercode", "exchange", "currentscore") VALUES
-(1,	'Natwest Group PLC',	'NatWest',	'NWG.LON',	'United Kingdom',	42.2191982784528),
-(2,	'Tesla Inc',	'Tesla',	'TSLA',	'United States',	3.8334312284632377),
-(3,	'Microsoft Corp',	'Microsoft',	'MSFT',	'United States',	-1.624696886940086);
-
-SELECT setval('company_companyid_seq', 4); 
+INSERT INTO "company" ("companyid", "companyname", "commonname", "tickercode", "exchange", "currentscore", "avgreturn", "avgsentiment", "modesentiment") VALUES
+(1,	'Natwest Group PLC',	'NatWest',	'NWG.LON',	'United Kingdom',	42.2191982784528,	0.10943728122145835,	0.47349481691013684,	'positive'),
+(2,	'Tesla Inc',	'Tesla',	'TSLA',	'United States',	3.8334312284632377,	-0.9937894113898967,	-0.03042227327823639,	'negative'),
+(3,	'Microsoft Corp',	'Microsoft',	'MSFT',	'United States',	-1.624696886940086,	0.30018935525891743,	-0.057064695791764694,	'negative');
 
 DROP TABLE IF EXISTS "notifications";
 DROP SEQUENCE IF EXISTS notifications_notificationid_seq;
@@ -107,8 +106,6 @@ INSERT INTO "notifications" ("notificationid", "articleid", "visited") VALUES
 (61,	153,	'f'),
 (62,	156,	'f'),
 (63,	157,	'f');
-
-SELECT setval('notifications_notificationid_seq', 64); 
 
 DROP TABLE IF EXISTS "web_source";
 DROP SEQUENCE IF EXISTS web_source_sourceid_seq;
@@ -177,11 +174,13 @@ INSERT INTO "web_source" ("sourceid", "sourcename", "sourceurl", "popularity", "
 (51,	'indiatoday.in',	'indiatoday.in',	752,	'2024-03-09 16:57:31.621374'),
 (52,	'zdnet.com',	'zdnet.com',	7493,	'2024-03-09 16:57:31.966571');
 
-SELECT setval('web_source_sourceid_seq', 53); 
-
 ALTER TABLE ONLY "public"."article" ADD CONSTRAINT "article_companyid_fkey" FOREIGN KEY (companyid) REFERENCES company(companyid) NOT DEFERRABLE;
 ALTER TABLE ONLY "public"."article" ADD CONSTRAINT "article_sourceid_fkey" FOREIGN KEY (sourceid) REFERENCES web_source(sourceid) NOT DEFERRABLE;
 
 ALTER TABLE ONLY "public"."notifications" ADD CONSTRAINT "notifications_articleid_fkey" FOREIGN KEY (articleid) REFERENCES article(articleid) NOT DEFERRABLE;
 
--- 2024-03-09 17:11:27.92933+00
+-- 2024-03-09 21:10:37.769748+00
+SELECT setval('article_articleid_seq', 159); 
+SELECT setval('company_companyid_seq', 4); 
+SELECT setval('notifications_notificationid_seq', 64); 
+SELECT setval('web_source_sourceid_seq', 53); 
