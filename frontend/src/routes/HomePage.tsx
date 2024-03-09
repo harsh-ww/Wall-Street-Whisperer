@@ -128,15 +128,25 @@ function HomePage() {
             // textAlign="center"
           >
             <Grid
-              h="75vh"
+              h="100vh"
               w="75vw"
               templateRows="repeat(2, 1fr)"
-              templateColumns="repeat(7, 1fr)"
-              gap={4}
+              // templateColumns="repeat(7, 1fr)"
+              templateColumns={{
+                base: "repeat(2, 1fr)",
+                md: "repeat(2, 1fr)",
+                lg: "repeat(7, 1fr)",
+              }}
+              gap={{ base: 2, md: 4, lg: 4 }}
               margin="auto"
               width="100%"
             >
-              <GridItem colSpan={5} bg="whiteAlpha.900" borderRadius="md">
+              <GridItem
+                colSpan={5}
+                bg="whiteAlpha.900"
+                borderRadius="md"
+                overflow="auto"
+              >
                 {" "}
                 <DataGrid columns={columns} data={mockGridData} />
               </GridItem>
