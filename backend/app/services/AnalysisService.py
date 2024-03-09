@@ -10,7 +10,7 @@ import logging
 from datetime import datetime, timedelta
 from typing import List
 import time
-from services.SummaryService import batch_generateSummary
+#from services.SummaryService import batch_generateSummary
 
 SIMILARWEB_API_KEY = os.environ['SIMILARWEB_KEY']
 
@@ -23,7 +23,7 @@ class AnalysedArticle(Article):
     summary = ''
 
     def __init__(self, company:Company, article:Article, sentimentLabel: str, sentimentProb: float) -> None:
-        super().__init__(article.title, article.sourceURL, article.datePublished, article.sourceName, article.authors, article.image, article.text, article.keywords)
+        super().__init__(article.title, article.sourceURL, article.datePublished, article.sourceName, article.authors, article.image, article.text, article.keywords, article.summary)
         self.company = company
         self.sentimentLabel = sentimentLabel
         self.sentimentProb = sentimentProb
@@ -229,19 +229,13 @@ class BatchArticleAnalysis():
                 aa.setPopularity(popularity)
         
         # Score articles based on all factors we have
-        print("Calculating Score")
         for aa in analysedArticles:
             aa.score = self.calculateArticleScore(aa)
-            print(aa.company.ticker)
 
-        print("SUMMARY")
-        logging.info("Generating article summaries")
-        summaries = batch_generateSummary([aa.text for aa in analysedArticles])
-        print(summaries)
-        for i,summary in enumerate(summaries):
-            analysedArticles[i].summary = summary
         # Generate article summaries
-        # for aa in analysedArticles:
-        #     aa.summary = generateSummary(aa.text)
-        print("After summary")
+        # logging.info("Generating article summaries")
+        # summaries = batch_generateSummary([aa.text for aa in analysedArticles])
+        # for i,summary in enumerate(summaries):
+        #     analysedArticles[i].summary = summary
+
         return analysedArticles

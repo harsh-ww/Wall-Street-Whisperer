@@ -4,13 +4,13 @@ from models.Article import Article
 from connect import get_db_connection
 import logging
 from typing import List, Tuple
-from services import NewsService, AnalysisService, SummaryService
+from services import NewsService, AnalysisService
 import tldextract
 import requests, json
 from datetime import date, timedelta
 
 INGESTION_FREQUENCY = 24
-SCORE_THRESHOLD = 70   # An article have to be greater than this score to notify users
+SCORE_THRESHOLD = 90   # An article have to be greater than this score to notify users
 
 # gets a list of Company objects for tracked companies
 
@@ -122,11 +122,9 @@ def job():
 
     logging.info("Beginning tracked article ingestion pipeline")
     companies = getTrackedCompanies()
-    print([c.name for c in companies])
 
     logging.info("Fetching articles for tracked companies")
     articlesToProcess = ingestNewsArticles(companies)
-    print([(a[0].name, a[1].title) for a in articlesToProcess])
 
     logging.info("Performing article analysis")
     processor = AnalysisService.BatchArticleAnalysis(articlesToProcess)
