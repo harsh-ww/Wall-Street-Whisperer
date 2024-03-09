@@ -66,51 +66,44 @@ export default function App() {
                 spacing={3}
                 rounded="sm"
                 shadow="sm"
+                zIndex={9999} // Ensure the navbar appears on top of other content
               >
                 <CloseButton
                   aria-label="Close menu"
                   justifySelf="self-start"
                   onClick={mobileNav.onClose}
                 />
-                <Button w="full" variant="ghost" leftIcon={<AiFillHome />}>
-                  Dashboard
-                </Button>
-                <Button
-                  w="full"
-                  //   variant="solid"
-                  variant="ghost"
-                  colorScheme="brand"
-                  leftIcon={<AiOutlineInbox />}
-                >
-                  Inbox
-                </Button>
-                <Button
-                  w="full"
-                  variant="ghost"
-                  leftIcon={<BsFillCameraVideoFill />}
-                >
-                  Videos
-                </Button>
+                <NavLink to="/">
+                  <Button
+                    variant="ghost"
+                    // colorScheme="brand"
+                    leftIcon={<MdExplore />}
+                    size="md"
+                  >
+                    Explore
+                    {/* this is the landing page */}
+                  </Button>
+                </NavLink>
+                <NavLink to="/home">
+                  <Button variant="ghost" leftIcon={<AiFillHome />} size="md">
+                    Home
+                  </Button>
+                </NavLink>
               </VStack>
             </Box>
             <chakra.a
               href="/"
-              title="Choc Home Page"
+              title="Finance App"
               display="flex"
               alignItems="center"
             >
               <Logo />
-              <VisuallyHidden>Choc</VisuallyHidden>
+              <VisuallyHidden>Finance App</VisuallyHidden>
             </chakra.a>
 
             <HStack spacing={3} display={{ base: "none", md: "inline-flex" }}>
               <NavLink to="/">
-                <Button
-                  variant="ghost"
-                  // colorScheme="brand"
-                  leftIcon={<MdExplore />}
-                  size="md"
-                >
+                <Button variant="ghost" leftIcon={<MdExplore />} size="md">
                   Explore
                   {/* this is the landing page */}
                 </Button>
@@ -120,7 +113,7 @@ export default function App() {
                   Home
                 </Button>
               </NavLink>
-              <NavLink to="/company/<symbol>">
+              {/* <NavLink to="/company/<symbol>">
                 <Button
                   variant="ghost"
                   leftIcon={<MdOutlineBusinessCenter />}
@@ -128,7 +121,7 @@ export default function App() {
                 >
                   Companies
                 </Button>
-              </NavLink>
+              </NavLink> */}
             </HStack>
           </HStack>
           <HStack
@@ -136,29 +129,6 @@ export default function App() {
             display={mobileNav.isOpen ? "none" : "flex"}
             alignItems="center"
           >
-            {/* <InputGroup>
-              <InputLeftElement pointerEvents="none">
-                <AiOutlineSearch />
-              </InputLeftElement>
-              <Input type="tel" placeholder="Search..." />
-            </InputGroup> */}
-            {/* <SearchBar /> */}
-
-            <chakra.a
-              p={3}
-              color="gray.800"
-              _dark={{ color: "inherit" }}
-              rounded="sm"
-              _hover={{ color: "gray.800", _dark: { color: "gray.600" } }}
-            >
-              <AiFillBell />
-              <VisuallyHidden>Notifications</VisuallyHidden>
-            </chakra.a>
-            <NavLink to="/">
-              <Button variant="ghost" size="md">
-                My Profile
-              </Button>
-            </NavLink>
             <Profile />
           </HStack>
         </Flex>

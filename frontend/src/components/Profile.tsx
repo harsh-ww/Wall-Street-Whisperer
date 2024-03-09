@@ -31,7 +31,6 @@ export default function Profile() {
       </MenuButton>
       <MenuList>
         <MenuItem>Option 1</MenuItem>
-        <MenuItem>Option 2</MenuItem>
         <MenuDivider />
         <NavLink to="/">
           <MenuItem icon={<LuLogOut />}>Log Out</MenuItem>
