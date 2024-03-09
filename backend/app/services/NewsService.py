@@ -1,3 +1,7 @@
+"""
+This module contains a function that calls the function
+to get news from perigon news API
+"""
 import requests
 from .AlphaVantageService import getCompanyNews
 from .PerigonService import getCompanyNewsPerigon
@@ -8,7 +12,8 @@ from models.Company import Company, StockExchange
 
 US_STOCK_EXCHANGES = [StockExchange.NASDAQ, StockExchange.NYSE]
 
-def fetch_news(company: Company, pastHours: int, count:int=15) -> list[Article]:
+
+def fetch_news(company: Company, pastHours: int, count: int = 15) -> list[Article]:
     articles = []
     articles = getCompanyNewsPerigon(company.name, pastHours, count)
 
@@ -16,7 +21,6 @@ def fetch_news(company: Company, pastHours: int, count:int=15) -> list[Article]:
     # if company.exchange in US_STOCK_EXCHANGES:
     #     articles = getCompanyNews(company.ticker, pastHours, count)
     # else:
-    #     # use perigon for non-US companies 
-        
-    
+    #     # use perigon for non-US companies
+
     return articles

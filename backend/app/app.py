@@ -1,23 +1,30 @@
+"""
+This module is the entry point of the flask application.
+"""
+import os
+import logging
 from flask import Flask
 from flask_cors import CORS
 from psycopg2 import DatabaseError
-import os
-import logging
+
 
 def create_app():
+    """
+    Return a flask app object that registers flask mail and registers blueprints
+    """
     app = Flask(__name__)
 
     CORS(app)
 
     # Configuration of flask mail
-    app.config['MAIL_SERVER']='smtp.gmail.com'
-    app.config['MAIL_PORT'] = 465
-    app.config['MAIL_USERNAME'] = 'stockapp220@gmail.com'
-    app.config['MAIL_PASSWORD'] = os.environ['EMAIL_PASSWORD']
-    app.config['MAIL_USE_TLS'] = False
-    app.config['MAIL_USE_SSL'] = True
-    app.config['MAIL_DEBUG'] = True
-    app.config['MAIL_DEFAULT_SENDER'] = ('no-reply', "no-reply@stockapp.com")
+    app.config["MAIL_SERVER"] = "smtp.gmail.com"
+    app.config["MAIL_PORT"] = 465
+    app.config["MAIL_USERNAME"] = "stockapp220@gmail.com"
+    app.config["MAIL_PASSWORD"] = os.environ["EMAIL_PASSWORD"]
+    app.config["MAIL_USE_TLS"] = False
+    app.config["MAIL_USE_SSL"] = True
+    app.config["MAIL_DEBUG"] = True
+    app.config["MAIL_DEFAULT_SENDER"] = ("no-reply", "no-reply@stockapp.com")
 
     # Register blueprints
     from routes.track_routes import track_blueprint
@@ -32,12 +39,17 @@ def create_app():
     app.register_blueprint(article_routes_blueprint)
     app.register_blueprint(emails_blueprint)
 
-    return app 
+    return app
+
 
 app = create_app()
 
+
 @app.errorhandler(DatabaseError)
 def handle_db_error(err):
+    """
+    Handles database errors
+    """
     logging.error(err)
     print(err)
-    return 'Database Error', 500
+    return "Database Error", 500

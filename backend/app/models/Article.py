@@ -1,9 +1,23 @@
+"""
+Describes a class that represents news articles.
+"""
 from typing import List
 
 strList = List[str]
 
-class Article():
-    def __init__(self, title: str, sourceURL: str, datePublished: str, sourceName: str, authors: strList, image: str, text:str='', keywords:list=[]):
+
+class Article:
+    def __init__(
+        self,
+        title: str,
+        sourceURL: str,
+        datePublished: str,
+        sourceName: str,
+        authors: strList,
+        image: str,
+        text: str = "",
+        keywords: list = [],
+    ):
         self.title = title
         self.sourceURL = sourceURL
         self.datePublished = datePublished

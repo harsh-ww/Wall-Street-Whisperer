@@ -1,5 +1,6 @@
 import os
-os.environ['SIMILARWEB_KEY'] = ''
+
+os.environ["SIMILARWEB_KEY"] = ""
 
 from unittest import mock
 from tests.unit.mock import MockResponse
@@ -11,8 +12,11 @@ mock.patch.dict("sys.modules", NewsSentiment=NewsSentiment).start()
 
 
 from services.AnalysisService import BatchArticleAnalysis
+
+
 def mock_infer():
     return []
+
 
 class TestSplitArticleTarget:
     """Tests the splitArticleTarget function"""
@@ -27,7 +31,7 @@ class TestSplitArticleTarget:
         result = analyser.splitArticleTarget(company, article)
 
         assert result is None
-    
+
     def testBoundary(self):
         """Test an article which starts with the company name"""
         company = "Tesco"
@@ -36,8 +40,12 @@ class TestSplitArticleTarget:
         analyser = BatchArticleAnalysis([])
 
         result = analyser.splitArticleTarget(company, article)
-        
-        assert result == ("", "Tesco", " Unveils Bold Plans for Sustainable Future: A Grocery Giant's Environmental Makeover. In a groundbreaking move towards a greener future, Tesco, one of the world's largest supermarket chains, has announced an ambitious sustainability initiative that aims to revolutionize the way we shop and interact with the environment. With concerns about climate change and environmental degradation at an all-time high, Tesco is taking decisive action to reduce its carbon footprint and promote eco-friendly practices throughout its operations.")
+
+        assert result == (
+            "",
+            "Tesco",
+            " Unveils Bold Plans for Sustainable Future: A Grocery Giant's Environmental Makeover. In a groundbreaking move towards a greener future, Tesco, one of the world's largest supermarket chains, has announced an ambitious sustainability initiative that aims to revolutionize the way we shop and interact with the environment. With concerns about climate change and environmental degradation at an all-time high, Tesco is taking decisive action to reduce its carbon footprint and promote eco-friendly practices throughout its operations.",
+        )
 
     def testMultipleOccurrences(self):
         """Test an article with multiple occurrences of the company name"""
@@ -47,24 +55,24 @@ class TestSplitArticleTarget:
         analyser = BatchArticleAnalysis([])
 
         result = analyser.splitArticleTarget(company, article)
-        
+
         assert len(result) == 3
-        assert result[1] == 'Tesco'
+        assert result[1] == "Tesco"
+
 
 class TestPopularityFetching:
     """Test popularity fetching and updating"""
-    
+
     def similarwebMock(*args, **kwargs):
-        if args[0]=='https://api.similarweb.com/v1/similar-rank/bbc.com/rank':
-            return MockResponse({"meta": {}, "similar_rank": {"rank": 20}},200)
+        if args[0] == "https://api.similarweb.com/v1/similar-rank/bbc.com/rank":
+            return MockResponse({"meta": {}, "similar_rank": {"rank": 20}}, 200)
         return MockResponse(None, 404)
 
-    @mock.patch('requests.get', side_effect=similarwebMock)
+    @mock.patch("requests.get", side_effect=similarwebMock)
     def testFetching(self, mocked_get):
         analyser = BatchArticleAnalysis([])
-        result = analyser.fetchPopularity('bbc.com')
+        result = analyser.fetchPopularity("bbc.com")
         assert result == 20
 
-        result = analyser.fetchPopularity('nonexistentsite.cs261')
+        result = analyser.fetchPopularity("nonexistentsite.cs261")
         assert result is None
-

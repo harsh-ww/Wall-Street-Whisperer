@@ -1,4 +1,8 @@
+"""
+Describes a class that represents companies from 3 exchanges.
+"""
 from enum import Enum
+
 
 class StockExchange(Enum):
     NASDAQ = 1
@@ -6,8 +10,13 @@ class StockExchange(Enum):
     LSE = 3
 
 
-class Company():
-    def __init__(self, name, exchange: StockExchange,ticker='', ) -> None:
+class Company:
+    def __init__(
+        self,
+        name,
+        exchange: StockExchange,
+        ticker="",
+    ) -> None:
         self.name = name
         if ticker is not None:
             self.ticker = ticker
