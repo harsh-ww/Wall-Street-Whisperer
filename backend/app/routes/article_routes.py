@@ -1,6 +1,6 @@
+from datetime import datetime
 from flask import Blueprint, jsonify
 from connect import get_db_connection
-
 
 article_routes_blueprint = Blueprint('article_routes', __name__)
 
@@ -51,3 +51,44 @@ def recent_articles():
         articles = get_recent_articles()
 
         return jsonify(articles)
+
+
+@article_routes_blueprint.route('/featured-article/<ticker>/<date>', methods=['GET'])
+def featured_article(ticker, date):
+        """
+        Get the highest scoring article on a particular date
+        """
+        date_input = datetime.strptime(date, '%Y-%m-%d').date() # Convert into a valid date format
+
+        conn = get_db_connection()
+        with conn.cursor() as cur:
+            query = """
+                    SELECT *
+                    FROM article 
+                    JOIN company_articles ON article.ArticleID = company_articles.ArticleID
+                    JOIN company ON company_articles.CompanyID = company.CompanyID
+                    WHERE PublishedDate = %s AND TickerCode = %s
+                    ORDER BY ABS(OverallScore) DESC
+                    LIMIT 1;
+                    """
+            
+            cur.execute(query, (date_input, ticker))
+            article = cur.fetchone()
+
+            if not article:
+                return {}
+            
+            result = {}
+            result['title'] = article[1]
+            result['articleurl'] = article[2]
+            result['sourceid'] = article[3]
+            result['publisheddate'] = article[4]
+            result['authors'] = article[5]
+            result['imageurl'] = article[6]
+            result['sentimentlabel'] = article[7]
+            result['sentimentscore'] = article[8]
+            result['overallscore'] = article[9]
+            result['summary'] = article[10]
+            result['keywords'] = article[11]
+
+            return jsonify(result)

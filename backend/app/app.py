@@ -24,11 +24,13 @@ def create_app():
     from routes.company_routes import company_routes_blueprint
     from routes.article_routes import article_routes_blueprint
     from notifications import notifications_blueprint
+    from emails import emails_blueprint
 
     app.register_blueprint(track_blueprint)
     app.register_blueprint(company_routes_blueprint)
     app.register_blueprint(notifications_blueprint)
     app.register_blueprint(article_routes_blueprint)
+    app.register_blueprint(emails_blueprint)
 
     return app 
 

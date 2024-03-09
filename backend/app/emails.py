@@ -1,7 +1,7 @@
 from flask import current_app, request, Blueprint, jsonify, render_template
 from flask_mail import Message, Mail
 from connect import get_db_connection
-from api_routes import company_details
+from services.AlphaVantageService import getCurrentStockPrice
 import requests, json, logging, datetime
 
 emails_blueprint = Blueprint('emails', __name__)
@@ -25,7 +25,7 @@ def daily_email_content():
             # Add the price and change columns from the API call
             # These are the details displayed in the email
             for company in stock_data:
-                stock = company_details(company['TickerCode'])['stock']
+                stock = getCurrentStockPrice(company['TickerCode'])
                 company['Price'] = float(stock['price'])
                 company['Change'] = float(stock['change'])
             
