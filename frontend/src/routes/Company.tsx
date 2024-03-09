@@ -38,8 +38,7 @@ import {
 } from "react-icons/io";
 import ArticleCardList from "../components/ArticleCardList";
 import { HiExternalLink } from "react-icons/hi";
-import { API_URL } from '../config'
-
+import { API_URL } from "../config";
 
 interface CompanyDetails {
   //explicit type casting for the returned JSON
@@ -342,8 +341,7 @@ const CompanyDetails = () => {
                 >
                   {" "}
                   <Box height="60vh" mt="-20px">
-                    {/* once logic done pass in ticker to AreaChart as prop */}
-                    <AreaChart />
+                    <AreaChart ticker={ticker || ""} />
                   </Box>
                 </GridItem>
                 <GridItem
@@ -354,7 +352,7 @@ const CompanyDetails = () => {
                 >
                   {/* <SimpleGrid columns={2} spacing={5}> */}
                   {/* pass in ticker later */}
-                  <ArticleCardList ticker={ticker || ''} />
+                  <ArticleCardList ticker={ticker || ""} />
                   {/* {articles.map((article) => (
                       <ArticleMotif articleName={article} />
                     ))} */}
