@@ -19,7 +19,7 @@ def getTrackedCompanies() -> List[Company]:
     """
     Gets a list of tracked companies from the database
     """
-    query = "SELECT CommonName, Exchange, TickerCode FROM company"
+    query = "SELECT CommonName, Exchange, TickerCode FROM company WHERE Tracked=True"
     conn = get_db_connection()
 
     with conn.cursor() as cur:
@@ -123,7 +123,7 @@ def updatePredictions(companies: List[Company]):
         for company in companies:
 
             # Get company ID 
-            cur.execute("SELECT CompanyID FROM company WHERE TickerCode=%s", [company.ticker])
+            cur.execute("SELECT CompanyID FROM company WHERE TickerCode=%s AND Tracked=TRUE", [company.ticker])
             company_id = cur.fetchone()[0]
 
             # Get average return for company

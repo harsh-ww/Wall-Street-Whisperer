@@ -14,7 +14,7 @@ def daily_email_content():
         cur = conn.cursor()
 
         # Fetch company details from company table, currently it fetches all companies
-        cur.execute("SELECT CompanyName, TickerCode FROM company ORDER BY CompanyName ASC")
+        cur.execute("SELECT CompanyName, TickerCode FROM company WHERE Tracked=True ORDER BY CompanyName ASC")
         stock_data = [{"CompanyName":item[0], "TickerCode":item[1]} for item in cur.fetchall()]
 
         if not stock_data:
