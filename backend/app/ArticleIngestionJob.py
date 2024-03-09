@@ -82,16 +82,13 @@ def saveAnalysedArticles(articles: List[AnalysisService.AnalysedArticle]):
             authorsAsText =  str(article.authors).replace("[","").replace("]", "")
             
             insertSQL = """
-                INSERT INTO article (Title, ArticleURL, SourceID, PublishedDate, Authors, ImageURL, SentimentLabel, SentimentScore, OverallScore, Summary, Keywords) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING ArticleID
+                INSERT INTO article (Title, ArticleURL, SourceID, PublishedDate, Authors, ImageURL, SentimentLabel, SentimentScore, OverallScore, Summary, Keywords, CompanyID) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING ArticleID
             """
 
-            cur.execute(insertSQL, [article.title, article.sourceURL, sourceID, article.datePublished, authorsAsText, article.image, article.sentimentLabel, article.sentimentProb, article.score, article.summary, keywordsAsText])
+            cur.execute(insertSQL, [article.title, article.sourceURL, sourceID, article.datePublished, authorsAsText, article.image, article.sentimentLabel, article.sentimentProb, article.score, article.summary, keywordsAsText, company_id])
             
             articleID = cur.fetchone()[0]
-
-            # Link company and article
-            cur.execute("""INSERT INTO company_articles (CompanyID, ArticleID) VALUES (%s, %s)""", [company_id, articleID])
-
+            
             conn.commit()
             
             # Update company current score after insertion
@@ -100,8 +97,7 @@ def saveAnalysedArticles(articles: List[AnalysisService.AnalysedArticle]):
             update_company_score = """UPDATE company 
                                     SET CurrentScore = (
                                         SELECT AVG(OverallScore) FROM article 
-                                        JOIN company_articles ON article.ArticleID = company_articles.ArticleID
-                                        WHERE company_articles.CompanyID = %s AND article.PublishedDate >= %s
+                                        WHERE CompanyID = %s AND article.PublishedDate >= %s
                                     )
                                     WHERE CompanyID = %s
                                     """
