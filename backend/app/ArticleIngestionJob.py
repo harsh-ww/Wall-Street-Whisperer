@@ -4,7 +4,7 @@ from models.Article import Article
 from connect import get_db_connection
 import logging
 from typing import List, Tuple
-from services import NewsService, AnalysisService
+from services import NewsService, AnalysisService, SummaryService
 import tldextract
 import requests, json
 from datetime import date, timedelta
@@ -80,12 +80,12 @@ def saveAnalysedArticles(articles: List[AnalysisService.AnalysedArticle]):
             # Storing keywords and authors as text for simplicity
             keywordsAsText = str([x['name'] for x in article.keywords]).replace("[","").replace("]", "")
             authorsAsText =  str(article.authors).replace("[","").replace("]", "")
-
+            
             insertSQL = """
-                INSERT INTO article (Title, ArticleURL, SourceID, PublishedDate, Authors, ImageURL, SentimentLabel, SentimentScore, OverallScore, Keywords) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING ArticleID
+                INSERT INTO article (Title, ArticleURL, SourceID, PublishedDate, Authors, ImageURL, SentimentLabel, SentimentScore, OverallScore, Summary, Keywords) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING ArticleID
             """
 
-            cur.execute(insertSQL, [article.title, article.sourceURL, sourceID, article.datePublished, authorsAsText, article.image, article.sentimentLabel, article.sentimentProb, article.score, keywordsAsText])
+            cur.execute(insertSQL, [article.title, article.sourceURL, sourceID, article.datePublished, authorsAsText, article.image, article.sentimentLabel, article.sentimentProb, article.score, article.summary, keywordsAsText])
             
             articleID = cur.fetchone()[0]
 

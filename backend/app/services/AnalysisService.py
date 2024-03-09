@@ -10,6 +10,7 @@ import logging
 from datetime import datetime, timedelta
 from typing import List
 import time
+from services.SummaryService import generateSummary
 
 SIMILARWEB_API_KEY = os.environ['SIMILARWEB_KEY']
 
@@ -19,6 +20,7 @@ class AnalysedArticle(Article):
     sentimentProb = None
     sitePopularity = None
     score = 0
+    summary = ''
 
     def __init__(self, company:Company, article:Article, sentimentLabel: str, sentimentProb: float) -> None:
         super().__init__(article.title, article.sourceURL, article.datePublished, article.sourceName, article.authors, article.image, article.text, article.keywords)
@@ -229,5 +231,9 @@ class BatchArticleAnalysis():
         # Score articles based on all factors we have
         for aa in analysedArticles:
             aa.score = self.calculateArticleScore(aa)
+
+        # Generate article summaries
+        for aa in analysedArticles:
+            aa.summary = generateSummary(aa.text)
             
         return analysedArticles
