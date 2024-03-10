@@ -24,7 +24,7 @@ import {
   ListIcon, 
   ListItem,
   Tag,
-  TagLabel
+  TagLabel,
 } from "@chakra-ui/react";
 
 import {
@@ -146,29 +146,33 @@ const CompanyDetails = () => {
         });
         console.error("Error, tracking try catch failed");
       }
+      setTimeout(() => { 
+        window.location.reload();
+      }, 3000);
     };
 
-    const handleUntrackCompany = async (symbol: string) => {
+    const handleUntrackCompany = async () => {
+      const data = {
+        ticker_code: companyData ? companyData.Symbol || companyData.symbol || "undefined" : undefined,
+      };
       try {
         // insert untrack company details here
-        console.log("unfollowing company", symbol);
-        const res = await fetch(`${API_URL}/untrack`, {
+        console.log("Attempting to unfollow company", data);
+        const response = await fetch(`${API_URL}/untrack`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ ticker_code: symbol }), // send ticker_code in request body
+          body: JSON.stringify(data), // send ticker_code in request body
         });
-        if (!res.ok) {
-          const errorData = await res.json(); // extract error message from response
+        if (!response.ok) {
+          console.log(response.status)
+          const errorData = await response.json(); // extract error message from response
           throw new Error(errorData.error || "Failed to untrack company");
         }
-        console.log("successfully unfollowed company");
-        const responseData = await res.json();
-        console.log(responseData);
         toastTrack({
           //usage of reactive toasts that confirm after database update whether the addition was successful
-          title: "Added",
+          title: "Removed!",
           description: "This company has now been untracked!",
           status: "success",
           duration: 3500,
@@ -176,17 +180,21 @@ const CompanyDetails = () => {
           isClosable: true,
         });
       } catch (error) {
+        console.log(data)
         toastTrack({
           //in the case that the user manages to track again, relay an error
-          title: "An error has occured",
+          title: "An error has occured", //error.message
           description: "",
           status: "error",
           duration: 3500,
           variant: "subtle",
           isClosable: true,
         });
-        console.error("Error, untracking try catch failed", error.message);
+        console.error("Error, untracking try catch failed: ", error.message);
       }
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
     };
 
     return (
@@ -294,7 +302,7 @@ const CompanyDetails = () => {
                       }
                       onClick={() => {
                         if (companyData && companyData.tracked) {
-                          handleUntrackCompany(companyData.Symbol);
+                          handleUntrackCompany();
                         } else {
                           onOpen();
                         }

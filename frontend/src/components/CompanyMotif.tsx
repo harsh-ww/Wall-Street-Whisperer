@@ -38,7 +38,7 @@ function CompanyMotif({ companyName, textSize, TickerCode }: Props) {
 
       >
         <Heading size={textSize}>
-          <Link href={`http://localhost:5173/company/${TickerCode}`}>
+          <Link href={`/company/${TickerCode}`}>
             {companyName}
           </Link>
         </Heading>
