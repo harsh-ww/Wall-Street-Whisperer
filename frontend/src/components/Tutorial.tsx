@@ -25,9 +25,9 @@ function App() {
   };
 
   const popoverPositions = [
-    { top: "21vh", left: "-5vw" },
-    { top: "37vh", left: "50vw" },
-    { top: "70vh", left: "20vw" }
+    { top: "21vh", left: "-3vw" },
+    { top: "37vh", left: "51vw" },
+    { top: "61vh", left: "-7vw" }
   ]; // Custom positions for each popover using viewport units
 
   return (
@@ -53,10 +53,10 @@ function App() {
                 <PopoverArrow />
                 <PopoverCloseButton />
                 <PopoverBody>
-                  <Text margin="0.3em" fontStyle="italic">
+                  <Text margin="0.4em" fontStyle="italic">
                     {currentStep === 0 && <>Here is the list of your <strong>tracked companies</strong>. You can view a summary of key information here. Companies can be added via a track button on their respective pages...  </>}
-                    {currentStep === 1 && <>Here are your <strong>notifications</strong>. Any articles yielding strong sentiments will appear here for your tracked companies, these will also be sent in your email inbox </>}
-                    {currentStep === 2 && "This is step 3 of the tutorial. Click the button to end the tutorial."}
+                    {currentStep === 1 && <>Here are your <strong>notifications</strong>. Any articles yielding strong sentiments will appear here for your tracked companies, these will also be sent to your email inbox. </>}
+                    {currentStep === 2 && <>Look here for <strong>suggested companies</strong> curated according to what you currently follow! </>}
                   </Text> {/*Button redirects to apple company page so user can try adding*/}
                   {currentStep === 0 && <><Link href="/company/AAPL" isExternal><Button padding="0.5em" fontSize="sm" marginRight="1em" fontStyle="italic" >Try adding a company now</Button></Link> </>} 
                   <Button
