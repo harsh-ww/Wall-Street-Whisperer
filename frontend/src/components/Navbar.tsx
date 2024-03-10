@@ -71,7 +71,7 @@ export default function App() {
                   justifySelf="self-start"
                   onClick={mobileNav.onClose}
                 />
-                <NavLink to="/home">
+                <NavLink to="/">
                   <Button variant="ghost" leftIcon={<AiFillHome />} size="md">
                     Home
                   </Button>
