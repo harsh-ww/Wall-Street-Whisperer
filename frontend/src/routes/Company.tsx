@@ -228,6 +228,8 @@ const CompanyDetails = () => {
                       } //change styling depending on whether company is tracked or not
                       size="lg"
                       w={["auto", "282px", "282px"]}
+                      borderColor="purple.200"
+                      borderWidth="3px"
                       // mt="6"
                       rightIcon={
                         companyData && companyData.tracked ? (

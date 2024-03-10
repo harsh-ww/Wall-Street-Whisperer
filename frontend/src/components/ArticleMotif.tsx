@@ -21,6 +21,12 @@ function ArticleMotif({ articleName }: Props) {
       border="2px"
       borderColor="purple.900"
       direction="column"
+      _hover={{ //on hover styling
+        transform: "scale(1.01)",
+        borderColor: "white",
+        boxShadow: "xl",
+        transition: "transform 0.2s ease, border-color 0.2s ease-out, box-shadow 0.2s ease",
+      }}
     >
       <Link href="">{articleName}</Link>
       <Box>
