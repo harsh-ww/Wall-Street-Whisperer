@@ -78,7 +78,7 @@ const CompanyDetails = () => {
           throw new Error("Failed to fetch company data");
         }
         const data = await response.json(); //pass this data into the company page html...
-        console.log(data);
+        console.log("company data: ", data);
         setCompanyData(data);
       } catch (error) {
         console.error("error has occured");
@@ -205,16 +205,16 @@ const CompanyDetails = () => {
                         : "..."}
                     </Text>
                   </Box>
-                  <Box p={["10px", "10px", "15px"]} fontSize="lg" bg="gray.50">
+                  {companyData && companyData.score && (<Box p={["10px", "10px", "15px"]} fontSize="lg" bg="gray.50">
                     <Badge
-                      colorScheme="green"
+                      colorScheme="blue"
                       borderRadius="full"
                       fontSize="1.5em"
                       p="10px"
                     >
-                      8.5
+                      {Number(companyData.score).toPrecision(3)}
                     </Badge>
-                  </Box>
+                  </Box>)}
                   <Box
                     bg="gray.50"
                     p={["10px", "10px", "15px"]}
