@@ -11,10 +11,12 @@ interface Props {
 
 function CompanyMotif({ companyName, textSize, TickerCode }: Props) {
   return (
+    <Link href={`/company/${TickerCode}`}>
     <Flex
       bgGradient="linear(to-r, purple.400, purple.200)"
       justifyContent="space-around"
       alignItems="center"
+      textAlign="center"
       padding="0.5em"
       boxShadow="md"
       p="5"
@@ -27,23 +29,26 @@ function CompanyMotif({ companyName, textSize, TickerCode }: Props) {
         boxShadow: "xl",
       }}
     >
-      <Image src="../../public/logoIpsum.svg" w="25%" />{" "}
       {/*image will also be replaced from prop*/}
+    
       <Flex
-        w="65%"
+        w="100%"
         h="100%"
         alignItems="center"
+        justifyContent="center"
         whiteSpace="nowrap"
+        textAlign="center"
         overflow="hidden"
 
       >
         <Heading size={textSize}>
-          <Link href={`http://localhost:5173/company/${TickerCode}`}>
-            {companyName}
-          </Link>
+
+          {companyName}
+
         </Heading>
       </Flex>
-    </Flex>
+    
+    </Flex ></Link>
   );
 }
 
