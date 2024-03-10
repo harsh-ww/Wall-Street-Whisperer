@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { API_URL } from "../config";
 import { DataGrid } from "./DataGrid";
 import { createColumnHelper } from "@tanstack/react-table";
-import { Badge, Fade} from "@chakra-ui/react";
+import { Badge } from "@chakra-ui/react";
+import { NavLink } from "react-router-dom";
 
 type UnitConversion = {
     Symbol: string;
@@ -72,9 +73,19 @@ export default function DataTable() {
     const columns = [
         columnHelper.accessor("Symbol", {
             cell: (info) => (
-                <Badge fontSize="0.9em" bg="cyan.100">
-                    {info.getValue()}
-                </Badge>
+                <NavLink to={`/company/${info.getValue()}`}>
+                    <Badge 
+                        fontSize="0.9em" 
+                        bg="cyan.100" 
+                        _hover={{ 
+                            bg: "cyan.400", 
+                            transform: "translateY(-3px)",
+                            transitionTimingFunction: "ease-in-out" 
+                        }} 
+                    >
+                        {info.getValue()}
+                    </Badge>
+                </NavLink>
             ),
             header: "Symbol",
         }),
@@ -109,10 +120,6 @@ export default function DataTable() {
 
 
     return (
-        <div>
-            <Fade in={isLoaded} animateOpacity>
-                <DataGrid data={trackedData} columns={columns}></DataGrid>
-            </Fade>
-        </div>
+        <DataGrid data={trackedData} columns={columns}></DataGrid>
     )
 }
