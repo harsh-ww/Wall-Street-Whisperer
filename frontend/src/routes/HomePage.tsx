@@ -1,5 +1,4 @@
 import "../App.css";
-import SideBar from "../components/SideBar";
 import {
   Box,
   Grid,
@@ -7,22 +6,16 @@ import {
   Heading,
   Highlight,
   SimpleGrid,
-  Badge,
-  IconButton,
 } from "@chakra-ui/react";
 import BaseLayout from "../layouts/BaseLayout";
-import { createColumnHelper } from "@tanstack/react-table";
-import { mockGridData, UnitConversion } from "../components/mockData";
-import { DataGrid } from "../components/DataGrid";
-import ArticleMotif from "../components/ArticleMotif";
-import SuggestionsGenerator from "../components/Suggestions"
-import { useState, useEffect } from "react";
-import { CloseIcon } from "@chakra-ui/icons";
 import RecentArticleList from "../components/RecentArticleList";
+import DataTable from "../components/DataTable";
+import Notifications from "../components/Notifications";
+import SuggestionsGenerator from "../components/Suggestions";
+import { useEffect, useState } from "react";
 import { API_URL } from "../config";
 
 function HomePage() {
-
   const [suggestions, setSuggestions] = useState([]); // State variable for suggestions
 
   useEffect(() => {
@@ -43,73 +36,6 @@ function HomePage() {
     fetchSuggestions();
   }, []);
 
-  function handleDelete(id: number) {
-    console.log("delete", id);
-  }
-
-  const columnHelper = createColumnHelper<UnitConversion>();
-
-  const columns = [
-    columnHelper.accessor("Symbol", {
-      cell: (info) => (
-        <Badge fontSize="0.9em" bg="cyan.100">
-          {info.getValue()}
-        </Badge>
-      ),
-      header: "Symbol",
-    }),
-    columnHelper.accessor("Company", {
-      cell: (info) => info.getValue(),
-      header: "Company",
-    }),
-    columnHelper.accessor("LastPrice", {
-      cell: (info) => info.getValue(),
-      header: "Last Price",
-    }),
-    columnHelper.accessor("Change", {
-      cell: (info) => info.getValue(),
-      header: "Change",
-    }),
-    columnHelper.accessor("PercentChg", {
-      cell: (info) => (
-        <Badge
-          fontSize="0.9em"
-          bg={info.getValue() >= 0 ? "green.200" : "red.200"}
-        >
-          {info.getValue()}
-        </Badge>
-      ),
-      header: "Change%",
-      meta: {
-        isNumeric: true,
-      },
-    }),
-    columnHelper.accessor("ID", {
-      cell: (info) => (
-        <IconButton
-          onClick={() => handleDelete(info.getValue())}
-          aria-label="Delete Company"
-          icon={<CloseIcon />}
-        />
-      ),
-      header: "",
-      meta: {
-        isNumeric: true,
-      },
-    }),
-  ];
-
-  let articles = [
-    "Headliner",
-    "ArticleTitle",
-    "NotAdmissible",
-    "MoneyLaundering",
-    "DidaGoodThing",
-    "Headliner",
-    "ArticleTitle",
-    "NotAdmissible",
-  ]; //dummy data
-
   return (
     <>
       <Box>
@@ -119,9 +45,9 @@ function HomePage() {
           <Box
             h="fit-content"
             bg="whiteAlpha.900"
-            maxW="70vw"
+            maxW="80vw"
             margin="auto"
-            mt="-20"
+            mt="-12vh"
             mb="10px"
             borderRadius="md"
             overflow="auto"
@@ -131,10 +57,10 @@ function HomePage() {
           >
             <Heading lineHeight="tall">
               <Highlight
-                query="Followed"
+                query="Tracked"
                 styles={{ px: "2", py: "1", rounded: "full", bg: "blue.100" }}
               >
-                Your Followed Companies
+                Your Tracked Companies
               </Highlight>
             </Heading>
           </Box>
@@ -142,7 +68,7 @@ function HomePage() {
             // h="fit-content"
             h="105vh"
             // bg="gray.400"
-            maxW="75vw"
+            maxW="80vw"
             margin="auto"
             // mt="-20"
             mb="50"
@@ -152,7 +78,7 @@ function HomePage() {
           >
             <Grid
               h="75vh"
-              w="75vw"
+              w="80vw"
               templateRows="repeat(2, 1fr)"
               templateColumns="repeat(7, 1fr)"
               gap={4}
@@ -161,7 +87,7 @@ function HomePage() {
             >
               <GridItem colSpan={5} bg="whiteAlpha.900" borderRadius="md">
                 {" "}
-                <DataGrid columns={columns} data={mockGridData} />
+                <DataTable />
               </GridItem>
               <GridItem
                 colSpan={2}
@@ -172,9 +98,9 @@ function HomePage() {
               >
                 {" "}
                 <Heading as="h4" size={["md", "lg", "lg"]} pb="10px">
-                  Alerts
+                  Notifications
                 </Heading>
-                Notifications go here
+                <Notifications />
               </GridItem>
 
               {/* Third item in grid: Suggested companies */}

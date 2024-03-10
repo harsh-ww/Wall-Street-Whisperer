@@ -6,7 +6,7 @@ class TestGetCompanyDetailsDb:
     def insert(self):
         conn = get_db_connection()
         with conn.cursor() as cur:
-            cur.execute("INSERT INTO company (CompanyName, CurrentScore, CommonName, TickerCode, Exchange) VALUES (%s, %s, %s, %s, %s)", ('Tesco PLC', 100.5, 'Tesco', 'TSCO.LON', 'United Kingdom'))
+            cur.execute("INSERT INTO company (CompanyName, CurrentScore, CommonName, TickerCode, Exchange, Currency) VALUES (%s, %s, %s, %s, %s, %s)", ('Tesco PLC', 100.5, 'Tesco', 'TSCO.LON', 'United Kingdom', 'GBX'))
             conn.commit()
         conn.close()
 
@@ -33,8 +33,8 @@ class TestSearchCompanyDB:
     def insert(self):
         conn = get_db_connection()
         with conn.cursor() as cur:
-            cur.execute("INSERT INTO company (CompanyName, CurrentScore, CommonName, TickerCode, Exchange) VALUES (%s, %s, %s, %s, %s)", ('Tesco PLC', 100.5, 'Tesco', 'TSCO.LON', 'United Kingdom'))
-            cur.execute("INSERT INTO company (CompanyName, CurrentScore, CommonName, TickerCode, Exchange) VALUES (%s, %s, %s, %s, %s)", ('Amazon.com Inc', 100.5, 'Amazon', 'AMZN', 'NASDAQ'))
+            cur.execute("INSERT INTO company (CompanyName, CurrentScore, CommonName, TickerCode, Exchange, Currency) VALUES (%s, %s, %s, %s, %s, %s)", ('Tesco PLC', 100.5, 'Tesco', 'TSCO.LON', 'United Kingdom', 'GBX'))
+            cur.execute("INSERT INTO company (CompanyName, CurrentScore, CommonName, TickerCode, Exchange, Currency) VALUES (%s, %s, %s, %s, %s, %s)", ('Amazon.com Inc', 100.5, 'Amazon', 'AMZN', 'NASDAQ', 'USD'))
 
             conn.commit()
         conn.close()

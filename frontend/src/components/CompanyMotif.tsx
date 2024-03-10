@@ -6,9 +6,10 @@ import { Link, Image } from "@chakra-ui/react";
 interface Props {
   companyName: string;
   textSize: string;
+  TickerCode: string; //ticker code to redirect to company page
 }
 
-function CompanyMotif({ companyName, textSize }: Props) {
+function CompanyMotif({ companyName, textSize, TickerCode }: Props) {
   return (
     <Flex
       bgGradient="linear(to-r, purple.400, purple.200)"
@@ -37,7 +38,9 @@ function CompanyMotif({ companyName, textSize }: Props) {
 
       >
         <Heading size={textSize}>
-          <Link href="">{companyName}</Link>
+          <Link href={`http://localhost:5173/company/${TickerCode}`}>
+            {companyName}
+          </Link>
         </Heading>
       </Flex>
     </Flex>

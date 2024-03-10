@@ -12,9 +12,11 @@ import {
   Flex,
   Tag,
   TagLabel,
+  TagRightIcon,
   useDisclosure,
   Badge,
   Box,
+  CloseButton,
 } from "@chakra-ui/react";
 import {
   Modal,
@@ -29,29 +31,15 @@ import {
 import { formatDistanceToNow, format } from "date-fns";
 import { FaArrowTrendDown, FaArrowTrendUp } from "react-icons/fa6";
 import { HiExternalLink } from "react-icons/hi";
+import { Article } from "./ArticleCardItem";
 
 interface ItemProps {
   article: Article;
   company?: string;
+  closeButton: () => void;
 }
 
-export interface Article {
-  articleid: number;
-  articleurl: string;
-  authors: string;
-  imageurl: string;
-  keywords: string;
-  overallscore: number;
-  publisheddate: string;
-  sentimentlabel: string;
-  sentimentscore: number;
-  sourceid: number;
-  sourcepopularity: number;
-  summary: string | null;
-  title: string;
-}
-
-function ArticleCardItem({ article, company }: ItemProps) {
+function NotifItem({ article, company, closeButton }: ItemProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const getRelativeDate = (str: string): string => {
     const date = new Date(str);
@@ -67,82 +55,59 @@ function ArticleCardItem({ article, company }: ItemProps) {
       <Card
         direction={{ base: "column", sm: "row" }}
         overflow="hidden"
-        variant="outline"
         size="10rem"
         mb="10px"
         p="10px"
-        borderRadius="5px"
-        borderWidth="2px"
         _hover={{
           shadow: "sm",
           transform: "translateY(-5px)",
           transitionDuration: "0.2s",
           transitionTimingFunction: "ease-in-out",
         }}
-        borderColor={
-          article.overallscore < 0
-            ? "red.100"
-            : article.overallscore >= 70
-            ? "green.100"
-            : "orange.100"
-        }
       >
-        {article.imageurl ? (
-          <Image
-            mr="10px"
-            borderRadius="10px"
-            objectFit="cover"
-            maxW={{ base: "100%", sm: "150px", md: "200px" }}
-            src={article.imageurl}
-            alt="Decorative image"
-          />
-        ) : null}
-
         <Stack>
           <CardBody>
-            <Flex direction="column" alignItems="flex-start">
-              <Link onClick={onOpen}>
-                <Heading size={["sm", "sm", "md"]} textAlign="left" mb="5px">
-                  {article.title}
-                </Heading>
-              </Link>
-              <Flex align="center">
-                {company ? (
+            <Flex alignItems="center">
+              <Box>
+                <Flex align="center" mb="5px">
                   <Tag
                     size="lg"
-                    color="pink.500"
-                    mr={3}
                     borderRadius="5px"
-                    colorScheme="pink"
+                    colorScheme={
+                      article.overallscore < 0
+                        ? "red"
+                        : article.overallscore >= 70
+                        ? "green"
+                        : "orange"
+                    }
                   >
-                    {company}
+                    {company && (
+                      <>
+                        <TagLabel>{company}</TagLabel>
+                        <TagRightIcon
+                          as={
+                            article.overallscore < 0
+                              ? FaArrowTrendDown
+                              : FaArrowTrendUp
+                          }
+                        />
+                      </>
+                    )}
                   </Tag>
-                ) : null}
-                {article.overallscore < 0 ? (
-                  <Tag size="lg" colorScheme="red" borderRadius="full">
-                    <TagLabel>
-                      <FaArrowTrendDown />
-                    </TagLabel>
-                  </Tag>
-                ) : article.overallscore >= 70 ? (
-                  <Tag size="lg" colorScheme="green" borderRadius="full">
-                    <TagLabel>
-                      <FaArrowTrendUp />
-                    </TagLabel>
-                  </Tag>
-                ) : (
-                  <Tag size="lg" colorScheme="orange" borderRadius="full">
-                    <TagLabel>
-                      <FaArrowTrendUp />
-                    </TagLabel>
-                  </Tag>
-                )}
-                <Text mr="10px" ml="10px">
-                  {"\u2022"}
-                </Text>{" "}
-                {/* Bullet character */}
-                <Text>{getRelativeDate(article.publisheddate)}</Text>
-              </Flex>
+                  <Text ml="10px">
+                    {getRelativeDate(article.publisheddate)}
+                  </Text>
+                </Flex>
+                <Link onClick={onOpen}>
+                  <Heading size={["sm", "sm", "md"]} textAlign="left" mb="5px">
+                    {article.title}
+                  </Heading>
+                </Link>
+              </Box>
+              <CloseButton
+                colorScheme="pink"
+                onClick={closeButton} // Call the closeButton function
+              />
             </Flex>
           </CardBody>
         </Stack>
@@ -180,7 +145,6 @@ function ArticleCardItem({ article, company }: ItemProps) {
                 <Text mr="10px" ml="10px">
                   {"\u2022"}
                 </Text>{" "}
-                {/* Bullet character */}
                 <Text>{getFormattedDate(article.publisheddate)}</Text>
               </Flex>
               <Button
@@ -219,4 +183,4 @@ function ArticleCardItem({ article, company }: ItemProps) {
   );
 }
 
-export default ArticleCardItem;
+export default NotifItem;

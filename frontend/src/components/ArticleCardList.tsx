@@ -7,22 +7,19 @@ import { API_URL } from '../config'
 
 interface Props {
   ticker: string;
+  tracked: boolean;
 }
 
 //pass in ticker? would work for company pages but not landing page which needs mulitple companies?
-export default function ArticleCardList({ ticker }: Props) {
-  // for mock data
-  // const [data, setData] = useState<Article[]>(mockdata);
-  // const [isLoaded, setIsLoaded] = useState(true);
-
-  //   USE CODE BELOW WHEN BACKEND CODE READY
-
+export default function ArticleCardList({ ticker, tracked }: Props) {
     const [data, setData] = useState<Article[]>([]);
     const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
-      fetchArticles();
-    }, []);
+      if (tracked){
+        fetchArticles();
+      }
+    }, [ticker, tracked]);
 
     const fetchArticles = async () => {
       try {
@@ -42,13 +39,17 @@ export default function ArticleCardList({ ticker }: Props) {
   return (
     <div>
       <Box>
-        {isLoaded ? (
-          data.map((article) => (
-            <ArticleCardItem key={article.articleid} article={article} />
-          ))
-        ) : (
-          <div>Loading...</div>
-        )}
+        {tracked ? (
+            isLoaded ? (
+              data.map((article: Article) => (
+                <ArticleCardItem key={article.articleid} article={article} />
+              ))
+            ) : (
+              <div>Loading...</div>
+            )
+          ) : (
+            <div>Follow the company to view articles. Articles will be automatically fetched overnight once you start following the company.</div>
+          )}
       </Box>
     </div>
   );

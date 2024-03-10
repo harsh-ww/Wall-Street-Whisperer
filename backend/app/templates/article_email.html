@@ -78,32 +78,20 @@
             text-decoration: none;
         }
 
-        .pink-highlight {
-            background-color: pink;
-            border-radius: 4px;
-            display: inline;
-            padding: 2px;
-        }
         .red-highlight {
-            background-color: #ffa4a4;
-            border-radius: 4px;
-            display: inline;
-            padding: 2px;
-        }
-        .turquoise-highlight {
-            background-color: rgb(168, 245, 237);
+            background-color: #fed7d7;
             border-radius: 4px;
             display: inline;
             padding: 2px;
         }
         .green-highlight {
-            background-color: #a0da94;
+            background-color: #c6f6d5;
             border-radius: 4px;
             display: inline;
             padding: 2px;
         }
         .yellow-highlight{
-            background-color: #fcf7bb;
+            background-color: #feebc8;
             border-radius: 4px;
             display: inline;
             padding: 2px;  
@@ -143,7 +131,7 @@
             <!-- List of all articles -->
             <ul>
                 {% for article in value[1] %}
-                <li class = "news">
+                <li class = "news" style="background-color: white; border-radius: 5px; padding: 10px; border-color: {% if article.OverallScore < -50 %}#fed7d7{% elif article.OverallScore > 50 %}#c6f6d5{% else %}#feebc8{% endif %}; border-style: solid;">
                     <img class="news-image" src= "{{ article.Imageurl }}">
                     <div class="news-content">
                         <a href = "{{ article.Articleurl }}">
@@ -154,9 +142,9 @@
                             </div>
                         </a>
                             {% if article.OverallScore < -50 %}
-                            <div class = "pink-highlight">Bearish</div>
+                            <div class = "red-highlight">Bearish</div>
                             {% elif article.OverallScore > 50 %}
-                            <div class = "turquoise-highlight">Bullish</div>
+                            <div class = "green-highlight">Bullish</div>
                             {% else %}
                             <div class = "yellow-highlight">Neutral</div>
                             {% endif %}
@@ -181,7 +169,7 @@
 
     <div class = "center">
         <a href = "http://localhost:5173/home">
-            <button>View your tracked companies</button>
+            <button style="border-width: 0; border-radius: 6px;">View your tracked companies</button>
         </a>
     </div>
 
