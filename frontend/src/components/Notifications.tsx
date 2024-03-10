@@ -21,7 +21,7 @@ export default function Notifications() {
         return;
       }
       const data = await res.json();
-      console.log(data);
+      console.log("notifications are:", data);
       setNotifications(data);
       setLoaded(true);
     };
@@ -82,7 +82,7 @@ export default function Notifications() {
           <NotifItem
             key={notification.articleid}
             article={notification}
-            company={notification.companyName}
+            company={notification.companyname}
             closeButton={() => clearNotification(notification.articleid)}
           />
           {/* <CloseButton
