@@ -228,6 +228,8 @@ const CompanyDetails = () => {
                       } //change styling depending on whether company is tracked or not
                       size="lg"
                       w={["auto", "282px", "282px"]}
+                      borderColor="purple.200"
+                      borderWidth="3px"
                       // mt="6"
                       rightIcon={
                         companyData && companyData.tracked ? (
@@ -332,7 +334,7 @@ const CompanyDetails = () => {
                 </Flex>
               </Box>
 
-              <Grid templateColumns="repeat(2, 1fr)" gap={1}>
+              <Grid templateColumns="repeat(2, 1fr)" gap={0}>
                 <GridItem
                   w="100%"
                   height="100%"
@@ -350,13 +352,7 @@ const CompanyDetails = () => {
                   bg="gray.50"
                   p={["15px", "15px", "30px"]}
                 >
-                  {/* <SimpleGrid columns={2} spacing={5}> */}
-                  {/* pass in ticker later */}
-                  <ArticleCardList ticker={ticker || ""} />
-                  {/* {articles.map((article) => (
-                      <ArticleMotif articleName={article} />
-                    ))} */}
-                  {/* </SimpleGrid> */}
+                  <ArticleCardList ticker={ticker || ""} tracked={companyData?.tracked || false} />
                 </GridItem>
               </Grid>
             </Box>

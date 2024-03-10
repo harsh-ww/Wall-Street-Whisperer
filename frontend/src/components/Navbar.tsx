@@ -22,9 +22,8 @@ import {
   AiFillBell,
 } from "react-icons/ai";
 import { BsFillCameraVideoFill, BsFillInboxFill } from "react-icons/bs";
-
 import { MdOutlineBusinessCenter, MdExplore } from "react-icons/md";
-
+import Tutorial from "../components/Tutorial";
 export default function App() {
   const bg = useColorModeValue("white", "gray.800");
   const mobileNav = useDisclosure();

@@ -22,6 +22,7 @@ def mocked_requests_get(*args, **kwargs):
         'sortBy': 'relevance',
         'size': 3,
         'from': 'IGNORE',
+        'showReprints': False,
         'language': 'en',
         'apiKey': ''
     }
