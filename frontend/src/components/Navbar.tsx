@@ -90,7 +90,7 @@ export default function App() {
             </chakra.a>
 
             <HStack spacing={3} display={{ base: "none", md: "inline-flex" }}>
-              <NavLink to="/home">
+              <NavLink to="/">
                 <Button variant="ghost" leftIcon={<AiFillHome />} size="md">
                   Home
                 </Button>

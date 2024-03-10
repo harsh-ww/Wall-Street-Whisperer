@@ -36,16 +36,6 @@ function MyCard() {
     fetchTracked();
   }, []);
 
-  let trackedCompanies = [
-    "Company1",
-    "NotaCompany",
-    "ShellCorp",
-    "LemonadeStand",
-    "EvenBiggerCompany",
-    "ehgeg",
-    "gwggwg",
-  ]; //dummy data
-
   return (
     <Card
       marginY="-50px"
@@ -71,10 +61,10 @@ function MyCard() {
       >
         {isMoved ? <ArrowLeftIcon /> : <ArrowRightIcon />}
       </Button>
-      <Text fontSize="xl" fontWeight="semibold">
+      <Text fontSize="xl" fontWeight="semibold" textAlign="center" mt={3} mb={1}>
         Tracked Companies
       </Text>
-      <Flex flexDirection="column" height="55%" overflow="auto">
+      <Flex flexDirection="column" height="100%" overflow="auto">
         {companies.map(
           (
             company,
@@ -83,18 +73,14 @@ function MyCard() {
             <Box transform="scale(0.8)" key={index}>
               <CompanyMotif
                 companyName={company ? company.CommonName : ""}
-                textSize="xs"
+                textSize="md"
                 TickerCode={company ? company.TickerCode : ""}
               />
             </Box>
           )
         )}
       </Flex>
-      <Divider />
-      <Text fontSize="xl" fontWeight="semibold">
-        Alerts
-        <BellIcon float="right" margin="5px" />
-      </Text>
+
     </Card>
   );
 }
