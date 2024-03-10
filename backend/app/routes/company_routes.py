@@ -9,19 +9,19 @@ company_routes_blueprint = Blueprint('company_routes', __name__)
 def get_company_details_db(ticker:str):
     conn = get_db_connection()
     with conn.cursor() as cur:
-        cur.execute("SELECT CompanyName, CurrentScore, AvgReturn, AvgSentiment, ModeSentiment FROM company WHERE TickerCode = %s", [ticker])
+        cur.execute("SELECT tracked, CompanyName, CurrentScore, AvgReturn, AvgSentiment, ModeSentiment FROM company WHERE TickerCode = %s", [ticker])
         result = cur.fetchone()
 
     conn.close()
 
     if result is not None:
         return {
-            'tracked': True,
-            'modesentiment': result[4],
-            'avgsentiment': result[3],
-            'avgreturn': result[2],
-            'score': result[1],
-            'name': result[0],
+            'tracked': result[0],
+            'modesentiment': result[5],
+            'avgsentiment': result[4],
+            'avgreturn': result[3],
+            'score': result[2],
+            'name': result[1],
         }
     else:
         return {}
