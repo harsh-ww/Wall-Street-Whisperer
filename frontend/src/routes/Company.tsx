@@ -220,12 +220,14 @@ const CompanyDetails = () => {
                   {companyData && companyData.score && (<Box p={["10px", "10px", "15px"]} fontSize="lg" bg="gray.50">                   
                     <Popover>
                       <PopoverTrigger>
-                        <Badge
-                        colorScheme="blue"
+                      <Badge
+                        colorScheme={
+                          companyData.score > 0 ? "green" : companyData.score < 0 ? "red" : "yellow"
+                        }
                         borderRadius="full"
                         fontSize="1.5em"
                         p="10px"
-                        _hover={{ bg: "blue.400" }}
+                        _hover={{ bg: "gray.400" }}
                       >
                         {Number(companyData.score).toPrecision(3)}
                       </Badge>
@@ -234,7 +236,6 @@ const CompanyDetails = () => {
                         <PopoverArrow />
                         <PopoverCloseButton />
                         <PopoverHeader>Company score</PopoverHeader>
-                        <PopoverBody>Explanation here?</PopoverBody>
                       </PopoverContent>
                     </Popover>
 
