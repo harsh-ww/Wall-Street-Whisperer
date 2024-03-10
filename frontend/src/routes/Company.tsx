@@ -13,6 +13,13 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
+  Popover,
+  PopoverTrigger,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverBody,
+  PopoverHeader,
+  PopoverArrow
 } from "@chakra-ui/react";
 
 import {
@@ -168,7 +175,7 @@ const CompanyDetails = () => {
             >
               <Box bg="gray.50" p={["10px", "10px", "10px"]}>
                 {" "}
-                <Flex direction={["column", "column", "row"]}>
+                <Flex direction={["column", "column", "row"]} alignItems="center">
                   <Box bg="gray.50" p={["10px", "10px", "15px"]}>
                     <Heading as="h3" fontSize={["2xl", "3xl", "5xl"]} mt="1">
                       {companyData
@@ -205,15 +212,27 @@ const CompanyDetails = () => {
                         : "..."}
                     </Text>
                   </Box>
-                  {companyData && companyData.score && (<Box p={["10px", "10px", "15px"]} fontSize="lg" bg="gray.50">
-                    <Badge
-                      colorScheme="blue"
-                      borderRadius="full"
-                      fontSize="1.5em"
-                      p="10px"
-                    >
-                      {Number(companyData.score).toPrecision(3)}
-                    </Badge>
+                  {companyData && companyData.score && (<Box p={["10px", "10px", "15px"]} fontSize="lg" bg="gray.50">                   
+                    <Popover>
+                      <PopoverTrigger>
+                        <Badge
+                        colorScheme="blue"
+                        borderRadius="full"
+                        fontSize="1.5em"
+                        p="10px"
+                        _hover={{ bg: "blue.400" }}
+                      >
+                        {Number(companyData.score).toPrecision(3)}
+                      </Badge>
+                      </PopoverTrigger>
+                      <PopoverContent>
+                        <PopoverArrow />
+                        <PopoverCloseButton />
+                        <PopoverHeader>Company score</PopoverHeader>
+                        <PopoverBody>Explanation here?</PopoverBody>
+                      </PopoverContent>
+                    </Popover>
+
                   </Box>)}
                   <Box
                     bg="gray.50"
