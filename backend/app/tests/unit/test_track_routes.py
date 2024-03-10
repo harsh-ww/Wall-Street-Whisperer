@@ -1,11 +1,11 @@
 import routes.track_routes as track
 from unittest import mock
 
-def test_save_tracked(clear_data):
+def test_save_tracked_company(clear_data):
     result = track.save_tracked_company("IBM", "International Business Machines", "IBM", "NYSE", "USD")
     assert type(result) is int
 
-def test_already_tracked(clear_data):
+def test_check_already_tracked(clear_data):
     track.save_tracked_company("IBM", "International Business Machines", "IBM", "NYSE", "USD")
 
     isTrackedValid = track.check_already_tracked("IBM")
