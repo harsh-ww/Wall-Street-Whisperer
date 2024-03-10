@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { API_URL } from "../config";
 import { DataGrid } from "./DataGrid";
 import { createColumnHelper } from "@tanstack/react-table";
-import { Badge} from "@chakra-ui/react";
+import { Badge, Fade} from "@chakra-ui/react";
 
 type UnitConversion = {
     Symbol: string;
@@ -35,6 +35,7 @@ interface TrackedData {
 export default function DataTable() {
 
     const [trackedData, setTrackedData] = useState<UnitConversion[]>([]);
+    const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -60,6 +61,7 @@ export default function DataTable() {
             }
 
             setTrackedData(convertedData);
+            setIsLoaded(true);
         }
 
         fetchData();
@@ -107,6 +109,10 @@ export default function DataTable() {
 
 
     return (
-        <DataGrid data={trackedData} columns={columns}></DataGrid>
+        <div>
+            <Fade in={isLoaded} animateOpacity>
+                <DataGrid data={trackedData} columns={columns}></DataGrid>
+            </Fade>
+        </div>
     )
 }
