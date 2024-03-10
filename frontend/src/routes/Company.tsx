@@ -19,7 +19,12 @@ import {
   PopoverContent,
   PopoverBody,
   PopoverHeader,
-  PopoverArrow
+  PopoverArrow,
+  List,
+  ListIcon, 
+  ListItem,
+  Tag,
+  TagLabel
 } from "@chakra-ui/react";
 
 import {
@@ -364,25 +369,52 @@ const CompanyDetails = () => {
                     <AreaChart />
                   </Box>
                   {companyData && companyData.score && (<Box p={["10px", "10px", "15px"]} fontSize="lg" bg="gray.50">                   
-                    <Popover>
-                      <PopoverTrigger>
-                        <Badge
-                        colorScheme="gray"
-                        borderRadius="full"
-                        fontSize="1.5em"
-                        p="10px"
-                        _hover={{ bg: "gray.400" }}
-                      >
-                        {Number(companyData.avgreturn).toPrecision(3)}
-                      </Badge>
-                      </PopoverTrigger>
-                      <PopoverContent>
-                        <PopoverArrow />
-                        <PopoverCloseButton />
-                        <PopoverHeader>Stock price future prediction?</PopoverHeader>
-                        <PopoverBody>Explanation here?</PopoverBody>
-                      </PopoverContent>
-                    </Popover>
+                      <Box bg="gray.100" p="10px" borderRadius="10px">
+                        <List spacing={3}>
+                          <Flex>
+                            <Box w="80%">
+                        <ListItem p="5px">
+                          <ListIcon
+                            as={companyData.avgreturn < 0 ? TriangleDownIcon : TriangleUpIcon}
+                            color={companyData.avgreturn < 0 ? 'red.500' : 'green.500'}
+                          />
+                          Average Return: {Number(companyData.avgreturn).toPrecision(3)}
+                        </ListItem>
+                        <ListItem p="5px">
+                          <ListIcon
+                            as={ companyData.avgsentiment < 0 ? TriangleDownIcon : TriangleUpIcon}
+                            color={ companyData.avgsentiment < 0 ? 'red.500' : 'green.500'}
+                          />
+                          Average Sentiment: {Number(companyData.avgsentiment).toPrecision(3)}
+                        </ListItem>
+                        <ListItem p="5px">
+                          <Tag
+                            size="lg"
+                            colorScheme={companyData.modesentiment === "positive" ? "green" : "red"}
+                            borderRadius="10px"
+                          >
+                            <TagLabel>
+                              Mode Sentiment: {companyData.modesentiment}
+                            </TagLabel>
+                          </Tag>
+                        </ListItem>
+                        </Box>
+                        <ListItem >
+                          <Text p="5px">Based on these metrics, {companyData.name} stock price is expected to: </Text> 
+                          <Badge
+                            colorScheme={companyData.modesentiment === "positive" ? "green" : "red"}
+                            borderRadius="15px"
+                            fontSize="1rem"
+                            p="7px"
+                          >
+                            {companyData.modesentiment === "positive" ? "increase" : "decrease"}
+                          </Badge>
+                        </ListItem>
+                        </Flex>
+                        </List>
+                      </Box>
+                      
+
 
                   </Box>)}
                 </GridItem>
