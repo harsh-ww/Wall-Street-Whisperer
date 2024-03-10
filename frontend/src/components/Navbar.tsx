@@ -76,6 +76,7 @@ export default function App() {
                     Home
                   </Button>
                 </NavLink>
+                
               </VStack>
             </Box>
             <chakra.a
@@ -94,14 +95,8 @@ export default function App() {
                   Home
                 </Button>
               </NavLink>
+              <Tutorial />
             </HStack>
-          </HStack>
-          <HStack
-            spacing={3}
-            display={mobileNav.isOpen ? "none" : "flex"}
-            alignItems="center"
-          >
-            <Profile />
           </HStack>
         </Flex>
       </chakra.header>
