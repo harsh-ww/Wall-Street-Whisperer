@@ -9,9 +9,9 @@ import {
 import { AreaChartItem } from "./AreaChartItem";
 
 // variable for ticker symbol - will pass in as a prop later
-const ticker: string = "IBM";
+// const ticker: string = "IBM";
 
-const AreaChart = () => {
+const AreaChart = ({ ticker }: { ticker: string }) => {
   return (
     <>
       <Text fontSize="lg">Stock price over time</Text>

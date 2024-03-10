@@ -343,8 +343,7 @@ const CompanyDetails = () => {
                 >
                   {" "}
                   <Box height="60vh" mt="-20px">
-                    {/* once logic done pass in ticker to AreaChart as prop */}
-                    <AreaChart />
+                    <AreaChart ticker={ticker || ""} />
                   </Box>
                 </GridItem>
                 <GridItem
