@@ -363,6 +363,28 @@ const CompanyDetails = () => {
                     {/* once logic done pass in ticker to AreaChart as prop */}
                     <AreaChart />
                   </Box>
+                  {companyData && companyData.score && (<Box p={["10px", "10px", "15px"]} fontSize="lg" bg="gray.50">                   
+                    <Popover>
+                      <PopoverTrigger>
+                        <Badge
+                        colorScheme="gray"
+                        borderRadius="full"
+                        fontSize="1.5em"
+                        p="10px"
+                        _hover={{ bg: "gray.400" }}
+                      >
+                        {Number(companyData.avgreturn).toPrecision(3)}
+                      </Badge>
+                      </PopoverTrigger>
+                      <PopoverContent>
+                        <PopoverArrow />
+                        <PopoverCloseButton />
+                        <PopoverHeader>Stock price future prediction?</PopoverHeader>
+                        <PopoverBody>Explanation here?</PopoverBody>
+                      </PopoverContent>
+                    </Popover>
+
+                  </Box>)}
                 </GridItem>
                 <GridItem
                   w="100%"
