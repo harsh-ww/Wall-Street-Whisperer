@@ -7,7 +7,7 @@ import { Image } from "@chakra-ui/react";
 function Logo() {
   return (
     <Flex justify="space-between" align="center">
-      <Image boxSize="5em" src="/logoIpsum.svg" alt="logo here" />
+      <Image boxSize="5em" src="/brandLogo.svg" alt="Wall Street Whisperer Logo" />
     </Flex>
   );
 }

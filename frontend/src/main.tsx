@@ -26,11 +26,6 @@ const theme = extendTheme({
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Landing />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/home",
     element: <HomePage />,
     errorElement: <ErrorPage />,
   },
