@@ -95,7 +95,6 @@ function HomePage() {
                 rowSpan={1}
                 bg="whiteAlpha.900"
                 borderRadius="md"
-                overflow="auto"
               >
                 {" "}
                 <DataTable />
