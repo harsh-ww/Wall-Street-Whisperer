@@ -41,7 +41,7 @@ function HomePage() {
       <Box>
         <BaseLayout />
         {/* <SideBar /> */}
-        <Box mx="1" as="section">
+        <Box mx="1" as="section" h="fit-content">
           <Box
             h="fit-content"
             bg="whiteAlpha.900"
@@ -66,14 +66,14 @@ function HomePage() {
           </Box>
           <Box
             // h="fit-content"
-            h="105vh"
+            h="200vh"
             // bg="gray.400"
             maxW="80vw"
             margin="auto"
             // mt="-20"
             mb="50"
             borderRadius="md"
-            overflow="auto"
+            overflow="visible"
             // textAlign="center"
           >
             <Grid
@@ -95,6 +95,7 @@ function HomePage() {
                 bg="whiteAlpha.900"
                 borderRadius="md"
                 p="10px"
+                h="fit-content"
               >
                 {" "}
                 <Heading as="h4" size={["md", "lg", "lg"]} pb="10px">
