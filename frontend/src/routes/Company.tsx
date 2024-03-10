@@ -148,17 +148,46 @@ const CompanyDetails = () => {
       }
     };
 
-    const handleUntrackCompany = async () => {
-      //insert untrack company details here
+    const handleUntrackCompany = async (symbol: string) => {
+      try {
+        // insert untrack company details here
+        console.log("unfollowing company", symbol);
+        const res = await fetch(`${API_URL}/untrack`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ ticker_code: symbol }), // send ticker_code in request body
+        });
+        if (!res.ok) {
+          const errorData = await res.json(); // extract error message from response
+          throw new Error(errorData.error || "Failed to untrack company");
+        }
+        console.log("successfully unfollowed company");
+        const responseData = await res.json();
+        console.log(responseData);
+        toastTrack({
+          //usage of reactive toasts that confirm after database update whether the addition was successful
+          title: "Added",
+          description: "This company has now been untracked!",
+          status: "success",
+          duration: 3500,
+          variant: "subtle",
+          isClosable: true,
+        });
+      } catch (error) {
+        toastTrack({
+          //in the case that the user manages to track again, relay an error
+          title: "An error has occured",
+          description: "",
+          status: "error",
+          duration: 3500,
+          variant: "subtle",
+          isClosable: true,
+        });
+        console.error("Error, untracking try catch failed", error.message);
+      }
     };
-
-    let articles = [
-      "Headliner",
-      "ArticleTitle",
-      "NotAdmissible",
-      "MoneyLaundering",
-      "DidaGoodThing",
-    ]; //dummy data
 
     return (
       <>
@@ -265,7 +294,7 @@ const CompanyDetails = () => {
                       }
                       onClick={() => {
                         if (companyData && companyData.tracked) {
-                          handleUntrackCompany();
+                          handleUntrackCompany(companyData.Symbol);
                         } else {
                           onOpen();
                         }
