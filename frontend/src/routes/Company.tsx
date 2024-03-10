@@ -13,6 +13,18 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
+  Popover,
+  PopoverTrigger,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverBody,
+  PopoverHeader,
+  PopoverArrow,
+  List,
+  ListIcon, 
+  ListItem,
+  Tag,
+  TagLabel
 } from "@chakra-ui/react";
 
 import {
@@ -78,7 +90,7 @@ const CompanyDetails = () => {
           throw new Error("Failed to fetch company data");
         }
         const data = await response.json(); //pass this data into the company page html...
-        console.log(data);
+        console.log("company data: ", data);
         setCompanyData(data);
       } catch (error) {
         console.error("error has occured");
@@ -168,7 +180,7 @@ const CompanyDetails = () => {
             >
               <Box bg="gray.50" p={["10px", "10px", "10px"]}>
                 {" "}
-                <Flex direction={["column", "column", "row"]}>
+                <Flex direction={["column", "column", "row"]} alignItems="center">
                   <Box bg="gray.50" p={["10px", "10px", "15px"]}>
                     <Heading as="h3" fontSize={["2xl", "3xl", "5xl"]} mt="1">
                       {companyData
@@ -205,16 +217,29 @@ const CompanyDetails = () => {
                         : "..."}
                     </Text>
                   </Box>
-                  <Box p={["10px", "10px", "15px"]} fontSize="lg" bg="gray.50">
-                    <Badge
-                      colorScheme="green"
-                      borderRadius="full"
-                      fontSize="1.5em"
-                      p="10px"
-                    >
-                      8.5
-                    </Badge>
-                  </Box>
+                  {companyData && companyData.score && (<Box p={["10px", "10px", "15px"]} fontSize="lg" bg="gray.50">                   
+                    <Popover>
+                      <PopoverTrigger>
+                      <Badge
+                        colorScheme={
+                          companyData.score > 0 ? "green" : companyData.score < 0 ? "red" : "yellow"
+                        }
+                        borderRadius="full"
+                        fontSize="1.5em"
+                        p="10px"
+                        _hover={{ bg: "gray.400" }}
+                      >
+                        {Number(companyData.score).toPrecision(3)}
+                      </Badge>
+                      </PopoverTrigger>
+                      <PopoverContent>
+                        <PopoverArrow />
+                        <PopoverCloseButton />
+                        <PopoverHeader>Company score</PopoverHeader>
+                      </PopoverContent>
+                    </Popover>
+
+                  </Box>)}
                   <Box
                     bg="gray.50"
                     p={["10px", "10px", "15px"]}
@@ -345,6 +370,55 @@ const CompanyDetails = () => {
                   <Box height="60vh" mt="-20px">
                     <AreaChart ticker={ticker || ""} />
                   </Box>
+                  {companyData && companyData.score && (<Box p={["10px", "10px", "15px"]} fontSize="lg" bg="gray.50">                   
+                      <Box bg="gray.100" p="10px" borderRadius="10px">
+                        <List spacing={3}>
+                          <Flex>
+                            <Box w="80%">
+                        <ListItem p="5px">
+                          <ListIcon
+                            as={companyData.avgreturn < 0 ? TriangleDownIcon : TriangleUpIcon}
+                            color={companyData.avgreturn < 0 ? 'red.500' : 'green.500'}
+                          />
+                          Average Return: {Number(companyData.avgreturn).toPrecision(3)}
+                        </ListItem>
+                        <ListItem p="5px">
+                          <ListIcon
+                            as={ companyData.avgsentiment < 0 ? TriangleDownIcon : TriangleUpIcon}
+                            color={ companyData.avgsentiment < 0 ? 'red.500' : 'green.500'}
+                          />
+                          Average Sentiment: {Number(companyData.avgsentiment).toPrecision(3)}
+                        </ListItem>
+                        <ListItem p="5px">
+                          <Tag
+                            size="lg"
+                            colorScheme={companyData.modesentiment === "positive" ? "green" : "red"}
+                            borderRadius="10px"
+                          >
+                            <TagLabel>
+                              Mode Sentiment: {companyData.modesentiment}
+                            </TagLabel>
+                          </Tag>
+                        </ListItem>
+                        </Box>
+                        <ListItem >
+                          <Text p="5px">Based on these metrics, {companyData.name} stock price is expected to: </Text> 
+                          <Badge
+                            colorScheme={companyData.modesentiment === "positive" ? "green" : "red"}
+                            borderRadius="15px"
+                            fontSize="1rem"
+                            p="7px"
+                          >
+                            {companyData.modesentiment === "positive" ? "increase" : "decrease"}
+                          </Badge>
+                        </ListItem>
+                        </Flex>
+                        </List>
+                      </Box>
+                      
+
+
+                  </Box>)}
                 </GridItem>
                 <GridItem
                   w="100%"
