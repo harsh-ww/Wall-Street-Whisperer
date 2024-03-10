@@ -10,6 +10,7 @@ import {
 import BaseLayout from "../layouts/BaseLayout";
 import RecentArticleList from "../components/RecentArticleList";
 import DataTable from "../components/DataTable";
+import Notifications from "../components/Notifications";
 
 function HomePage() {
 
@@ -22,9 +23,9 @@ function HomePage() {
           <Box
             h="fit-content"
             bg="whiteAlpha.900"
-            maxW="70vw"
+            maxW="80vw"
             margin="auto"
-            mt="-20"
+            mt="-12vh"
             mb="10px"
             borderRadius="md"
             overflow="auto"
@@ -34,10 +35,10 @@ function HomePage() {
           >
             <Heading lineHeight="tall">
               <Highlight
-                query="Followed"
+                query="Tracked"
                 styles={{ px: "2", py: "1", rounded: "full", bg: "blue.100" }}
               >
-                Your Followed Companies
+                Your Tracked Companies
               </Highlight>
             </Heading>
           </Box>
@@ -45,7 +46,7 @@ function HomePage() {
             // h="fit-content"
             h="105vh"
             // bg="gray.400"
-            maxW="75vw"
+            maxW="80vw"
             margin="auto"
             // mt="-20"
             mb="50"
@@ -55,7 +56,7 @@ function HomePage() {
           >
             <Grid
               h="75vh"
-              w="75vw"
+              w="80vw"
               templateRows="repeat(2, 1fr)"
               templateColumns="repeat(7, 1fr)"
               gap={4}
@@ -75,9 +76,9 @@ function HomePage() {
               >
                 {" "}
                 <Heading as="h4" size={["md", "lg", "lg"]} pb="10px">
-                  Alerts
+                  Notifications
                 </Heading>
-                Notifications go here
+                <Notifications />
               </GridItem>
               <GridItem
                 colSpan={5}
