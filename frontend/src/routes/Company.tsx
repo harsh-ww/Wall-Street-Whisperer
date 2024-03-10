@@ -282,6 +282,7 @@ const CompanyDetails = () => {
                     <ModalOverlay />
                     <ModalContent paddingTop="10px">
                       <ModalBody>
+                      <Text mt={5} color='gray.600'>Enter the name which this company is commonly known by and referred to in news articles.</Text>
                         <ModalCloseButton />
                       </ModalBody>
                       <ModalFooter>
@@ -299,6 +300,7 @@ const CompanyDetails = () => {
                             }
                           }}
                         />
+                        
                         <Button
                           variant="ghost"
                           backgroundColor="purple.700"
