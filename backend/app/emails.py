@@ -31,7 +31,7 @@ def daily_email_content():
             
                 # Find the highest scoring article on the last 24 hours that belongs to that company
                 # Add the article data to the company dictionary
-                query = """SELECT Title, Articleurl, PublishedDate, Imageurl, Summary, OverallScore, CompanyID
+                query = """SELECT Title, Articleurl, PublishedDate, Imageurl, Summary, OverallScore
                         FROM article
                         JOIN company ON article.companyID = company.companyID
                         WHERE CompanyName = %s AND PublishedDate = %s
@@ -60,7 +60,7 @@ def article_email_content(articleList):
     with conn.cursor() as cur:
         cur = conn.cursor()
 
-        query = """SELECT CompanyName, TickerCode, Title, Articleurl, PublishedDate, Imageurl, Summary, OverallScore, CompanyID
+        query = """SELECT CompanyName, TickerCode, Title, Articleurl, PublishedDate, Imageurl, Summary, OverallScore
                 FROM article
                 JOIN company ON article.companyID = company.companyID
                 WHERE article.articleID = ANY(%s)
@@ -136,6 +136,10 @@ def sendarticleemail():
     msg_recipients = data.get("recipients")  
     articleList = data.get("articleList")
 
+    # Dont send email if there are no important articles
+    if not articleList:
+        return jsonify({'message': 'No emails are sent'}), 200
+        
     # Generate article email content when given an article ID
     email_content = article_email_content(articleList)
 
