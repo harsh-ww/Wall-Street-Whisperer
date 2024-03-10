@@ -1,5 +1,4 @@
-import { Flex } from "@chakra-ui/react";
-import { Link, Text, Box } from "@chakra-ui/react";
+import { Flex, Link, Text, Box } from "@chakra-ui/react";
 
 interface Props {
   companyName: string;
@@ -9,21 +8,36 @@ interface Props {
 function SuggestionsGenerator({ companyName, ticker }: Props) {
   return (
     <Flex
-      h="50%"
-      bg="white"
-      justifyContent="space-around"
+      bgGradient="linear(to-r, purple.300, purple.100)"
+      h="auto"
+      justifyContent="center"
       alignItems="center"
-      boxShadow="md"
-      p="5"
-      borderRadius="1000px"
+      boxShadow="lg"
+      p="3"
+      rounded="xl"
       border="2px"
-      borderColor="purple.900"
-      direction="column"
+      borderColor="purple.300"
+      overflow="hidden"
+      maxW="300px"
+      maxH="120px"
+      flexDirection="column" 
+      textAlign="center"
+      transition="all 0.3s"
+      _hover={{ //on hover styling
+        transform: "scale(1.015)",
+        borderColor: "purple.400",
+        boxShadow: "xl",
+      }}
     >
-      <Link href={`/company/${ticker}`}>{companyName}</Link>
-
+      <Link href={`/company/${ticker}`} textDecoration="none" _hover={{ textDecoration: 'none' }}>
+        <Text fontWeight="bold" fontSize="lg" mb="2" color="gray.800">{companyName}</Text>
+      </Link>
+      <Box mt="auto"> {/* Pushes ticker to bottom */}
+        <Text fontStyle="italic" color="gray.600" fontSize="sm" lineHeight="1.2">Ticker: {ticker}</Text>
+      </Box>
     </Flex>
   );
 }
 
 export default SuggestionsGenerator;
+

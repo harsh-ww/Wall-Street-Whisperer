@@ -11,7 +11,7 @@ interface Props {
 function CompanyMotif({ companyName, textSize }: Props) {
   return (
     <Flex
-      bg="purple.200"
+      bgGradient="linear(to-r, purple.400, purple.200)"
       justifyContent="space-around"
       alignItems="center"
       padding="0.5em"
@@ -20,6 +20,11 @@ function CompanyMotif({ companyName, textSize }: Props) {
       rounded="xl"
       border="1px"
       borderColor="purple.300"
+      _hover={{ //on hover styling
+        transform: "scale(1.015)",
+        borderColor: "purple.400",
+        boxShadow: "xl",
+      }}
     >
       <Image src="../../public/logoIpsum.svg" w="25%" />{" "}
       {/*image will also be replaced from prop*/}
@@ -29,6 +34,7 @@ function CompanyMotif({ companyName, textSize }: Props) {
         alignItems="center"
         whiteSpace="nowrap"
         overflow="hidden"
+
       >
         <Heading size={textSize}>
           <Link href="">{companyName}</Link>

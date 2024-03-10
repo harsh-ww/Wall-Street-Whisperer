@@ -156,8 +156,14 @@ const CompanyDetails = () => {
                       colorScheme="purple"
                       size="lg"
                       w={["auto", "282px", "282px"]}
+                      borderColor="purple.200"
+                      borderWidth="3px"
                       // mt="6"
                       rightIcon={<IoIosAddCircleOutline size={28} />}
+                      _hover={{ //on hover styling
+                        transform: "scale(1.02)",
+                        boxShadow: "xl",
+                      }}
                     >
                       Track Company
                     </Button>

@@ -36,7 +36,7 @@ function HomePage() {
         const data = await response.json();
         setSuggestions(data);
       } catch (error) {
-        console.error('Error fetching suggestions:', error.message);
+        console.error('Error fetching suggestions:');
       }
     };
 
@@ -179,7 +179,7 @@ function HomePage() {
 
               {/* Third item in grid: Suggested companies */}
               <GridItem
-                colSpan={2}
+                colSpan={5}
                 rowSpan={1}
                 bg="whiteAlpha.900"
                 borderRadius="md"
@@ -189,7 +189,7 @@ function HomePage() {
                 <Heading as="h4" size={["md", "lg", "lg"]} pb="10px">
                   Suggestions
                 </Heading>
-                <SimpleGrid columns={2} spacing={2}>
+                <SimpleGrid columns={{ base: 1, md: 3 }} spacing={5}> {/*column amount is reactive to viewport, set to 1 for smaller screens and UI*/}
                   {suggestions.map((company) => (
                     <SuggestionsGenerator key={company['ticker']} companyName={company['name']} ticker={company['ticker']} />
                   ))}
