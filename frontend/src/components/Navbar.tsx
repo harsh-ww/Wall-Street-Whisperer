@@ -1,6 +1,5 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import Profile from "./Profile";
 import {
   chakra,
   Box,
@@ -15,23 +14,17 @@ import {
   CloseButton,
 } from "@chakra-ui/react";
 import Logo from "./Logo";
-import {
-  AiOutlineMenu,
-  AiFillHome,
-  AiOutlineInbox,
-  AiFillBell,
-} from "react-icons/ai";
-import { BsFillCameraVideoFill, BsFillInboxFill } from "react-icons/bs";
-import { MdOutlineBusinessCenter, MdExplore } from "react-icons/md";
+import { AiOutlineMenu, AiFillHome } from "react-icons/ai";
 import Tutorial from "../components/Tutorial";
+
 export default function App() {
-  const bg = useColorModeValue("white", "gray.800");
+  // hook for mobile navigation
   const mobileNav = useDisclosure();
 
   return (
     <React.Fragment>
       <chakra.header
-        bg={bg}
+        bg="white"
         w="full"
         px={{ base: 2, sm: 4 }}
         py={1}
@@ -60,11 +53,11 @@ export default function App() {
                 p={2}
                 pb={4}
                 m={2}
-                bg={bg}
+                bg="white"
                 spacing={3}
                 rounded="sm"
                 shadow="sm"
-                zIndex={9999} // Ensure the navbar appears on top of other content
+                zIndex={9999} // Ensure navbar appears on top of other content
               >
                 <CloseButton
                   aria-label="Close menu"
@@ -76,17 +69,16 @@ export default function App() {
                     Home
                   </Button>
                 </NavLink>
-                
               </VStack>
             </Box>
             <chakra.a
               href="/"
-              title="Finance App"
+              title="Wall Street Whisperer"
               display="flex"
               alignItems="center"
             >
               <Logo />
-              <VisuallyHidden>Finance App</VisuallyHidden>
+              <VisuallyHidden>Wall Street Whisperer</VisuallyHidden>
             </chakra.a>
 
             <HStack spacing={3} display={{ base: "none", md: "inline-flex" }}>

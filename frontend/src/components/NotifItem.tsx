@@ -1,6 +1,3 @@
-//Reusable component for landing page trending articles tab, company page tab, user home page tab to reference articles
-//contains article title (and possibly contents)
-//hoverable fade transition popup for info on sentiment analysis
 import {
   Card,
   Text,
@@ -17,8 +14,6 @@ import {
   Badge,
   Box,
   CloseButton,
-} from "@chakra-ui/react";
-import {
   Modal,
   ModalOverlay,
   ModalContent,
@@ -40,6 +35,7 @@ interface ItemProps {
 }
 
 function NotifItem({ article, company, closeButton }: ItemProps) {
+  // useDisclosure hook to handle modal open and close
   const { isOpen, onOpen, onClose } = useDisclosure();
   const getRelativeDate = (str: string): string => {
     const date = new Date(str);

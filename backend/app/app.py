@@ -5,8 +5,12 @@ import os
 import logging
 
 def create_app():
+    """
+    Create and configure the Flask application.
+    """
     app = Flask(__name__)
 
+    # Enable Cross-Origin Resource Sharing (CORS)
     CORS(app)
 
     # Configuration of flask mail

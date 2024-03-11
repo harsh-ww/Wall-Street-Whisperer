@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 import { API_URL } from "../config";
 
 function HomePage() {
-  const [suggestions, setSuggestions] = useState([]); // State variable for suggestions
+  const [suggestions, setSuggestions] = useState([]);
 
   useEffect(() => {
     // Fetch suggestions data
@@ -24,12 +24,12 @@ function HomePage() {
       try {
         const response = await fetch(`${API_URL}/suggestions`);
         if (!response.ok) {
-          throw new Error('Failed to fetch suggestions');
+          throw new Error("Failed to fetch suggestions");
         }
         const data = await response.json();
         setSuggestions(data);
       } catch (error) {
-        console.error('Error fetching suggestions:');
+        console.error("Error fetching suggestions:");
       }
     };
 
@@ -40,7 +40,6 @@ function HomePage() {
     <>
       <Box>
         <BaseLayout />
-        {/* <SideBar /> */}
         <Box mx="1" as="section" h="fit-content">
           <Box
             h="fit-content"
@@ -52,8 +51,6 @@ function HomePage() {
             borderRadius="md"
             overflow="auto"
             p="10px"
-
-            // textAlign="center"
           >
             <Heading lineHeight="tall">
               <Highlight
@@ -65,22 +62,17 @@ function HomePage() {
             </Heading>
           </Box>
           <Box
-            // h="fit-content"
             h="200vh"
-            // bg="gray.400"
             maxW="80vw"
             margin="auto"
-            // mt="-20"
             mb="50"
             borderRadius="md"
             overflow="visible"
-            // textAlign="center"
           >
             <Grid
               h="75vh"
               w="80vw"
               templateRows="repeat(2, 1fr)"
-              // templateColumns="repeat(7, 1fr)"
               templateColumns={{
                 base: "repeat(2, 1fr)",
                 md: "repeat(2, 1fr)",
@@ -126,9 +118,13 @@ function HomePage() {
                 <Heading as="h4" size={["md", "lg", "lg"]} pb="10px">
                   Suggestions
                 </Heading>
-                <SimpleGrid columns={{ base: 1, md: 3 }} spacing={5}> {/*column amount is reactive to viewport, set to 1 for smaller screens and UI*/}
+                <SimpleGrid columns={{ base: 1, md: 3 }} spacing={5}>
                   {suggestions.map((company) => (
-                    <SuggestionsGenerator key={company['ticker']} companyName={company['name']} ticker={company['ticker']} />
+                    <SuggestionsGenerator
+                      key={company["ticker"]}
+                      companyName={company["name"]}
+                      ticker={company["ticker"]}
+                    />
                   ))}
                 </SimpleGrid>
               </GridItem>

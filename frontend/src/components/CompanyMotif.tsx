@@ -1,7 +1,4 @@
-//Reusable component primarily for side bar navigation and suggested company alerts
-//functionally similar to article motif except for companies and will redirect to company page
-import { Heading, Flex } from "@chakra-ui/react";
-import { Link, Image } from "@chakra-ui/react";
+import { Heading, Flex, Link } from "@chakra-ui/react";
 
 interface Props {
   companyName: string;
@@ -9,6 +6,7 @@ interface Props {
   TickerCode: string; //ticker code to redirect to company page
 }
 
+// component suggested company alerts - will redirect to company page
 function CompanyMotif({ companyName, textSize, TickerCode }: Props) {
   return (
     <Link href={`/company/${TickerCode}`}>
@@ -30,8 +28,6 @@ function CompanyMotif({ companyName, textSize, TickerCode }: Props) {
           boxShadow: "xl",
         }}
       >
-        {/*image will also be replaced from prop*/}
-
         <Flex
           w="100%"
           h="100%"

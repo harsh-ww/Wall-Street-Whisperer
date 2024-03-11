@@ -11,7 +11,7 @@ function Background({ children }: Props) {
       height="20vh"
       width="100vw"
       p="4"
-      bgGradient="linear(to-b, purple.300, purple.100)" // Gradient from purple.500 to purple.900
+      bgGradient="linear(to-b, purple.300, purple.100)"
     >
       {children}
     </Box>

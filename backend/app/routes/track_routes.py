@@ -1,11 +1,10 @@
 from flask import Flask, request, jsonify, Blueprint
-import psycopg2
-import logging
 from connect import get_db_connection
 import services.AlphaVantageService as av
 
 track_blueprint = Blueprint('track', __name__)
 
+# check if company is already tracked
 def check_already_tracked(ticker:str) -> bool:
     conn = get_db_connection()
     with conn.cursor() as cur:
@@ -16,6 +15,7 @@ def check_already_tracked(ticker:str) -> bool:
 
     return existing_company is not None
     
+# Save tracked company to db
 def save_tracked_company(ticker:str, officialName:str, commonName: str, exchange:str, currency:str) -> int:
     conn = get_db_connection()
     with conn.cursor() as cur:
@@ -26,6 +26,7 @@ def save_tracked_company(ticker:str, officialName:str, commonName: str, exchange
     conn.close()
     return new_company_id
 
+# Get company details from AV
 def get_company_info(ticker:str):
     if "." in ticker:
         details = av.getCompanyDetailsNonUS(ticker)
@@ -38,7 +39,7 @@ def get_company_info(ticker:str):
             return None
         return {'name': details['Name'], 'exchange': details['Exchange'], 'currency': details['Currency']}
 
-# API endpoint to track a company
+# endpoint to track a company
 @track_blueprint.route('/track', methods=['POST'])
 def track_company():
     # Get request body
@@ -71,6 +72,7 @@ def track_company():
 
     return jsonify({'message': 'Company successfully tracked'}), 201
 
+# Get all tracked companies
 @track_blueprint.route('/tracked', methods=['GET'])
 def get_tracked_companies():
     conn = get_db_connection()
@@ -98,7 +100,7 @@ def get_tracked_companies():
     
     return jsonify(tracked_companies)
 
-
+# Untrack company in db
 def untrack_db(ticker: str):
     conn = get_db_connection()
     with conn.cursor() as cur:
@@ -110,12 +112,11 @@ def untrack_db(ticker: str):
 @track_blueprint.route('/untrack', methods=['POST'])
 def untrack_company():
     # Get request body
-    
     data = request.get_json()
     print("Testing")
     ticker_code = data.get('ticker_code')
     
-    if not check_already_tracked(ticker_code): # if there is a return then is tracked...
+    if not check_already_tracked(ticker_code):
         return jsonify({'error': f'Ticker {ticker_code} is not tracked'}), 400
 
     if not ticker_code:

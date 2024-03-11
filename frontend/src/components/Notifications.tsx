@@ -21,7 +21,6 @@ export default function Notifications() {
         return;
       }
       const data = await res.json();
-      console.log("notifications are:", data);
       setNotifications(data);
       setLoaded(true);
     };
@@ -38,8 +37,8 @@ export default function Notifications() {
     }
   };
 
+  // clear a single notification by its id
   const clearNotification = async (id: number) => {
-    console.log("clearing notification", id);
     const res = await fetch(`${API_URL}/visit/${id}`, {
       method: "POST",
     });
@@ -51,6 +50,7 @@ export default function Notifications() {
     }
   };
 
+  // Render loading spinner while notifications are being fetched
   if (!loaded) {
     return (
       <Spinner
@@ -63,6 +63,7 @@ export default function Notifications() {
     );
   }
 
+  // Render info message if there are no notifications
   if (notifications.length == 0) {
     return (
       <Alert status="info">
@@ -85,10 +86,6 @@ export default function Notifications() {
             company={notification.companyname}
             closeButton={() => clearNotification(notification.articleid)}
           />
-          {/* <CloseButton
-            colorScheme="pink"
-            onClick={() => clearNotification(notification.articleid)}
-          /> */}
         </Flex>
       ))}
     </Box>

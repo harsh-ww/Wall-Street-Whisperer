@@ -25,6 +25,7 @@ def get_company_details_db(ticker:str):
         }
     else:
         return {}
+    
 # API endpoint to return company details
 # Companies are made unique by a ticker and exchange. New company searching has unique tickers
 @company_routes_blueprint.route('/company/<ticker>', methods = ['GET'])
@@ -56,7 +57,7 @@ def company_details(ticker: str):
         
     return details
 
-## [PROJ-11] Setup endpoint to allow searching for company names
+# endpoint to allow searching for company names
 @company_routes_blueprint.route('/company', methods=['GET'])
 def search_companies():
     
@@ -85,8 +86,7 @@ def search_companies():
     return jsonify(companies)
 
 def search_companies_db(ticker):
-
-    # Create SQL query which uses ILIKE to find companies which match the query
+    # query which uses ILIKE to find companies which match the query
     sql_query = """
         SELECT CompanyName, TickerCode, Exchange
         FROM company
@@ -112,6 +112,7 @@ def search_companies_db(ticker):
         
     return companies
 
+# route to get stock price time series data for a company
 @company_routes_blueprint.route('/company/<ticker>/timeseries', methods=['GET'])
 def get_timeSeries(ticker):
     granularity = request.args.get('granularity') or 'DAILY'
@@ -124,6 +125,7 @@ def get_timeSeries(ticker):
 
     return jsonify(newData)
 
+# change the format of the time series data
 def changeFormat(data): 
     formatted_data = []
     for date, values in data.items():
@@ -134,8 +136,7 @@ def changeFormat(data):
     return reversed_data[-30:]  # return the 30 most recent data points
 
 
-## [PROJ-42] Method to generate suggestions from currently tracked companies
-# Returns the Company name and Ticker of companies to suggest
+# generates suggestions from currently tracked companies
 @company_routes_blueprint.route('/suggestions')
 def generateSuggestions():
 
@@ -143,7 +144,7 @@ def generateSuggestions():
     RANGE = 50
     suggestions = []
 
-    ## Get all companies' tickers stored in DB
+    # Get all companies' tickers stored in DB
     sql_query = "SELECT TickerCode FROM company;"
     # execute query
     try:
@@ -156,34 +157,32 @@ def generateSuggestions():
         conn.close()
 
     if len(tickers) > 0:
-        ## For each company in database, get stock price (in AV service)
+        # For each company in database, get stock price
         totalPrice = 0
         for ticker in tickers:
             totalPrice += float(getCurrentStockPrice(ticker)['price'])
-        ## Get average stock price
         averagePrice = totalPrice / len(tickers)
     else:
-        averagePrice = 100 #Default to 100 if anything doesn't work for whatever reason
+        averagePrice = 100 # Default to 100
 
-    ## Create range of acceptable stock prices
+    # Create range of acceptable stock prices
     maxPrice = averagePrice + RANGE
     minPrice = averagePrice - RANGE
 
-    ## Read CSV
+    # Read CSV
     df = pd.read_csv('nasdaq_listed.csv')
     untracked = df[['Name', 'Symbol', 'Last Sale']]
-    ## Get companies which have stock price which lies within this valid range
+    # Get companies which have stock price which lies within this valid range
     for index, row in untracked.iterrows():
         companyPrice = float(row['Last Sale'][1:])
-        ## Get company name and ticker of these companies
+        # Get company name and ticker of these companies
         if companyPrice is not None and companyPrice > minPrice and companyPrice < maxPrice:
             suggestions.append({
                 'name': row['Name'],
                 'ticker': row['Symbol']
             })
 
-    ## Get SUGGESTION_COUNT(6) random companies from this list
+    # Get SUGGESTION_COUNT(6) random companies from this list
     suggestions = random.sample(suggestions, SUGGESTION_COUNT)
 
     return jsonify(suggestions)
-## \\ [PROJ-42]

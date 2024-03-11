@@ -8,9 +8,6 @@ import {
 } from "@chakra-ui/react";
 import { AreaChartItem } from "./AreaChartItem";
 
-// variable for ticker symbol - will pass in as a prop later
-// const ticker: string = "IBM";
-
 const AreaChart = ({ ticker }: { ticker: string }) => {
   return (
     <>

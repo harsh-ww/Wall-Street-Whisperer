@@ -1,13 +1,11 @@
 import "../App.css";
 import SideBar from "../components/SideBar";
-import ArticleMotif from "../components/ArticleMotif";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import {
   Modal,
   ModalOverlay,
   ModalContent,
-  ModalHeader,
   useToast,
   ModalFooter,
   ModalBody,
@@ -17,7 +15,6 @@ import {
   PopoverTrigger,
   PopoverCloseButton,
   PopoverContent,
-  PopoverBody,
   PopoverHeader,
   PopoverArrow,
   List,
@@ -25,9 +22,6 @@ import {
   ListItem,
   Tag,
   TagLabel,
-} from "@chakra-ui/react";
-
-import {
   Box,
   Button,
   Flex,
@@ -37,7 +31,6 @@ import {
   GridItem,
   Badge,
   ButtonGroup,
-  SimpleGrid,
   Link,
   Input,
 } from "@chakra-ui/react";
@@ -63,70 +56,62 @@ interface CompanyDetails {
   Exchange: string;
   exchange: string;
   stock: {
-    //stock information is the same regardless...
     change: string;
     "change percent": string;
     price: string;
   };
 }
 
-//tracking added companies
-
+// component to display company details
 const CompanyDetails = () => {
-  const [commonName, setCommonName] = useState(""); //provide database common_name insertion
-  const { isOpen, onOpen, onClose } = useDisclosure(); //reactive modal dialog to be used when trying to track company
+  // provide database common_name insertion
+  const [commonName, setCommonName] = useState("");
+  // useDisclosure hook for modal for tracking company
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const toastTrack = useToast();
   const { exchange, ticker, tracked } = useParams();
-  const [companyData, setCompanyData] = useState<CompanyDetails>(); //fill page with relevant data from server once retrieved, initially null
+  const [companyData, setCompanyData] = useState<CompanyDetails>();
 
   useEffect(() => {
-    //after rendering, fetch company data
     const fetchCompanyData = async () => {
       try {
-        const response = await fetch(
-          `${API_URL}/company/${ticker}` //fetch from API address   (FORMAT IS DIFFERENT for US vs NON-US companies)
-        );
+        const response = await fetch(`${API_URL}/company/${ticker}`);
         if (!response.ok) {
           throw new Error("Failed to fetch company data");
         }
-        const data = await response.json(); //pass this data into the company page html...
-        console.log("company data: ", data);
+        const data = await response.json();
         setCompanyData(data);
       } catch (error) {
         console.error("error has occured");
       }
     };
     fetchCompanyData();
-  }, [exchange, ticker, tracked]); //optional dependencies, the page will refresh if these change, i.e. when different exchange and company identification page is chosen...
+  }, [exchange, ticker, tracked]);
 
   function Company() {
-    //function to handle storing tracked company data for that user
+    // handles storing tracked company data for that user
     const handleTrackCompany = async () => {
       const data = {
         ticker_code: companyData
-          ? companyData.Symbol || companyData.symbol || "undefined" //provide data to POST request
+          ? companyData.Symbol || companyData.symbol || "undefined"
           : "undefined",
         common_name: commonName, //to be retrieved from a user-input
       };
 
       try {
-        const response = await fetch(
-          `${API_URL}/track`, //calls track.py function
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          }
-        );
+        const response = await fetch(`${API_URL}/track`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
         if (!response.ok) {
           throw new Error("Failed to track company");
         }
         const responseData = await response.json();
-        console.log(responseData);
         toastTrack({
-          //usage of reactive toasts that confirm after database update whether the addition was successful
+          // reactive toasts that confirm whether database update was successful
           title: "Added",
           description: "This company is now being tracked!",
           status: "success",
@@ -136,7 +121,6 @@ const CompanyDetails = () => {
         });
       } catch (error) {
         toastTrack({
-          //in the case that the user manages to track again, relay an error
           title: "An error has occured",
           description: "",
           status: "error",
@@ -159,7 +143,6 @@ const CompanyDetails = () => {
       };
       try {
         // insert untrack company details here
-        console.log("Attempting to unfollow company", data);
         const response = await fetch(`${API_URL}/untrack`, {
           method: "POST",
           headers: {
@@ -168,12 +151,10 @@ const CompanyDetails = () => {
           body: JSON.stringify(data), // send ticker_code in request body
         });
         if (!response.ok) {
-          console.log(response.status);
-          const errorData = await response.json(); // extract error message from response
+          const errorData = await response.json();
           throw new Error(errorData.error || "Failed to untrack company");
         }
         toastTrack({
-          //usage of reactive toasts that confirm after database update whether the addition was successful
           title: "Removed!",
           description: "This company has now been untracked!",
           status: "success",
@@ -182,10 +163,8 @@ const CompanyDetails = () => {
           isClosable: true,
         });
       } catch (error) {
-        console.log(data);
         toastTrack({
-          //in the case that the user manages to track again, relay an error
-          title: "An error has occured", //error.message
+          title: "An error has occured",
           description: "",
           status: "error",
           duration: 3500,
@@ -423,7 +402,7 @@ const CompanyDetails = () => {
                   bg="gray.50"
                   p={["15px", "15px", "30px"]}
                 >
-                  {" "}
+                  {/* if companyData is not null, display the AreaChart component */}
                   <Box height="60vh" mt="-20px">
                     <AreaChart ticker={ticker || ""} />
                   </Box>

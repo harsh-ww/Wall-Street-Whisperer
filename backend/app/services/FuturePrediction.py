@@ -2,6 +2,7 @@ from services.AlphaVantageService import getTimeSeries
 from typing import List
 import pandas as pd
 
+# gets the average return for a given ticker over a given number of days
 def getReturnsAverage(ticker: str, days: int) -> List[float]:
     """Calculates the average return for the last 100 days for a given ticker"""
     timeSeries = getTimeSeries(ticker, 'DAILY')
@@ -10,7 +11,6 @@ def getReturnsAverage(ticker: str, days: int) -> List[float]:
     df = pd.DataFrame.from_dict(timeSeries, orient='index')
 
     # Reverse ordering
-
     df = df[::-1]
 
     # Convert data types
@@ -19,8 +19,6 @@ def getReturnsAverage(ticker: str, days: int) -> List[float]:
     # Calculate returns
     df['return'] = df['4. close'].pct_change()
 
-    
-    # df['return'].tolist()[1:]
     return df['return'][-days:].mean()
 
 

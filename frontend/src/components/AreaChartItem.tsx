@@ -8,7 +8,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useState, useEffect } from "react";
-import { format, parseISO, subDays } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { Box, Text } from "@chakra-ui/react";
 import { API_URL } from "../config";
 
@@ -44,10 +44,8 @@ export const AreaChartItem: React.FC<AreaChartItemProps> = ({
         throw new Error("Failed to fetch data");
       }
       const stockData = await response.json();
-      // stockData only contains 30 most recent data points
       setData(stockData);
-      console.log(data);
-      setIsLoaded(true); // Update isLoaded state after data fetching
+      setIsLoaded(true); // Update isLoaded state after data is fetched
     } catch (error) {
       console.error("Error fetching stock data:", error);
     }
@@ -70,6 +68,7 @@ export const AreaChartItem: React.FC<AreaChartItemProps> = ({
                 <stop offset="95%" stopColor="#2451B7" stopOpacity={0} />
               </linearGradient>
             </defs>
+            {/* X-axis for date */}
             <XAxis
               dataKey="date"
               tickLine={false}
@@ -83,6 +82,7 @@ export const AreaChartItem: React.FC<AreaChartItemProps> = ({
               }}
               interval={interval}
             />
+            {/* Y-axis for price */}
             <YAxis
               dataKey="4. close"
               tickLine={false}
@@ -122,7 +122,6 @@ const CustomTooltip: React.FC<TooltipProps> = ({ active, payload, label }) => {
         <Text as="b">{format(parseISO(label || ""), "dd MMM yyyy")}</Text>
         <Text>{`Price: ${price}`}</Text>
         <Text>{`Volume: ${volume}`}</Text>{" "}
-        {/* Include volume value in tooltip */}
       </Box>
     );
   }
