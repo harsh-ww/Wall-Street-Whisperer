@@ -8,7 +8,7 @@ import requests
 import os
 import logging
 from datetime import datetime, timedelta
-from typing import List
+from typing import List, Tuple
 import time
 #from services.SummaryService import batch_generateSummary
 
@@ -36,11 +36,11 @@ class AnalysedArticle(Article):
 class BatchArticleAnalysis():
 
     # constructor to set articles to be analysed
-    def __init__(self, articles: list[tuple[Company, Article]]) -> None:
+    def __init__(self, articles: List[Tuple[Company, Article]]) -> None:
         self.articles = articles
 
 
-    def splitArticleTarget(self, companyName:str, articleText:str) -> tuple[str, str, str]:
+    def splitArticleTarget(self, companyName:str, articleText:str) -> Tuple[str, str, str]:
         """
         Splits an article text into a tuple of strings with the company entity separated in order to allow targeted sentiment analysis
         """
@@ -215,7 +215,7 @@ class BatchArticleAnalysis():
         sentiments = tsc.infer(targets=sentimentAnalysisTargets, batch_size=4)
 
 
-        analysedArticles:list[AnalysedArticle] = []
+        analysedArticles:List[AnalysedArticle] = []
         
         # post processing of sentiments to add to list
         for i, result in enumerate(sentiments):

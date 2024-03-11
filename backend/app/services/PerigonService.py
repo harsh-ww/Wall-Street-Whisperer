@@ -4,12 +4,13 @@ import os
 from datetime import datetime, timedelta
 import logging
 from services.exceptions import APIError
+from typing import List
 
 API_URL = "https://api.goperigon.com/v1/"
 API_KEY = os.environ['PERIGON_KEY']
 
 # retrieves news articles related to a given company from the Perigon API
-def getCompanyNewsPerigon(companyName: str, timePeriodHours: int, count:int, topSources:bool=False) -> list[Article]:
+def getCompanyNewsPerigon(companyName: str, timePeriodHours: int, count:int, topSources:bool=False) -> List[Article]:
     # calculate the time from which to fetch news
     timeFrom = datetime.now() - timedelta(hours=timePeriodHours)
     # construct API request
