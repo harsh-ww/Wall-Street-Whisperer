@@ -1,8 +1,20 @@
 import pytest
 import os
-
+# Overwrite env vars
+os.environ['EMAIL_PASSWORD'] = ''
+os.environ['SIMILARWEB_KEY'] = ''
+os.environ['PERIGON_KEY'] = ''
 from connect import get_db_connection
 from testcontainers.postgres import PostgresContainer
+
+from unittest import mock
+
+# Mock the NewsSentiment library - we don't want to install it in CI (because it's massive) or run it in tests (slow) when we can mock the data
+# aim of these tests is to test surrounding business logic
+NewsSentiment = mock.MagicMock()
+mock.patch.dict("sys.modules", NewsSentiment=NewsSentiment).start()
+
+
 
 # define the postgres container
 postgres = PostgresContainer('postgres:latest')
@@ -10,10 +22,7 @@ postgres = PostgresContainer('postgres:latest')
 # fixture to start and stop the postgres container
 @pytest.fixture(scope="session", autouse=True)
 def setup(request):
-    # Overwrite env vars
-    os.environ['EMAIL_PASSWORD'] = ''
-    os.environ['SIMILARWEB_KEY'] = ''
-    os.environ['PERIGON_KEY'] = ''
+
     postgres.start()
 
     def teardown():
