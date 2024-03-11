@@ -1,3 +1,5 @@
+-- This is sample data to illustrate what our system would look like
+
 -- Adminer 4.8.1 PostgreSQL 16.2 (Debian 16.2-1.pgdg120+2) dump
 
 DROP TABLE IF EXISTS "article";
