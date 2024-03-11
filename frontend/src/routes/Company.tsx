@@ -13,6 +13,18 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
+  Popover,
+  PopoverTrigger,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverBody,
+  PopoverHeader,
+  PopoverArrow,
+  List,
+  ListIcon,
+  ListItem,
+  Tag,
+  TagLabel,
 } from "@chakra-ui/react";
 
 import {
@@ -78,7 +90,7 @@ const CompanyDetails = () => {
           throw new Error("Failed to fetch company data");
         }
         const data = await response.json(); //pass this data into the company page html...
-        console.log(data);
+        console.log("company data: ", data);
         setCompanyData(data);
       } catch (error) {
         console.error("error has occured");
@@ -134,19 +146,58 @@ const CompanyDetails = () => {
         });
         console.error("Error, tracking try catch failed");
       }
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
     };
 
     const handleUntrackCompany = async () => {
-      //insert untrack company details here
+      const data = {
+        ticker_code: companyData
+          ? companyData.Symbol || companyData.symbol || "undefined"
+          : undefined,
+      };
+      try {
+        // insert untrack company details here
+        console.log("Attempting to unfollow company", data);
+        const response = await fetch(`${API_URL}/untrack`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data), // send ticker_code in request body
+        });
+        if (!response.ok) {
+          console.log(response.status);
+          const errorData = await response.json(); // extract error message from response
+          throw new Error(errorData.error || "Failed to untrack company");
+        }
+        toastTrack({
+          //usage of reactive toasts that confirm after database update whether the addition was successful
+          title: "Removed!",
+          description: "This company has now been untracked!",
+          status: "success",
+          duration: 3500,
+          variant: "subtle",
+          isClosable: true,
+        });
+      } catch (error) {
+        console.log(data);
+        toastTrack({
+          //in the case that the user manages to track again, relay an error
+          title: "An error has occured", //error.message
+          description: "",
+          status: "error",
+          duration: 3500,
+          variant: "subtle",
+          isClosable: true,
+        });
+        console.error("Error, untracking try catch failed: ", error.message);
+      }
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
     };
-
-    let articles = [
-      "Headliner",
-      "ArticleTitle",
-      "NotAdmissible",
-      "MoneyLaundering",
-      "DidaGoodThing",
-    ]; //dummy data
 
     return (
       <>
@@ -168,7 +219,10 @@ const CompanyDetails = () => {
             >
               <Box bg="gray.50" p={["10px", "10px", "10px"]}>
                 {" "}
-                <Flex direction={["column", "column", "row"]}>
+                <Flex
+                  direction={["column", "column", "row"]}
+                  alignItems="center"
+                >
                   <Box bg="gray.50" p={["10px", "10px", "15px"]}>
                     <Heading as="h3" fontSize={["2xl", "3xl", "5xl"]} mt="1">
                       {companyData
@@ -205,16 +259,39 @@ const CompanyDetails = () => {
                         : "..."}
                     </Text>
                   </Box>
-                  <Box p={["10px", "10px", "15px"]} fontSize="lg" bg="gray.50">
-                    <Badge
-                      colorScheme="green"
-                      borderRadius="full"
-                      fontSize="1.5em"
-                      p="10px"
+                  {companyData && companyData.score && (
+                    <Box
+                      p={["10px", "10px", "15px"]}
+                      fontSize="lg"
+                      bg="gray.50"
                     >
-                      8.5
-                    </Badge>
-                  </Box>
+                      <Popover>
+                        <PopoverTrigger>
+                          <Badge
+                            colorScheme={
+                              companyData.score > 0
+                                ? "green"
+                                : companyData.score < 0
+                                ? "red"
+                                : "yellow"
+                            }
+                            borderRadius="full"
+                            fontSize="1.5em"
+                            p="10px"
+                            _hover={{ bg: "gray.400" }}
+                          >
+                            {Number(companyData.score).toPrecision(3)}
+                          </Badge>
+                        </PopoverTrigger>
+                        <PopoverContent>
+                          <PopoverArrow />
+                          <PopoverCloseButton />
+                          <PopoverHeader>Company score</PopoverHeader>
+                          <PopoverBody>This score represents the average public opinion of a company over the last 30 days. It takes into account the sentiment of articles in the news and the popularity of sites on which these articles appeared</PopoverBody>
+                        </PopoverContent>
+                      </Popover>
+                    </Box>
+                  )}
                   <Box
                     bg="gray.50"
                     p={["10px", "10px", "15px"]}
@@ -228,6 +305,8 @@ const CompanyDetails = () => {
                       } //change styling depending on whether company is tracked or not
                       size="lg"
                       w={["auto", "282px", "282px"]}
+                      borderColor="purple.200"
+                      borderWidth="3px"
                       // mt="6"
                       rightIcon={
                         companyData && companyData.tracked ? (
@@ -238,7 +317,7 @@ const CompanyDetails = () => {
                       }
                       onClick={() => {
                         if (companyData && companyData.tracked) {
-                          handleUntrackCompany();
+                          handleUntrackCompany(companyData.Symbol);
                         } else {
                           onOpen();
                         }
@@ -255,6 +334,10 @@ const CompanyDetails = () => {
                     <ModalOverlay />
                     <ModalContent paddingTop="10px">
                       <ModalBody>
+                        <Text mt={5} color="gray.600">
+                          Enter the name which this company is commonly known by
+                          and referred to in news articles.
+                        </Text>
                         <ModalCloseButton />
                       </ModalBody>
                       <ModalFooter>
@@ -272,6 +355,7 @@ const CompanyDetails = () => {
                             }
                           }}
                         />
+
                         <Button
                           variant="ghost"
                           backgroundColor="purple.700"
@@ -341,9 +425,93 @@ const CompanyDetails = () => {
                 >
                   {" "}
                   <Box height="60vh" mt="-20px">
-                    {/* once logic done pass in ticker to AreaChart as prop */}
-                    <AreaChart />
+                    <AreaChart ticker={ticker || ""} />
                   </Box>
+                  {companyData && companyData.score && (
+                    <Box
+                      p={["10px", "10px", "15px"]}
+                      fontSize="lg"
+                      bg="gray.50"
+                    >
+                      <Box bg="gray.100" p="10px" borderRadius="10px">
+                        <List spacing={3}>
+                          <Flex>
+                            <Box w="80%">
+                              <ListItem p="5px">
+                                <ListIcon
+                                  as={
+                                    companyData.avgreturn < 0
+                                      ? TriangleDownIcon
+                                      : TriangleUpIcon
+                                  }
+                                  color={
+                                    companyData.avgreturn < 0
+                                      ? "red.500"
+                                      : "green.500"
+                                  }
+                                />
+                                Average Return:{" "}
+                                {Number(companyData.avgreturn).toPrecision(3)}
+                              </ListItem>
+                              <ListItem p="5px">
+                                <ListIcon
+                                  as={
+                                    companyData.avgsentiment < 0
+                                      ? TriangleDownIcon
+                                      : TriangleUpIcon
+                                  }
+                                  color={
+                                    companyData.avgsentiment < 0
+                                      ? "red.500"
+                                      : "green.500"
+                                  }
+                                />
+                                Average Sentiment:{" "}
+                                {Number(companyData.avgsentiment).toPrecision(
+                                  3
+                                )}
+                              </ListItem>
+                              <ListItem p="5px">
+                                <Tag
+                                  size="lg"
+                                  colorScheme={
+                                    companyData.modesentiment === "positive"
+                                      ? "green"
+                                      : "red"
+                                  }
+                                  borderRadius="10px"
+                                >
+                                  <TagLabel>
+                                    Mode Sentiment: {companyData.modesentiment}
+                                  </TagLabel>
+                                </Tag>
+                              </ListItem>
+                            </Box>
+                            <ListItem>
+                              <Text p="5px">
+                                Based on these metrics, {companyData.name} stock
+                                price is expected to:{" "}
+                              </Text>
+                              <Badge
+                                colorScheme={
+                                  companyData.modesentiment === "positive"
+                                    ? "green"
+                                    : "red"
+                                }
+                                borderRadius="15px"
+                                fontSize="1rem"
+                                p="7px"
+                              >
+                                {companyData.modesentiment === "positive"
+                                  ? "increase"
+                                  : "decrease"}
+                              </Badge>
+                            </ListItem>
+                          </Flex>
+                        </List>
+                      </Box>
+                    </Box>
+                  )}
                 </GridItem>
                 <GridItem
                   w="100%"
@@ -351,7 +519,10 @@ const CompanyDetails = () => {
                   bg="gray.50"
                   p={["15px", "15px", "30px"]}
                 >
-                  <ArticleCardList ticker={ticker || ""} tracked={companyData?.tracked || false} />
+                  <ArticleCardList
+                    ticker={ticker || ""}
+                    tracked={companyData?.tracked || false}
+                  />
                 </GridItem>
               </Grid>
             </Box>

@@ -11,33 +11,42 @@ interface Props {
 
 function CompanyMotif({ companyName, textSize, TickerCode }: Props) {
   return (
-    <Flex
-      bg="purple.200"
-      justifyContent="space-around"
-      alignItems="center"
-      padding="0.5em"
-      boxShadow="md"
-      p="5"
-      rounded="xl"
-      border="1px"
-      borderColor="purple.300"
-    >
-      <Image src="../../public/logoIpsum.svg" w="25%" />{" "}
-      {/*image will also be replaced from prop*/}
+    <Link href={`/company/${TickerCode}`}>
       <Flex
-        w="65%"
-        h="100%"
+        bgGradient="linear(to-r, purple.400, purple.200)"
+        justifyContent="space-around"
         alignItems="center"
-        whiteSpace="nowrap"
-        overflow="hidden"
+        textAlign="center"
+        padding="0.5em"
+        boxShadow="md"
+        p="5"
+        rounded="xl"
+        border="1px"
+        borderColor="purple.300"
+        _hover={{
+          //on hover styling
+          transform: "scale(1.015)",
+          borderColor: "purple.400",
+          boxShadow: "xl",
+        }}
       >
-        <Heading size={textSize}>
-          <Link href={`http://localhost:5173/company/${TickerCode}`}>
-            {companyName}
-          </Link>
-        </Heading>
+        {/*image will also be replaced from prop*/}
+
+        <Flex
+          w="100%"
+          h="100%"
+          alignItems="center"
+          justifyContent="center"
+          whiteSpace="nowrap"
+          textAlign="center"
+          overflow="hidden"
+        >
+          <Heading size={textSize}>
+            <Link href={`/company/${TickerCode}`}>{companyName}</Link>
+          </Heading>
+        </Flex>
       </Flex>
-    </Flex>
+    </Link>
   );
 }
 

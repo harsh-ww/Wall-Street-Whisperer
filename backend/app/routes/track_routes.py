@@ -110,11 +110,12 @@ def untrack_db(ticker: str):
 @track_blueprint.route('/untrack', methods=['POST'])
 def untrack_company():
     # Get request body
+    
     data = request.get_json()
-
+    print("Testing")
     ticker_code = data.get('ticker_code')
     
-    if not check_already_tracked(ticker_code):
+    if not check_already_tracked(ticker_code): # if there is a return then is tracked...
         return jsonify({'error': f'Ticker {ticker_code} is not tracked'}), 400
 
     if not ticker_code:

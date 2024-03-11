@@ -10,7 +10,7 @@ import {
 import { useState, useEffect } from "react";
 import { format, parseISO, subDays } from "date-fns";
 import { Box, Text } from "@chakra-ui/react";
-import { API_URL } from '../config'
+import { API_URL } from "../config";
 
 interface AreaChartItemProps {
   ticker: string;
@@ -32,7 +32,7 @@ export const AreaChartItem: React.FC<AreaChartItemProps> = ({
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [ticker]);
 
   const fetchData = async () => {
     try {
