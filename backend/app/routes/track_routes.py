@@ -9,7 +9,7 @@ track_blueprint = Blueprint('track', __name__)
 def check_already_tracked(ticker:str) -> bool:
     conn = get_db_connection()
     with conn.cursor() as cur:
-        cur.execute("SELECT * FROM company WHERE TickerCode = %s AND Tracked=true", (ticker,))
+        cur.execute("SELECT * FROM company WHERE TickerCode = %s AND Tracked=TRUE", (ticker,))
         existing_company = cur.fetchone()
     
     conn.close()
