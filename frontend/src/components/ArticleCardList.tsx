@@ -29,6 +29,9 @@ export default function ArticleCardList({ ticker, tracked }: Props) {
           throw new Error("Failed to fetch articles");
         }
         const articleData = await response.json();
+        articleData.sort((a,b) => {
+          return (new Date(b.publisheddate)) - (new Date(a.publisheddate))
+        })
         setData(articleData);
         setIsLoaded(true);
       } catch (error) {

@@ -287,6 +287,7 @@ const CompanyDetails = () => {
                           <PopoverArrow />
                           <PopoverCloseButton />
                           <PopoverHeader>Company score</PopoverHeader>
+                          <PopoverBody>This score represents the average public opinion of a company over the last 30 days. It takes into account the sentiment of articles in the news and the popularity of sites on which these articles appeared</PopoverBody>
                         </PopoverContent>
                       </Popover>
                     </Box>
