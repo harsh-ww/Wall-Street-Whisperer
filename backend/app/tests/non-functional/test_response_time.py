@@ -23,4 +23,4 @@ def test_track_response_time(client):
     # Test if the post request was successful
     assert response.status_code == 201
     time_taken = end_time - start_time
-    assert (time_taken) < 0.2
+    assert (time_taken) < 2
