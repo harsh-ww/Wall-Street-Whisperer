@@ -19,8 +19,8 @@ class TestGetCompanyDetailsDb:
             'score': 100.5,
             'name': 'Tesco PLC',
             'avgreturn': 0.2345,
-E           'avgsentiment': -0.57,
-E           'modesentiment': 'negative',
+            'avgsentiment': -0.57,
+            'modesentiment': 'negative',
         }
     
     def test_get_company_details_invalid(self, clear_data):
