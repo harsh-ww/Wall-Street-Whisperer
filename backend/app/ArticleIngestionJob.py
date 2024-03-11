@@ -1,4 +1,4 @@
-import schedule
+
 from models.Company import Company
 from models.Article import Article
 from connect import get_db_connection
@@ -185,9 +185,6 @@ def job():
     logging.info("Sending notification emails")
     send_emails(newartleIDs)
 
-
-# Run this as a CRON JOB
-# schedule.every(INGESTION_FREQUENCY).hours()
 
 if __name__ == "__main__":
     job()

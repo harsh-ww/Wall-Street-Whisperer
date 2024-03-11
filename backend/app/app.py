@@ -3,6 +3,9 @@ from flask_cors import CORS
 from psycopg2 import DatabaseError
 import os
 import logging
+from apscheduler.schedulers.background import BackgroundScheduler
+import atexit
+from ArticleIngestionJob import job
 
 def create_app():
     """
@@ -38,6 +41,13 @@ def create_app():
 
     return app 
 
+
+# Setup CRON Jop
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=job, trigger="interval", hours=24)
+scheduler.start()
+
+
 app = create_app()
 
 @app.errorhandler(DatabaseError)
@@ -45,3 +55,5 @@ def handle_db_error(err):
     logging.error(err)
     print(err)
     return 'Database Error', 500
+
+atexit.register(lambda: scheduler.shutdown())
