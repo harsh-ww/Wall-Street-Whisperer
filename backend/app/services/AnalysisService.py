@@ -56,7 +56,7 @@ class BatchArticleAnalysis():
         # compose a 3-tuple with the text before and after the company
         return (articleTextSplit[0], companyName, articleTextSplit[1])
     
-
+    # Fetches the popularity of a given domain from similarweb
     def fetchPopularity(self, domain:str):
         """
         Fetches the popularity of a given domain from similarweb
@@ -83,6 +83,7 @@ class BatchArticleAnalysis():
         
         return response.json()['similar_rank']['rank']
 
+    # Updates the popularity of a given domain in the database
     def updatePopularity(self, domain:str, popularity:int, name:str=None):
         """
         Caches the popularity of a given news site's domain in the database
@@ -107,7 +108,7 @@ class BatchArticleAnalysis():
         
         conn.close()
 
-
+    # Analyses the popularity of a news source - either uses cached or refetches from SimilarWeb
     def analyseSourcePopularity(self, sourceURL:str, sourceName:str=None):
         """
         Analyses the popularity of a news source - either uses cached or refetches from SimilarWeb
@@ -155,7 +156,7 @@ class BatchArticleAnalysis():
                     # rank was fetched recently - use cached
                     return result[0]
 
-
+    # Scoring algorithm for articles
     def calculateArticleScore(self, article:AnalysedArticle):
         """
         Scoring algorithm for articles
@@ -186,7 +187,6 @@ class BatchArticleAnalysis():
         """
         
         # Clean up articles
-
         sentimentAnalysisTargets = []
         cleanedTargets = []
         for articleTuple in self.articles:
@@ -201,9 +201,8 @@ class BatchArticleAnalysis():
             if combinedText.count(company.name)<2:
                 continue
 
-            # Model can't handle text where the target (i.e. company name) doesn't appear in the first 512 chars
-            # This is reasonable. If an article about a company doesn't mention it in the first roughly 5 sentences
-            # the article probably isn't about the company
+            # Model can't handle text where the target (i.e. company name) doesn't appear in the first 512 chars, which is reasonable.
+            # If an article about a company doesn't mention it in the first roughly 5 sentences the article probably isn't about the company
             if target is None or len(target[0])>512:
                 continue
 
@@ -231,11 +230,5 @@ class BatchArticleAnalysis():
         # Score articles based on all factors we have
         for aa in analysedArticles:
             aa.score = self.calculateArticleScore(aa)
-
-        # Generate article summaries
-        # logging.info("Generating article summaries")
-        # summaries = batch_generateSummary([aa.text for aa in analysedArticles])
-        # for i,summary in enumerate(summaries):
-        #     analysedArticles[i].summary = summary
 
         return analysedArticles

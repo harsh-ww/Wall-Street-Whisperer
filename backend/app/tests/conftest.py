@@ -4,15 +4,18 @@ os.environ['EMAIL_PASSWORD'] = ''
 from connect import get_db_connection
 from testcontainers.postgres import PostgresContainer
 
+# define the postgres container
 postgres = PostgresContainer('postgres:latest')
 
+# fixture to start and stop the postgres container
 @pytest.fixture(scope="session", autouse=True)
 def setup(request):
     postgres.start()
 
     def teardown():
         postgres.stop()
-    
+        
+    # add a finalizer to stop the container
     request.addfinalizer(teardown)
 
     os.environ['POSTGRES_HOST'] = postgres.get_container_host_ip()

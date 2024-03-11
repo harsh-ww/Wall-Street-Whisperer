@@ -25,9 +25,6 @@ class TestGetCompanyDetailsDb:
 
         assert result == {}
 
-
-
-
 class TestSearchCompanyDB:
     # Inserts sample data into the database
     def insert(self):

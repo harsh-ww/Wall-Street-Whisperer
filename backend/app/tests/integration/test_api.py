@@ -27,7 +27,6 @@ def test_search_companies(client):
     symbol = 'MMM'
     invalid = 'ABCDE'
 
-    # CURRENTLY, I THINK THE COMPANIES GOT FROM DB ARE NOT PROPERLY TESTED.
     # Use code only
     response_code = client.get(f'/company?query={symbol}')
     # Use name only
