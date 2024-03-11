@@ -17,8 +17,7 @@ import { SearchIcon } from "@chakra-ui/icons";
 import { useEffect, useState } from "react";
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { API_URL } from '../config'
-
+import { API_URL } from "../config";
 
 interface Company {
   exchange: string; //region
@@ -30,38 +29,35 @@ interface Company {
 }
 
 function SearchBar() {
+  // states for search query, search results, and loading status
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<Company[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  // triggers search when search query changes
   useEffect(() => {
-    if(searchQuery.length > 1){
+    if (searchQuery.length > 1) {
       handleSearch();
-    }else{
+    } else {
       setSearchResults([]);
     }
-  }, [searchQuery])
+  }, [searchQuery]);
 
   const handleNavigate = () => {
     setSearchQuery("");
-  }
+  };
 
   const handleSearch = async () => {
     try {
       setIsLoading(true);
-      console.log(API_URL)
-      const response = await fetch(
-        `${API_URL}/company?query=${searchQuery}` //make call to server using api route search_companies()
-      );
+      const response = await fetch(`${API_URL}/company?query=${searchQuery}`);
       if (!response.ok) {
         //appropriate error handling
         console.error(`HTTP error! status: ${response.status}`);
         throw new Error("Failed to fetch company data");
       }
       const data = await response.json();
-      setSearchResults(data); //useState hook takes API json response and puts into searchResults
-      console.log(searchResults); //prints previous state of searchResults
-      console.log(data); //prints current state of searchResults
+      setSearchResults(data); // stores API json response in searchResults
     } catch (error) {
       console.error("Error fetching company data:", error);
     } finally {
@@ -69,21 +65,26 @@ function SearchBar() {
     }
   };
 
-  const [isFocused, setIsFocused] = useState(false); //used specifically for styling frontend
+  // State to manage focus state for styling
+  const [isFocused, setIsFocused] = useState(false);
   const handleToggle = () => {
     setIsFocused(!isFocused);
   };
 
-  const [hoveredCompany, setHoveredCompany] = useState<number | null>(null); // State to track hovered company
+  // State to track hovered company
+  const [hoveredCompany, setHoveredCompany] = useState<number | null>(null);
+  // handles mouse enter event
   const handleMouseEnter = (index: number) => {
     setHoveredCompany(index);
   };
+  // handles mouse leave event
   const handleMouseLeave = () => {
     setHoveredCompany(null);
   };
 
   return (
     <>
+      {/* Flex container for search bar and search results */}
       <Flex
         color="white"
         w="100vw"
@@ -100,7 +101,7 @@ function SearchBar() {
             onBlur={handleToggle}
             value={searchQuery}
             onChange={(e) => {
-              setSearchQuery(e.target.value)
+              setSearchQuery(e.target.value);
             }}
             placeholder="Search for Company..."
             variant="filled"
@@ -112,6 +113,7 @@ function SearchBar() {
             </Fade>
           </InputRightElement>
         </InputGroup>
+        {/* Conditional rendering of search results */}
         {isLoading || searchResults.length === 0 ? null : (
           //logic is incomplete, change && to ?? (), with default loading elements within brackets
           <Flex direction="column" zIndex="99">
@@ -131,7 +133,9 @@ function SearchBar() {
                       <React.Fragment key={index}>
                         {/* <NavLink to={`/company/${company.symbol}`}> */}{" "}
                         {/*commented out until company page logic is complete*/}
-                        <NavLink to={`/company/${company.symbol || company.ticker}`}>
+                        <NavLink
+                          to={`/company/${company.symbol || company.ticker}`}
+                        >
                           <Flex
                             color={company.tracked ? "pink.500" : "black"}
                             p="5px"

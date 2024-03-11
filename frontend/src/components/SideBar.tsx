@@ -1,17 +1,14 @@
-import { Card, Text, Button, Divider, Box, Flex } from "@chakra-ui/react";
-import { ArrowLeftIcon, ArrowRightIcon, BellIcon } from "@chakra-ui/icons";
+import { Card, Text, Button, Box, Flex } from "@chakra-ui/react";
+import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
 import { useState, useEffect } from "react";
 import CompanyMotif from "./CompanyMotif";
 import { API_URL } from "../config";
-
-//side bar, not located in Landing page, contains company motif links and alert links
-
 interface trackedDetails {
-  //defining type of returned json
   CommonName: string;
   TickerCode: string;
 }
 
+// component contains company motif links and alert links
 function MyCard() {
   const [isMoved, setIsMoved] = useState(false);
   const handleMove = () => {
@@ -61,7 +58,13 @@ function MyCard() {
       >
         {isMoved ? <ArrowLeftIcon /> : <ArrowRightIcon />}
       </Button>
-      <Text fontSize="xl" fontWeight="semibold" textAlign="center" mt={3} mb={1}>
+      <Text
+        fontSize="xl"
+        fontWeight="semibold"
+        textAlign="center"
+        mt={3}
+        mb={1}
+      >
         Tracked Companies
       </Text>
       <Flex flexDirection="column" height="100%" overflow="auto">
@@ -80,7 +83,6 @@ function MyCard() {
           )
         )}
       </Flex>
-
     </Card>
   );
 }
