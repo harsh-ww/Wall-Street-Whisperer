@@ -1,1 +1,1 @@
-export const API_URL = "https://miniature-enigma-69jv7p75vwgc4xqj-5000.app.github.dev/";
+export const API_URL = "https://literate-space-robot-x5jrq4qp5wp3rgr-5000.app.github.dev/";

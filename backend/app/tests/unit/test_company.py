@@ -6,7 +6,7 @@ class TestGetCompanyDetailsDb:
     def insert(self):
         conn = get_db_connection()
         with conn.cursor() as cur:
-            cur.execute("INSERT INTO company (CompanyName, CurrentScore, CommonName, TickerCode, Exchange, Currency) VALUES (%s, %s, %s, %s, %s, %s)", ('Tesco PLC', 100.5, 'Tesco', 'TSCO.LON', 'United Kingdom', 'GBX'))
+            cur.execute("INSERT INTO company (CompanyName, CurrentScore, CommonName, TickerCode, Exchange, Currency, AvgSentiment, AvgReturn, ModeSentiment) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", ('Tesco PLC', 100.5, 'Tesco', 'TSCO.LON', 'United Kingdom', 'GBX', -0.57, 0.2345, 'negative'))
             conn.commit()
         conn.close()
 
@@ -17,7 +17,10 @@ class TestGetCompanyDetailsDb:
         assert result == {
             'tracked': True,
             'score': 100.5,
-            'name': 'Tesco PLC'
+            'name': 'Tesco PLC',
+            'avgreturn': 0.2345,
+E           'avgsentiment': -0.57,
+E           'modesentiment': 'negative',
         }
     
     def test_get_company_details_invalid(self, clear_data):
