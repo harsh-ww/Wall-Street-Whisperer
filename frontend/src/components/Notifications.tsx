@@ -39,7 +39,7 @@ export default function Notifications() {
 
   // clear a single notification by its id
   const clearNotification = async (id: number) => {
-    const res = await fetch(`${API_URL}/visitAll/${id}`, {
+    const res = await fetch(`${API_URL}/visit/${id}`, {
       method: "POST",
     });
     if (res.ok) {

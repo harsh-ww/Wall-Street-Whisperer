@@ -154,7 +154,6 @@ def send_emails(article_ids:List[int]):
         data = {'recipients':["stockapp220@gmail.com"], 'articleList': article_ids} #CHANGE
 
         response = requests.post('http://localhost:5000/sendarticleemail',
-                            content_type='application/json',
                             data = json.dumps(dict(data)))
         
         if response.status_code == 201:
