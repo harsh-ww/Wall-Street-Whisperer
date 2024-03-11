@@ -3,7 +3,7 @@ from models.Article import Article
 import os
 from datetime import datetime, timedelta
 import logging
-from .exceptions import APIError
+from services.exceptions import APIError
 
 API_URL = "https://api.goperigon.com/v1/"
 API_KEY = os.environ['PERIGON_KEY']

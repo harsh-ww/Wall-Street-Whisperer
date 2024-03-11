@@ -1,6 +1,6 @@
 import pytest
 import os
-os.environ['EMAIL_PASSWORD'] = ''
+
 from connect import get_db_connection
 from testcontainers.postgres import PostgresContainer
 
@@ -10,6 +10,10 @@ postgres = PostgresContainer('postgres:latest')
 # fixture to start and stop the postgres container
 @pytest.fixture(scope="session", autouse=True)
 def setup(request):
+    # Overwrite env vars
+    os.environ['EMAIL_PASSWORD'] = ''
+    os.environ['SIMILARWEB_KEY'] = ''
+    os.environ['PERIGON_KEY'] = ''
     postgres.start()
 
     def teardown():
