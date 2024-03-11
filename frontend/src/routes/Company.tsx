@@ -1,6 +1,6 @@
 import "../App.css";
 import SideBar from "../components/SideBar";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import {
   Modal,
@@ -33,6 +33,7 @@ import {
   ButtonGroup,
   Link,
   Input,
+  PopoverBody,
 } from "@chakra-ui/react";
 import { TriangleUpIcon, TriangleDownIcon } from "@chakra-ui/icons";
 import BaseLayout from "../layouts/BaseLayout";
@@ -55,11 +56,15 @@ interface CompanyDetails {
   symbol: string;
   Exchange: string;
   exchange: string;
+  score: number;
   stock: {
     change: string;
     "change percent": string;
     price: string;
   };
+  avgreturn: number;
+  avgsentiment: number;
+  modesentiment: string;
 }
 
 // component to display company details
@@ -109,7 +114,6 @@ const CompanyDetails = () => {
         if (!response.ok) {
           throw new Error("Failed to track company");
         }
-        const responseData = await response.json();
         toastTrack({
           // reactive toasts that confirm whether database update was successful
           title: "Added",
@@ -296,7 +300,7 @@ const CompanyDetails = () => {
                       }
                       onClick={() => {
                         if (companyData && companyData.tracked) {
-                          handleUntrackCompany(companyData.Symbol);
+                          handleUntrackCompany();
                         } else {
                           onOpen();
                         }
