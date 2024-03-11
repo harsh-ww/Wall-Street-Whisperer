@@ -15,8 +15,8 @@ zipp==3.17.0
 psycopg2==2.9.9
 Flask-Cors==4.0.0
 tldextract==5.1.1
-schedule==1.2.1
 pytest==8.0.0
 testcontainers-postgres
 pytest-cov
 pandas
+APScheduler

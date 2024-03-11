@@ -1,6 +1,4 @@
-import requests
-from .AlphaVantageService import getCompanyNews
-from .PerigonService import getCompanyNewsPerigon
+from services.PerigonService import getCompanyNewsPerigon
 from models.Article import Article
 from models.Company import Company, StockExchange
 
