@@ -1,6 +1,5 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import Profile from "./Profile";
 import {
   chakra,
   Box,
@@ -15,15 +14,9 @@ import {
   CloseButton,
 } from "@chakra-ui/react";
 import Logo from "./Logo";
-import {
-  AiOutlineMenu,
-  AiFillHome,
-  AiOutlineInbox,
-  AiFillBell,
-} from "react-icons/ai";
-import { BsFillCameraVideoFill, BsFillInboxFill } from "react-icons/bs";
-import { MdOutlineBusinessCenter, MdExplore } from "react-icons/md";
+import { AiOutlineMenu, AiFillHome } from "react-icons/ai";
 import Tutorial from "../components/Tutorial";
+
 export default function App() {
   const bg = useColorModeValue("white", "gray.800");
   const mobileNav = useDisclosure();
@@ -76,7 +69,6 @@ export default function App() {
                     Home
                   </Button>
                 </NavLink>
-                
               </VStack>
             </Box>
             <chakra.a
